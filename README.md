@@ -1,7 +1,7 @@
 Monocle
 =======
 
-Monocle is a 3D rendering engine I develop on my spare time.
+Monocle, or MOE (for MOnocle Engine) is a 3D rendering engine I develop on my spare time.
 
 With it, I'd like to experiment with common features of modern game engines, such as:
 
@@ -13,9 +13,17 @@ With it, I'd like to experiment with common features of modern game engines, suc
 - and much more...
 
 
-I work on this project mainly for educational and research purposes. That's why it is open source.
+I work on this project mainly for educational and research purposes.
+It has various inspirations, from technical articles (especially from [Molecule](https://blog.molecular-matters.com/) and [Bitsquid](http://bitsquid.blogspot.fr/) developers) to engines I have worked with (Unreal, idTech, Dunia).
+That's why I make it open source.
 
 
+Compatibility
+=============
+
+Currently Monocle is built with Windows and Linux platforms in mind.
+
+Support of other operating systems isn't guaranteed.
 
 
 Building
@@ -33,4 +41,15 @@ Source code is divided into modules (Core, Animation, Rendering...) in the Sourc
 
 
 
+
+Workflow
+========
+
+Currently I work on two branches:
+- master for "stable" releases
+- develop for day-to-day work
+
+This helps to keep a clean release workflow.
+
+If want to make a pull request, please read CONTRIBUTING.md first, and branch from develop.
 

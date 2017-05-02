@@ -1,51 +1,80 @@
 -- premake5.lua
-workspace "HelloWorld"
-	location "Workspace" -- The location of generated files - .sln, etc.
+workspace "Monocle"
 
-	configurations { "Diagnostic", "Debug", "Release", "Profile", "Retail" }
-	platforms { "Windows", "Linux" }
-
-project "HelloWorld"
-   kind "ConsoleApp"
-   language "C++"
-   targetdir "build/%{cfg.buildcfg}"
-
-   files { "**.h", "**.c" }
-
-   -- Platform Filters
-   filter "platforms:*"
-      architecture "x86_64"
-
-   filter "platforms:Windows"
-      defines "MOE_WINDOWS"
-
-   filter "platforms:Linux"
-      defines "MOE_LINUX"   
+	-- Initial config
+	location "Workspace" -- The directory of generated files - .sln, etc.
+	configurations { "Diagnostic", "Debug", "Release", "Profile", "Shipping" }
+	platforms { "Windows Static", "Windows DLL", "Linux Static", "Linux DLL" }
+	language "C++"
 
 
-   -- Configuration filters
-   filter "configurations:*"
-	  flags { "ExtraWarnings", "C++11", "MultiProcessorCompile", "ShadowedVariables", "UndefinedIdentifiers" }
-   
-   filter "configurations:Diagnostic,Debug,Release"
-      symbols "On"
+-- General filters (for all projects)
+	-- Platform Filters
+	filter "platforms:*"
+		architecture "x86_64"
 
-   filter "configurations:Diagnostic"
-      defines { "MOE_DIAGNOSTIC" }
-	  optimize "Off"
+	filter "platforms:Windows*"
+		defines "MOE_WINDOWS"
+		system "windows"
 
-   filter "configurations:Debug"
-      defines { "MOE_DEBUG" }
-	  optimize "Debug"
-	  	 
-   filter "configurations:Release,Profile"
-      optimize "On"
+	filter "platforms:Linux*"
+		defines "MOE_LINUX"
+		system "linux"
 
-   filter "configurations:Profile"
-      defines { "MOE_PROFILE" }
+	filter "platforms:*Static"
+		kind "StaticLib"
 
-   filter "configurations:Retail"
-	  defines { "MOE_RETAIL" }
-	  optimize "Full"
-	  flags { "LinkTimeOptimization" }
-	
+	filter "platforms:*DLL"
+		kind "SharedLib"
+
+	filter "kind:SharedLib"
+		defines { "MOE_USE_DLL", "MOE_DLL_EXPORT" }
+
+
+
+	-- Configuration filters
+	filter "configurations:*"
+		defines { "MOE_STD_SUPPORT" } -- At the moment use standard library for convenience
+		flags { "ExtraWarnings", "C++11", "MultiProcessorCompile", "ShadowedVariables", "UndefinedIdentifiers" }
+
+	filter "configurations:Diagnostic (DLL),Debug (DLL),Release (DLL)"
+		symbols "On"
+
+	filter "configurations:Diagnostic (DLL)"
+		defines { "MOE_DIAGNOSTIC" }
+		optimize "Off"
+
+	filter "configurations:Debug (DLL)"
+		defines { "MOE_DEBUG" }
+		optimize "Debug"
+
+	filter "configurations:Release (DLL), Profile (DLL)"
+		optimize "On"
+
+	filter "configurations:Profile (DLL)"
+		defines { "MOE_PROFILE" }
+
+	filter "configurations:Shipping (Static)"
+		defines { "MOE_SHIPPING" }
+		optimize "Full"
+		flags { "LinkTimeOptimization" }
+
+
+-- Projects
+project "MonocleCore"
+	targetdir "Build/%{cfg.platform}/%{cfg.buildcfg}"
+
+	files { "MonocleSource/Core/**.cpp", "MonocleSource/Core/**.h", "MonocleSource/Core/**.hpp" }
+	includedirs { "MonocleSource/Core/**/Include" }
+
+
+project "MonocleUnitTests"
+	kind "ConsoleApp"
+	links { "MonocleCore" }
+	targetdir "Build/%{cfg.platform}/%{cfg.buildcfg}"
+
+	files { "Tests/UnitTests/*.cpp", "Tests/Catch/*" }
+	includedirs { "MonocleSource/**/Include" }
+	includedirs { "Tests/Catch" }
+	defines "CATCH_CPP11_OR_GREATER"
+	removedefines { "MOE_DLL_EXPORT" }

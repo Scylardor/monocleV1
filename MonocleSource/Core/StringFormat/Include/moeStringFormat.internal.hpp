@@ -96,4 +96,3 @@ namespace moe
 #endif // MOE_STD_SUPPORT
 
 }
-

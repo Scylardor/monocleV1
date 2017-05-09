@@ -39,6 +39,6 @@ namespace moe
     void StringFormat(String & buffer, const FormatChar * const format, const Args& ... args);
 }
 
-#include "moeStringFormat.hpp"
+#include "moeStringFormat.internal.hpp"
 
 #endif // MOE_STRINGFORMAT_H_

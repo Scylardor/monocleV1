@@ -86,6 +86,8 @@ But, in order to keep a readable interface for complex cases (templates can quic
 A `.hpp` file means it's the "implementation" part of a template class declared in the matching `.h` file. An `.hpp` is always included at the end of its matching `.h` file and shouldn't be included elsewhere.
 That's why there aren't include guards on `.hpp` files.
 
+Since they appear in #include suggestions, to further indicate .hpp are for internal use only, they should follow the naming convention "foo.internal.hpp".
+
 
 
 

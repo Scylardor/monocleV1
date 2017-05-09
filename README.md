@@ -46,6 +46,7 @@ Workflow
 ========
 
 Currently I work on two branches:
+
 - master for "stable" releases
 - develop for day-to-day work
 

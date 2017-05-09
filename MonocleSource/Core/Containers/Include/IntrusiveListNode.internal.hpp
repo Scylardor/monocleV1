@@ -11,6 +11,12 @@ namespace moe
     }
 
     template <typename T>
+    IntrusiveListNode<T>::~IntrusiveListNode()
+    {
+        Unlink();
+    }
+
+    template <typename T>
     void    IntrusiveListNode<T>::LinkTo(IntrusiveListNode<T>* node)
     {
         // Unlink ourselves from a potential existing list

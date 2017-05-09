@@ -1,5 +1,5 @@
-#ifndef VS_DEBUGGER_WRITE_POLICY_H_
-#define VS_DEBUGGER_WRITE_POLICY_H_
+#ifndef MOE_VS_DEBUGGER_WRITE_POLICY_H_
+#define MOE_VS_DEBUGGER_WRITE_POLICY_H_
 
 // The Visual Studio Debugger write policy, to write log messages inside the Output Window of VS.
 // Currently works only with std::strings.
@@ -20,4 +20,4 @@ namespace moe
 
 #endif // MOE_STD_SUPPORT
 
-#endif // VS_DEBUGGER_WRITE_POLICY_H_
+#endif // MOE_VS_DEBUGGER_WRITE_POLICY_H_

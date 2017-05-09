@@ -5,6 +5,7 @@ workspace "Monocle"
 	location "Workspace" -- The directory of generated files - .sln, etc.
 	configurations { "Diagnostic", "Debug", "Release", "Profile", "Shipping" }
 	platforms { "Windows Static", "Windows DLL", "Linux Static", "Linux DLL" }
+	targetdir "Build/%{cfg.platform}/%{cfg.buildcfg}"
 	language "C++"
 
 
@@ -62,8 +63,6 @@ workspace "Monocle"
 
 -- Projects
 project "MonocleCore"
-	targetdir "Build/%{cfg.platform}/%{cfg.buildcfg}"
-
 	files { "MonocleSource/Core/**.cpp", "MonocleSource/Core/**.h", "MonocleSource/Core/**.hpp" }
 	includedirs { "MonocleSource/Core/**/Include" }
 
@@ -71,10 +70,9 @@ project "MonocleCore"
 project "MonocleUnitTests"
 	kind "ConsoleApp"
 	links { "MonocleCore" }
-	targetdir "Build/%{cfg.platform}/%{cfg.buildcfg}"
-
+	
 	files { "Tests/UnitTests/*.cpp", "Tests/Catch/*" }
-	includedirs { "MonocleSource/**/Include" }
-	includedirs { "Tests/Catch" }
+	includedirs { "Tests/Catch", "MonocleSource/Core/**/Include/" }
+	
 	defines "CATCH_CPP11_OR_GREATER"
 	removedefines { "MOE_DLL_EXPORT" }

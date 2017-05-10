@@ -4,7 +4,7 @@ workspace "Monocle"
 	-- Initial config
 	location "Workspace" -- The directory of generated files - .sln, etc.
 	configurations { "Diagnostic", "Debug", "Release", "Profile", "Shipping" }
-	platforms { "Windows Static", "Windows DLL", "Linux Static", "Linux DLL" }
+	platforms { "Windows_Static", "Windows_DLL", "Linux_Static", "Linux_DLL" }
 	targetdir "Build/%{cfg.platform}/%{cfg.buildcfg}"
 	language "C++"
 

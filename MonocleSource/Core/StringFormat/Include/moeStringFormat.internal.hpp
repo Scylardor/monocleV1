@@ -4,6 +4,29 @@
 
 namespace moe
 {
+    // Under the hood, StringFormat calls sprintf functions.
+    template <typename... Args>
+    int SnPrintf(char * const buffer, std::size_t bufferSize, const char * const format, const Args& ... args)
+    {
+        int const result = snprintf(buffer, bufferSize, format, StringFormatArg(args)...);
+        // TODO assert(-1 != result);
+        return result;
+    }
+
+    template <typename... Args>
+    int SnPrintf(wchar_t * const buffer, std::size_t bufferSize, const wchar_t * const format, const Args& ... args)
+    {
+        // Unlike snprintf, you need to pass nullptr as buffer to swprintf to get the formatted output size,
+        // otherwise if it doesn't fit it returns -1. So we can try first but else we need to call it again to get the wanted size.
+        // cf. http://www.cplusplus.com/reference/cwchar/swprintf/
+        int result = swprintf(buffer, bufferSize, format, StringFormatArg(args)...);
+        if (result == -1)
+        {
+            result = swprintf(nullptr, 0, format, StringFormatArg(args)...); // TODO assert result != -1
+        }
+        return result;
+    }
+
     // This function passes +1 to buffer sizes because SnPrintf assumes the reported buffer size includes space for the null terminator.
     template <class String, typename FormatChar, typename... Args>
     void StringFormat(String & buffer, const FormatChar * const format, const Args& ... args)
@@ -36,29 +59,6 @@ namespace moe
         StringFormat(buffer, L"%ls", format);
     }
 
-
-    // Under the hood, StringFormat calls sprintf functions.
-    template <typename... Args>
-    int SnPrintf(char * const buffer, std::size_t bufferSize, const char * const format, const Args& ... args)
-    {
-        int const result = snprintf(buffer, bufferSize, format, StringFormatArg(args)...);
-        // TODO assert(-1 != result);
-        return result;
-    }
-
-    template <typename... Args>
-    int SnPrintf(wchar_t * const buffer, std::size_t bufferSize, const wchar_t * const format, const Args& ... args)
-    {
-        // Unlike snprintf, you need to pass nullptr as buffer to swprintf to get the formatted output size,
-        // otherwise if it doesn't fit it returns -1. So we can try first but else we need to call it again to get the wanted size.
-        // cf. http://www.cplusplus.com/reference/cwchar/swprintf/
-        int result = swprintf(buffer, bufferSize, format, StringFormatArg(args)...);
-        if (result == -1)
-        {
-            result = swprintf(nullptr, 0, format, StringFormatArg(args)...); // TODO assert result != -1
-        }
-        return result;
-    }
 
 
 #ifdef MOE_STD_SUPPORT

@@ -24,7 +24,8 @@ namespace moe
     public:
         StringFormatBuffer(String& buf) : m_buf(buf)
         {
-            static_assert(false, "Specialize this template with your String class to be able to use it as a buffer for Format.");
+            // This is always false on purpose.
+            static_assert(sizeof(String) == -1, "Specialize this template with your String class to be able to use it as a buffer for Format.");
         }
 
         std::size_t Size();

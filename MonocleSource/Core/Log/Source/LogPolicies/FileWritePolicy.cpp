@@ -26,7 +26,8 @@ namespace moe
 
     void    FileWritePolicy::OpenFile(const char* filename)
     {
-        fopen_s(&m_fileHandle, filename, "w");
+        // TODO: assert filename != nullptr
+        m_fileHandle = fopen(filename, "w");
         // TODO: assert fileHandle != nullptr
     }
 

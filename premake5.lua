@@ -15,7 +15,8 @@ workspace "Monocle"
 		architecture "x86_64"
 
 	filter "platforms:Windows*"
-		defines "MOE_WINDOWS"
+		-- _CRT_SECURE_NO_WARNINGS = don't warn when not using non-portable functions like fopen_s, etc.
+		defines { "MOE_WINDOWS", "_CRT_SECURE_NO_WARNINGS" }
 		system "windows"
 
 	filter "platforms:Linux*"

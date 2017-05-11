@@ -23,10 +23,10 @@ namespace moe
         MOE_DLL_API void	Write(const std::string& message);
 
         MOE_DLL_API void    Clear();
-        
+
         // Not the best interface. Wish we could return const std::string&. But not across a DLL boundary
         MOE_DLL_API const char* GetCapturedOutput() const;
-    
+
     private:
         std::string m_captured;
     };

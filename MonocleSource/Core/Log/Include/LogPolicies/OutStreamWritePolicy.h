@@ -3,6 +3,7 @@
 
 #ifdef MOE_STD_SUPPORT
 #include <iostream>
+#include <string>
 #include "moeDLLVisibility.h"
 
 // A logging write policy that writes using an output std IO stream.

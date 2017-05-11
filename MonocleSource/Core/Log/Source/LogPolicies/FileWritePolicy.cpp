@@ -1,3 +1,4 @@
+#include <cstdio>
 #include "LogPolicies/FileWritePolicy.h"
 
 namespace moe

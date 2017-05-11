@@ -8,10 +8,11 @@
 #endif // MOE_STD_SUPPORT
 
 #include "moeDLLVisibility.h"
-#include "LogUtils.h"
 
 namespace moe
 {
+    struct LogInfo;
+
     class MOE_DLL_API NoFormatPolicy
     {
 	public:

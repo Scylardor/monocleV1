@@ -5,7 +5,6 @@
 // What's cool about messages formatted this way is that VS can take you to the file/line by clicking on the message.
 
 #include "moeDLLVisibility.h"
-#include "LogUtils.h"
 
 #ifdef MOE_STD_SUPPORT
 #include <string>
@@ -13,6 +12,8 @@
 
 namespace moe
 {
+    struct LogInfo;
+
     class MOE_DLL_API DebuggerFormatPolicy
     {
     public:

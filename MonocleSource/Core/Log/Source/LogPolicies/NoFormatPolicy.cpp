@@ -1,5 +1,6 @@
 #include "LogPolicies/NoFormatPolicy.h"
 #include "moeStringFormat.h"
+#include "LogUtils.h"
 
 namespace moe
 {

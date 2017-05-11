@@ -21,6 +21,7 @@ namespace moe
 
         char buf[1024]; // arbitrary size
         std::size_t numRead = std::fread(buf, sizeof(char), sizeof(buf), statusFileHandle);
+        bool debuggerPresent = false;
 
         if (numRead > 0)
         {
@@ -32,11 +33,12 @@ namespace moe
             if (tracerPIdSection != nullptr)
             {
                 int tracerPID = std::atoi(tracerPIdSection + sizeof(TracerPIDHeader) - 1);
-                return (tracerPID != 0);
+                debuggerPresent = (tracerPID != 0);
             }
         }
 
-        return false;
+        std::fclose(statusFileHandle);
+        return debuggerPresent;
     }
 
 

@@ -7,12 +7,16 @@
 
 // The Log Utilities are the small enums and data-holding structs that Log functions casually use.
 // They're grouped in the same file since I can't think of how we could use one without the others.
+// Enums have a special _*Max_ value that should be the last to check we're keeping up-to-date the
+// companion string representation buffers in the .cpp.
 namespace moe
 {
     enum LogChannel
     {
         ChanDefault = 0,
+        ChanDebug,
         // ...
+        _LogChannelMax_ // ALWAYS LAST
     };
 
     enum LogSeverity
@@ -20,7 +24,9 @@ namespace moe
         SevInfo = 0,
         SevWarning,
         SevError,
-        SevFatal
+        SevFatal,
+        // ...
+        _LogSeverityMax_ // ALWAYS LAST
     };
 
 #ifdef MOE_STD_SUPPORT

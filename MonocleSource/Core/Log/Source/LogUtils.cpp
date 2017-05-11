@@ -1,4 +1,5 @@
 #include "LogUtils.h"
+#include "moeCountof.h"
 
 namespace moe
 {
@@ -7,8 +8,10 @@ namespace moe
         static const char*  LogChannelStrings[] =
         {
             "Default",
+            "Debug",
             // ...
         };
+        static_assert(moe::Countof(LogChannelStrings) == moe::LogChannel::_LogChannelMax_, "Each LogChannel value must have a matching string representation");
 
         static const char*  LogSeverityStrings[] =
         {
@@ -17,6 +20,7 @@ namespace moe
             "ERROR",
             "FATAL"
         };
+        static_assert(moe::Countof(LogSeverityStrings) == moe::LogSeverity::_LogSeverityMax_, "Each LogSeverity value must have a matching string representation");
 
         const char* GetChannelString(LogChannel chan)
         {

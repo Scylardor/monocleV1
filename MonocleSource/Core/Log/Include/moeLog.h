@@ -7,6 +7,8 @@
 
 // The logger basically includes everything else
 #include "moeLogger.h"
+#include "moeLogMacros.h"
+#include "DefaultLogger.h"
 
 // Logger Policies
 #include "LogPolicies/NoFilterPolicy.h"

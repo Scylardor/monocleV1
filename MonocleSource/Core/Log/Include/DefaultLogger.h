@@ -4,13 +4,14 @@
 #include <memory>
 #include "moeDLLVisibility.h"
 
-class LoggerBase;
+// The default logger is a kind of "dynamic" singleton: a wrapper around a static LoggerBase unique ptr.
+// It will be the logger used "by default" by all logging commands.
+// But it comes uninitialized: you need to initialize it with Set() before it does anything.
 
 namespace moe
 {
-    // The default logger is a kind of "dynamic" singleton: a wrapper around a static LoggerBase unique ptr.
-    // It will be the logger used "by default" by all logging commands.
-    // But it comes uninitialized: you need to initialize it with Set() before it does anything.
+    class LoggerBase;
+
     class DefaultLogger
     {
     public:

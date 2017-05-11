@@ -39,24 +39,24 @@ workspace "Monocle"
 		defines { "MOE_STD_SUPPORT" } -- At the moment use standard library for convenience
 		flags { "ExtraWarnings", "C++11", "MultiProcessorCompile", "ShadowedVariables", "UndefinedIdentifiers" }
 
-	filter "configurations:Diagnostic (DLL),Debug (DLL),Release (DLL)"
+	filter "configurations:Diagnostic,Debug,Release"
 		symbols "On"
 
-	filter "configurations:Diagnostic (DLL)"
+	filter "configurations:Diagnostic"
 		defines { "MOE_DIAGNOSTIC" }
 		optimize "Off"
 
-	filter "configurations:Debug (DLL)"
+	filter "configurations:Debug"
 		defines { "MOE_DEBUG" }
 		optimize "Debug"
 
-	filter "configurations:Release (DLL), Profile (DLL)"
+	filter "configurations:Release,Profile"
 		optimize "On"
 
-	filter "configurations:Profile (DLL)"
+	filter "configurations:Profile"
 		defines { "MOE_PROFILE" }
 
-	filter "configurations:Shipping (Static)"
+	filter "configurations:Shipping"
 		defines { "MOE_SHIPPING" }
 		optimize "Full"
 		flags { "LinkTimeOptimization" }

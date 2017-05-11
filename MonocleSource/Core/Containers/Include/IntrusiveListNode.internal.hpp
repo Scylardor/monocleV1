@@ -1,4 +1,4 @@
-
+#include "moeAssert.h"
 
 namespace moe
 {
@@ -22,13 +22,17 @@ namespace moe
         // Unlink ourselves from a potential existing list
         Unlink();
 
-        // TODO: verify node != nullptr
-        m_prev = node->m_prev;
-        m_next = node;
+        if (MOE_ENSURE(node != nullptr))
+        {
+            m_prev = node->m_prev;
+            m_next = node;
+        }
 
-        // TODO: verify node->m_prev != nullptr
-        node->m_prev->m_next = this;
-        node->m_prev = this;
+        if (MOE_ENSURE(node->m_prev != nullptr))
+        {
+            node->m_prev->m_next = this;
+            node->m_prev = this;
+        }
     }
 
 	// Unlink has no effect if we aren't linked to some other node.

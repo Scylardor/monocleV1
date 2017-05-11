@@ -14,9 +14,11 @@ namespace moe
 		do
 		{
 			LoggerBase* loggerOwner = loggerNode->Owner();
-			// TODO: verify loggerOwner != nullptr
-			loggerOwner->LogFormatted(channel, severity, file, line, message);
-			loggerNode = loggerNode->Next();
+            if (MOE_ENSURE(loggerOwner != nullptr))
+            {
+                loggerOwner->LogFormatted(channel, severity, file, line, message);
+                loggerNode = loggerNode->Next();
+            }
 		} while (loggerNode != this);
 	}
 

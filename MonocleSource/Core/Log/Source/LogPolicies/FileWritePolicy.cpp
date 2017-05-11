@@ -1,5 +1,6 @@
 #include <cstdio>
 #include "LogPolicies/FileWritePolicy.h"
+#include "moeAssert.h"
 
 namespace moe
 {
@@ -27,9 +28,11 @@ namespace moe
 
     void    FileWritePolicy::OpenFile(const char* filename)
     {
-        // TODO: assert filename != nullptr
-        m_fileHandle = fopen(filename, "w");
-        // TODO: assert fileHandle != nullptr
+        if (MOE_ENSURE(filename != nullptr))
+        {
+            m_fileHandle = fopen(filename, "w");
+        }
+        MOE_ASSERT(m_fileHandle != nullptr);
     }
 
     void    FileWritePolicy::Close()

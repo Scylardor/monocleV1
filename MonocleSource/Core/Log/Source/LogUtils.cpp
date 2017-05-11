@@ -1,5 +1,6 @@
 #include "LogUtils.h"
 #include "moeCountof.h"
+#include "moeAssert.h"
 
 namespace moe
 {
@@ -24,13 +25,13 @@ namespace moe
 
         const char* GetChannelString(LogChannel chan)
         {
-            // TODO assert chan < countof(LogChannelStrings)
+            MOE_ASSERT(chan < LogChannel::_LogChannelMax_);
             return LogChannelStrings[(int)chan];
         }
 
         const char* GetSeverityString(LogSeverity sev)
         {
-            // TODO assert sev < countof(LogSeverityStrings)
+            MOE_ASSERT(sev < LogSeverity::_LogSeverityMax_);
             return LogSeverityStrings[(int)sev];
         }
     }

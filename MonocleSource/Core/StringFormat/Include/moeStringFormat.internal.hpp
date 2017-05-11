@@ -2,6 +2,8 @@
 #include <string>
 #endif // MOE_STD_SUPPORT
 
+#include "moeAssert.h"
+
 namespace moe
 {
     // Under the hood, StringFormat calls sprintf functions.
@@ -9,7 +11,7 @@ namespace moe
     int SnPrintf(char * const buffer, std::size_t bufferSize, const char * const format, const Args& ... args)
     {
         int const result = snprintf(buffer, bufferSize, format, StringFormatArg(args)...);
-        // TODO assert(-1 != result);
+        MOE_ASSERT(result != -1);
         return result;
     }
 
@@ -22,7 +24,8 @@ namespace moe
         int result = swprintf(buffer, bufferSize, format, StringFormatArg(args)...);
         if (result == -1)
         {
-            result = swprintf(nullptr, 0, format, StringFormatArg(args)...); // TODO assert result != -1
+            result = swprintf(nullptr, 0, format, StringFormatArg(args)...);
+            MOE_ASSERT(result != -1);
         }
         return result;
     }
@@ -38,14 +41,14 @@ namespace moe
         if (formattedSize > origBufferSize)
         {
             fmtBuffer.Resize(formattedSize);
-            SnPrintf(&fmtBuffer[0], formattedSize + 1, format, args...); // TODO: assert return == formattedSize
+            MOE_ASSERT(SnPrintf(&fmtBuffer[0], formattedSize + 1, format, args...) == formattedSize);
         }
         else if (formattedSize < origBufferSize)
         {
             fmtBuffer.Resize(formattedSize);
         }
     }
-    
+
     // Specializations to protect against single format strings
     template <class String>
     void StringFormat(String & buffer, const char * const format)

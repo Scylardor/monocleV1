@@ -66,6 +66,11 @@ workspace "Monocle"
 project "MonocleCore"
 	files { "MonocleSource/Core/**.cpp", "MonocleSource/Core/**.h", "MonocleSource/Core/**.hpp" }
 	includedirs { "MonocleSource/Core/**/Include" }
+	
+	filter "platforms:Windows*"
+		removefiles "**/Linux/**"
+	filter "platforms:Linux*"
+		removefiles "**/Windows/**"	
 
 
 project "MonocleUnitTests"

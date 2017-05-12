@@ -37,7 +37,7 @@ workspace "Monocle"
 	-- Configuration filters
 	filter "configurations:*"
 		defines { "MOE_STD_SUPPORT" } -- At the moment use standard library for convenience
-		flags { "ExtraWarnings", "C++11", "MultiProcessorCompile", "ShadowedVariables", "UndefinedIdentifiers" }
+		flags { "ExtraWarnings", "C++14", "MultiProcessorCompile", "ShadowedVariables", "UndefinedIdentifiers" }
 
 	filter "configurations:Diagnostic,Debug,Release"
 		symbols "On"

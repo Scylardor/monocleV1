@@ -9,7 +9,7 @@
 namespace moe
 {
     // A dummy wrapper function whose only purpose is to return a false value to use within MOE_ENSURE.
-    bool    MOE_DLL_API AssertErrorReturnFalse(const char* const file, int line, char* const msg);
+    bool    MOE_DLL_API AssertErrorReturnFalse(const char* const file, int line, const char* msg);
 }
 
     #define MOE_ASSERT(expr)                                                                            \

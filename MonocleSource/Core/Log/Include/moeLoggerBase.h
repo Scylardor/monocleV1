@@ -6,6 +6,7 @@
 #include <string>
 #include "IntrusiveListNode.h"
 #include "LogUtils.h"
+#include "moeDLLVisibility.h"
 
 namespace moe
 {
@@ -22,7 +23,7 @@ namespace moe
 		template <typename... Args>
 		void    Log(LogChannel channel, LogSeverity severity, const char* file, int line, const char* format, const Args&... args);
 
-		void    LogFormatted(LogChannel channel, LogSeverity severity, const char* file, int line, const std::string& message);
+        void    MOE_DLL_API LogFormatted(LogChannel channel, LogSeverity severity, const char* file, int line, const std::string& message);
 
 	protected:
 		virtual void	ConsumeLogInfo(const LogInfo& logInfo) = 0;

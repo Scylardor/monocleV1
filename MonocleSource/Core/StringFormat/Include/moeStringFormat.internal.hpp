@@ -41,7 +41,7 @@ namespace moe
         if (formattedSize > origBufferSize)
         {
             fmtBuffer.Resize(formattedSize);
-            MOE_ASSERT(SnPrintf(&fmtBuffer[0], formattedSize + 1, format, args...) == formattedSize);
+            MOE_ASSERT(SnPrintf(&fmtBuffer[0], formattedSize + 1, format, args...) == static_cast<int>(formattedSize));
         }
         else if (formattedSize < origBufferSize)
         {

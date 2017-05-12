@@ -21,9 +21,9 @@ namespace moe
         T*  Owner();
 
     private:
-        T*  m_owner;
         IntrusiveListNode<T>*   m_prev;
         IntrusiveListNode<T>*   m_next;
+        T*  m_owner;
     };
 }
 

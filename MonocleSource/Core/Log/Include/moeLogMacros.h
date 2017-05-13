@@ -14,10 +14,10 @@
 
 #define MOE_DEFAULT_LOG_EXPAND(channel, severity, file, line, format, ...)                                  \
     do {                                                                                                    \
-        moe::LoggerBase* logger = moe::DefaultLogger::Instance().Get();                                                 \
+        moe::LoggerBase* logger = moe::GetDefaultLoggerPtr();                                               \
         if (logger != nullptr)                                                                              \
         {                                                                                                   \
-            MOE_LOG_TO_LOGGER((*logger), channel, severity, file, line, format, ##__VA_ARGS__);               \
+            MOE_LOG_TO_LOGGER((*logger), channel, severity, file, line, format, ##__VA_ARGS__);             \
         }                                                                                                   \
     } while (0)
 

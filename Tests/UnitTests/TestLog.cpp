@@ -76,11 +76,42 @@ TEST_CASE("moeLog", "[Core]")
 		logger3.LinkTo(&logger2);
 
 		MOE_LOGGER_INFO(logger1, moe::ChanDefault, "Test chaining %d", 42);
+
+        std::string expected = "Test chaining 42";
 		std::string captured1 = logger1.GetWritePolicy().GetCapturedOutput();
 		std::string captured2 = logger2.GetWritePolicy().GetCapturedOutput();
 		std::string captured3 = logger3.GetWritePolicy().GetCapturedOutput();
-		bool areEqual = captured1 == captured2 && captured2 == captured3 && captured3 == "Test chaining 42";
+		bool areEqual = captured1 == captured2 && captured2 == captured3 && captured3 == expected;
 		REQUIRE(areEqual);
+
+        // Test unlinking
+        logger2.Unlink();
+
+        // logger1 and logger3 only should now be linked
+        MOE_LOGGER_INFO(logger1, moe::ChanDefault, "Test chaining 2");
+        std::string expected2 = expected + "Test chaining 2";
+        captured1 = logger1.GetWritePolicy().GetCapturedOutput();
+        captured3 = logger3.GetWritePolicy().GetCapturedOutput();
+        areEqual = captured1 == captured3 && captured3 == expected2;
+        REQUIRE(areEqual);
+        captured2 = logger2.GetWritePolicy().GetCapturedOutput();
+        REQUIRE(captured2 == expected);
+
+        // Now break the last link
+        logger1.Unlink();
+        MOE_LOGGER_INFO(logger1, moe::ChanDefault, "Test chaining 3");
+        std::string expected3 = expected2 + "Test chaining 3";
+        captured1 = logger1.GetWritePolicy().GetCapturedOutput();
+        captured3 = logger3.GetWritePolicy().GetCapturedOutput();
+        REQUIRE(captured1 == expected3);
+        REQUIRE(captured3 == expected2);
+
+        // Unlink without link should do nothing
+        logger1.Unlink();
+        MOE_LOGGER_INFO(logger1, moe::ChanDefault, "Test chaining 4");
+        expected = expected3 + "Test chaining 4";
+        captured1 = logger1.GetWritePolicy().GetCapturedOutput();
+        REQUIRE(captured1 == expected);
 	}
 
 	SECTION("Test filtering and formatting")
@@ -107,9 +138,9 @@ TEST_CASE("moeLog", "[Core]")
 		captured = myCapturePolicy.GetCapturedOutput();
 		REQUIRE(captured == expected);
 
-		// Above severity minimum
-		expected += "__FILE__(42): [Default] (FATAL) Second log"; // If we don't clear it, captured output should accumulate
-		MOE_LOG_TO_LOGGER(ffLogger, moe::ChanDefault, moe::SevFatal, "__FILE__", 42, "Second log");
+		// Above severity minimum, testing another channel
+		expected += "__FILE__(42): [Debug] (FATAL) Second log"; // If we don't clear it, captured output should accumulate
+		MOE_LOG_TO_LOGGER(ffLogger, moe::ChanDebug, moe::SevFatal, "__FILE__", 42, "Second log");
 		captured = myCapturePolicy.GetCapturedOutput();
 		REQUIRE(captured == expected);
 	}
@@ -117,7 +148,7 @@ TEST_CASE("moeLog", "[Core]")
     SECTION("Default logger")
     {
         // Default logger should be null upon initialization
-        moe::LoggerBase* dLogger = moe::defaultLogger.Get();
+        moe::LoggerBase* dLogger = moe::GetDefaultLoggerPtr();
         REQUIRE(dLogger == nullptr);
 
         // The "default" class of logging macros won't log if the default logger hasn't been set up
@@ -125,7 +156,7 @@ TEST_CASE("moeLog", "[Core]")
         MOE_INFO(moe::ChanDefault, "This won't be logged");
 
         // Now make the default log output to cout with a warning-level filter
-        dLogger = moe::defaultLogger.Set<FilteredStreamLogger>(moe::SevWarning, moe::NoFormatPolicy(), std::cout);
+        dLogger = moe::GetDefaultLogger().SetNew<FilteredStreamLogger>(moe::SevWarning, moe::NoFormatPolicy(), std::cout);
 
         // and capture cout output to check its output
         std::stringstream captureStream;
@@ -144,6 +175,10 @@ TEST_CASE("moeLog", "[Core]")
 
         // Clean up
         std::cout.rdbuf(origCoutBuffer);
+
+        dLogger = moe::GetDefaultLogger().SetNew<moe::StdLogger<moe::NoFilterPolicy, moe::DebuggerFormatPolicy, moe::VSDebuggerWritePolicy>>();
+        MOE_WARNING(moe::ChanDefault, "This passes the %s filter", "severity");
+        MOE_ASSERT(1 == 0);
     }
-}
+ }
 

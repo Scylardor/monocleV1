@@ -17,6 +17,12 @@ namespace moe
     }
 
     template <typename T>
+    bool IntrusiveListNode<T>::IsLinked() const
+    {
+        return (m_next != this);
+    }
+
+    template <typename T>
     void    IntrusiveListNode<T>::LinkTo(IntrusiveListNode<T>* node)
     {
         // Unlink ourselves from a potential existing list

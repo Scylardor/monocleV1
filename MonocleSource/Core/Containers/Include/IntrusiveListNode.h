@@ -15,6 +15,7 @@ namespace moe
 
         void    LinkTo(IntrusiveListNode<T>* node);
         void    Unlink();
+        bool    IsLinked() const;
 
         IntrusiveListNode<T>*   Next();
         IntrusiveListNode<T>*   Prev();

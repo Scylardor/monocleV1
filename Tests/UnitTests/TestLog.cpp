@@ -176,7 +176,7 @@ TEST_CASE("moeLog", "[Core]")
         // Clean up
         std::cout.rdbuf(origCoutBuffer);
 
-        dLogger = moe::GetDefaultLogger().SetNew<moe::StdLogger<moe::NoFilterPolicy, moe::DebuggerFormatPolicy, moe::VSDebuggerWritePolicy>>();
+        dLogger = moe::GetDefaultLogger().SetNew<moe::StdLogger<moe::NoFilterPolicy, moe::DebuggerFormatPolicy, moe::IdeWritePolicy>>();
         MOE_WARNING(moe::ChanDefault, "This passes the %s filter", "severity");
         MOE_ASSERT(1 == 0);
     }

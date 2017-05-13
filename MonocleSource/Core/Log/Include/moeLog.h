@@ -20,6 +20,6 @@
 #include "LogPolicies/CaptureWritePolicy.h"
 #include "LogPolicies/FileWritePolicy.h"
 #include "LogPolicies/OutStreamWritePolicy.h"
-#include "LogPolicies/Windows/VSDebuggerWritePolicy.h"
+#include "LogPolicies/IdeWritePolicy.h"
 
 #endif // MOE_LOG_H_

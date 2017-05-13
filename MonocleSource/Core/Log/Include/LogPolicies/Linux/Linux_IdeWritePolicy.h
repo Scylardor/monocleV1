@@ -1,0 +1,28 @@
+#ifndef MOE_LINUX_IDE_WRITE_POLICY_H_
+#define MOE_LINUX_IDE_WRITE_POLICY_H_
+
+// LINUX version of IdeWritePolicy
+// A write policy supposed to map to an IDE's output window.
+// On Linux, IdeWritePolicy basically acts as a wrapper around the error fd (std::cerr).
+
+#ifdef MOE_STD_SUPPORT
+#include <string>
+#include "moeDLLVisibility.h"
+#include "LogPolicies/OutStreamWritePolicy.h"
+
+namespace moe
+{
+    class IdeWritePolicy
+    {
+    public:
+        IdeWritePolicy();
+        void MOE_DLL_API Write(const std::string& message);
+
+    private:
+        moe::OutStreamWritePolicy   m_redirection;
+    };
+}
+
+#endif // MOE_STD_SUPPORT
+
+#endif // MOE_LINUX_IDE_WRITE_POLICY_H_

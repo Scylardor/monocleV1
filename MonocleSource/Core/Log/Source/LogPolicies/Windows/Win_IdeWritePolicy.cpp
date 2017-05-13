@@ -1,9 +1,9 @@
-#include "LogPolicies/Windows/VSDebuggerWritePolicy.h"
+#include "LogPolicies/IdeWritePolicy.h"
 #include <Windows.h>
 
 namespace moe
 {
-    void    VSDebuggerWritePolicy::Write(const std::string& message)
+    void    IdeWritePolicy::Write(const std::string& message)
     {
         OutputDebugStringA(message.c_str());
 

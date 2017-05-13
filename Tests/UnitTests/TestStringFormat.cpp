@@ -1,4 +1,4 @@
-#include "catch.hpp"
+ï»¿#include "catch.hpp"
 
 // At the moment, tell Monocle we use std::string for our tests
 #ifndef MOE_STD_SUPPORT
@@ -18,8 +18,8 @@ TEST_CASE("StringFormat", "[Core]")
         moe::StringFormat(testString, "The answer is %d, 42 is char %c, float 42 is %.2f, and %s is cool", 42, 42, 42.f, "Catch");
         REQUIRE(testString == "The answer is 42, 42 is char *, float 42 is 42.00, and Catch is cool");
 
-        moe::StringFormat(wideTestString, L"Answer is %d and '%ls' means french in French", 42, L"français");
-        REQUIRE(wideTestString == L"Answer is 42 and 'français' means french in French");
+        moe::StringFormat(wideTestString, L"Answer is %d and '%ls' means french in French", 42, L"franÃ§ais");
+        REQUIRE(wideTestString == L"Answer is 42 and 'franÃ§ais' means french in French");
     }
 
     SECTION("Format string without arguments")
@@ -41,9 +41,9 @@ TEST_CASE("StringFormat", "[Core]")
         moe::StringFormat(testString, "The answer is %d and %s is cool", 42, catchStr);
         REQUIRE(testString == "The answer is 42 and Catch is cool");
 
-        std::wstring wideCatchStr(L"Câtch");
+        std::wstring wideCatchStr(L"CÃ¢tch");
         moe::StringFormat(wideTestString, L"The answer is %d and %s is cool", 42, wideCatchStr);
-        REQUIRE(wideTestString == L"The answer is 42 and Câtch is cool");
+        REQUIRE(wideTestString == L"The answer is 42 and CÃ¢tch is cool");
 
         // TODO: add an ad hoc custom arg for testing purpose ? (one not provided by the engine)
     }

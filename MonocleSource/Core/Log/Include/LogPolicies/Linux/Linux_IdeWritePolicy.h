@@ -15,8 +15,8 @@ namespace moe
     class IdeWritePolicy
     {
     public:
-        IdeWritePolicy();
-        void MOE_DLL_API Write(const std::string& message);
+        MOE_DLL_API IdeWritePolicy();
+        MOE_DLL_API void Write(const std::string& message);
 
     private:
         moe::OutStreamWritePolicy   m_redirection;

@@ -13,6 +13,7 @@ namespace moe
     {
     public:
         MOE_DLL_API OutStreamWritePolicy(std::ostream& outStream = std::cout);
+        MOE_DLL_API ~OutStreamWritePolicy();
 
         MOE_DLL_API void    Write(const std::string& message);
 

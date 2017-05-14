@@ -2,6 +2,11 @@
 
 namespace moe
 {
+  DefaultLogger::DefaultLogger() :
+    m_defaultLogger(nullptr)
+  {
+  }
+
     DefaultLogger&  GetDefaultLogger()
     {
         return DefaultLogger::Instance();
@@ -10,5 +15,10 @@ namespace moe
     LoggerBase*  GetDefaultLoggerPtr()
     {
         return DefaultLogger::Instance().GetBasePtr();
+    }
+
+    void    ResetDefaultLogger()
+    {
+         DefaultLogger::Instance().Reset();
     }
 }

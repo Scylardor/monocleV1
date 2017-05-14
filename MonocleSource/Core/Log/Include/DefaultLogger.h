@@ -19,6 +19,11 @@ namespace moe
             return m_defaultLogger.get();
         }
 
+        MOE_DLL_API void    Reset()
+        {
+            m_defaultLogger = nullptr;
+        }
+
         // NewLoggerType must be a child of LoggerBase.
         // You can pass policies parameters in args.
         template <typename NewLoggerType, typename... Args>
@@ -46,7 +51,7 @@ namespace moe
     private:
         // Needed for Singleton interface
         friend class Singleton<DefaultLogger>;
-        DefaultLogger() {}
+        DefaultLogger();
         ~DefaultLogger() {}
 
         std::unique_ptr<LoggerBase> m_defaultLogger; //TODO: maybe replace by a custom smart ptr
@@ -56,6 +61,7 @@ namespace moe
     // Some helper functions easier to use than the "raw" singleton interface.
     MOE_DLL_API DefaultLogger&  GetDefaultLogger();
     MOE_DLL_API LoggerBase*     GetDefaultLoggerPtr();
+    MOE_DLL_API void            ResetDefaultLogger();
 }
 
 #endif // MOE_DEFAULT_LOGGER_H_

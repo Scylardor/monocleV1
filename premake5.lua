@@ -1,3 +1,5 @@
+require 'codeblocks'
+
 -- premake5.lua
 workspace "Monocle"
 
@@ -11,6 +13,7 @@ workspace "Monocle"
 
 -- General filters (for all projects)
 	-- Platform Filters
+
 	filter "platforms:*"
 		architecture "x86_64"
 
@@ -32,31 +35,29 @@ workspace "Monocle"
 	filter "kind:SharedLib"
 		defines { "MOE_USE_DLL", "MOE_DLL_EXPORT" }
 
-
-
 	-- Configuration filters
-	filter "configurations:*"
+	configuration "*"
 		defines { "MOE_STD_SUPPORT" } -- At the moment use standard library for convenience
 		flags { "ExtraWarnings", "C++14", "MultiProcessorCompile", "ShadowedVariables", "UndefinedIdentifiers" }
 
-	filter "configurations:Diagnostic,Debug,Release"
+	configuration { "Diagnostic", "Debug", "Release" }
 		symbols "On"
 
-	filter "configurations:Diagnostic"
+	configuration "Diagnostic"
 		defines { "MOE_DIAGNOSTIC" }
 		optimize "Off"
 
-	filter "configurations:Debug"
+	configuration "Debug"
 		defines { "MOE_DEBUG" }
 		optimize "Debug"
 
-	filter "configurations:Release,Profile"
+	configuration { "Release", "Profile" }
 		optimize "On"
 
-	filter "configurations:Profile"
+	configuration "Profile"
 		defines { "MOE_PROFILE" }
 
-	filter "configurations:Shipping"
+	configuration "Shipping"
 		defines { "MOE_SHIPPING" }
 		optimize "Full"
 		flags { "LinkTimeOptimization" }
@@ -67,11 +68,13 @@ project "MonocleCore"
 	files { "MonocleSource/Core/**.cpp", "MonocleSource/Core/**.h", "MonocleSource/Core/**.hpp" }
 	includedirs { "MonocleSource/Core/**/Include" }
 	
-	filter "platforms:Windows*"
+	filter "system:windows"
 		removefiles "**/Linux/**"
-	filter "platforms:Linux*"
-		removefiles "**/Windows/**"	
+	filter "system:linux"
+		removefiles "**/Windows/**"
 
+	filter { "platforms:*DLL", "system:linux" }
+		buildoptions { "-fvisibility=hidden" }
 
 project "MonocleUnitTests"
 	kind "ConsoleApp"
@@ -82,3 +85,7 @@ project "MonocleUnitTests"
 	
 	defines "CATCH_CPP11_OR_GREATER"
 	removedefines { "MOE_DLL_EXPORT" }
+
+	filter { "platforms:*DLL", "system:linux" }
+		runpathdirs { "Build/%{cfg.platform}/%{cfg.buildcfg}" }
+

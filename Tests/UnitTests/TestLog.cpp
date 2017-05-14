@@ -170,11 +170,14 @@ TEST_CASE("moeLog", "[Core]")
         // Now it should capture something
         MOE_WARNING(moe::ChanDefault, "This passes the %s filter", "severity");
 
-        capturedText = captureStream.str();
-        REQUIRE(capturedText == "This passes the severity filter");
-
-        // Clean up
+        // Give std::cout its original buffer back ASAP
         std::cout.rdbuf(origCoutBuffer);
+
+        // Note: output stream policy appends a \n to messages
+        capturedText = captureStream.str();
+        REQUIRE(capturedText == "This passes the severity filter\n");
+
+
 
         dLogger = moe::GetDefaultLogger().SetNew<moe::StdLogger<moe::NoFilterPolicy, moe::DebuggerFormatPolicy, moe::IdeWritePolicy>>();
         MOE_WARNING(moe::ChanDefault, "This passes the %s filter", "severity");

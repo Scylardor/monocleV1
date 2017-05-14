@@ -1,5 +1,3 @@
-require 'codeblocks'
-
 -- premake5.lua
 workspace "Monocle"
 

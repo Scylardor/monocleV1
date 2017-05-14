@@ -5,6 +5,7 @@
 #define MOE_STD_SUPPORT
 #endif
 #include "moeStringFormat.h"
+#include "DefaultLogger.h"
 
 // All tests should verify both char and wchar_t support.
 TEST_CASE("StringFormat", "[Core]")
@@ -42,7 +43,7 @@ TEST_CASE("StringFormat", "[Core]")
         REQUIRE(testString == "The answer is 42 and Catch is cool");
 
         std::wstring wideCatchStr(L"Câtch");
-        moe::StringFormat(wideTestString, L"The answer is %d and %s is cool", 42, wideCatchStr);
+        moe::StringFormat(wideTestString, L"The answer is %d and %ls is cool", 42, wideCatchStr);
         REQUIRE(wideTestString == L"The answer is 42 and Câtch is cool");
 
         // TODO: add an ad hoc custom arg for testing purpose ? (one not provided by the engine)

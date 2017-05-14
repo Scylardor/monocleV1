@@ -16,12 +16,12 @@ namespace moe
         {                                                                                               \
             if (!(expr))                                                                                \
             {                                                                                           \
-                moe::AssertErrorReturnFalse(__FILE__, __LINE__, ME_STRINGIZE(expr) ": ASSERT FAILED!");   \
+                moe::AssertErrorReturnFalse(__FILE__, __LINE__, MOE_STRINGIZE(expr) ": ASSERT FAILED!");\
             }                                                                                           \
         }
 
     // A-la-Unreal assertion you can use in an if. Avoids to assert + check the same condition just after
-    #define MOE_ENSURE(expr) (expr || moe::AssertErrorReturnFalse(__FILE__, __LINE__, ME_STRINGIZE(expr) ": ENSURE FAILED!"))
+    #define MOE_ENSURE(expr) (expr || moe::AssertErrorReturnFalse(__FILE__, __LINE__, MOE_STRINGIZE(expr) ": ENSURE FAILED!"))
 #else
     #define MOE_ASSERT(cond) (void)0
     // ENSURE are purely debug checks. In shipping, we should be able to assume they'll ALWAYS be true.

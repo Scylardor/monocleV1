@@ -7,9 +7,13 @@ namespace moe
     {
     }
 
-    void    OutStreamWritePolicy::Write(const std::string& message)
+    OutStreamWritePolicy::~OutStreamWritePolicy()
     {
-        m_ostream << message.c_str();
+        m_ostream.flush();
     }
 
+    void    OutStreamWritePolicy::Write(const std::string& message)
+    {
+        m_ostream << message.c_str() << std::endl;
+    }
 }

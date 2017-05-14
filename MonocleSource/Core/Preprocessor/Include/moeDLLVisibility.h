@@ -12,7 +12,7 @@
         #endif
     #elif defined(MOE_LINUX)
         #ifdef MOE_DLL_EXPORT
-            #define MOE_DLL_API __attribute__((dllexport))
+            #define MOE_DLL_API __attribute__ ((visibility ("default")))
         #else
             #define MOE_DLL_API __attribute__((dllimport))
         #endif

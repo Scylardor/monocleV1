@@ -10,7 +10,7 @@ namespace moe
     template <typename... Args>
     int SnPrintf(char * const buffer, std::size_t bufferSize, const char * const format, const Args& ... args)
     {
-        int const result = snprintf(buffer, bufferSize, format, StringFormatArg(args)...);
+        int const result = std::snprintf(buffer, bufferSize, format, StringFormatArg(args)...);
         MOE_ASSERT(result != -1);
         return result;
     }

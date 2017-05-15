@@ -12,6 +12,7 @@ namespace moe
     // (include T's definition before StringFormat.h or it won't compile)
     #ifdef MOE_STD_SUPPORT
     // If std is supported, provide convenient specializations for StringFormat to work with std::string "out of the box".
+    // This specialization has to be put BEFORE the more generic template because GCC takes the first one that fits
     template <typename CharT>
     const CharT * StringFormatArg(const std::basic_string<CharT> & stringArg)
     {
@@ -44,16 +45,18 @@ namespace moe
     private:
         String& m_buf;
     };
-   
+
     template <class String, typename FormatChar, typename... Args>
     void StringFormat(String & buffer, const FormatChar * const format, const Args& ... args);
 }
 
+// Swprintf has a platform-specific behavior
 #ifdef MOE_WINDOWS
     #include "Windows/Win_moeSwprintf.internal.hpp"
 #elif defined(MOE_LINUX)
-    #include "Linux/moeSwprintf.internal.hpp"
+    #include "Linux/Linux_moeSwprintf.internal.hpp"
 #endif
+
 #include "moeStringFormat.internal.hpp"
 
 

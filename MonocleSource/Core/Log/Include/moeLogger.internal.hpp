@@ -13,9 +13,9 @@ namespace moe
     {
         if (m_filter.Filter(logInfo))
         {
-            std::string buffer;
-            m_formatter.Format(buffer, logInfo);
-            m_writer.Write(buffer);
+            std::string tempBuffer;
+            const std::string& formattedBuffer = m_formatter.Format(tempBuffer, logInfo);
+            m_writer.Write(formattedBuffer);
         }
     }
 }

@@ -16,7 +16,7 @@ namespace moe
     class MOE_DLL_API NoFormatPolicy
     {
 	public:
-        static void Format(std::string& buffer, const LogInfo& logInfo);
+        static const std::string& Format(std::string& buffer, const LogInfo& logInfo);
     };
 }
 

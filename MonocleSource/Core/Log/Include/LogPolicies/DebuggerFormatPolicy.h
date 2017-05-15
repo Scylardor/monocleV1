@@ -17,7 +17,7 @@ namespace moe
     class MOE_DLL_API DebuggerFormatPolicy
     {
     public:
-        static void Format(std::string& buf, const LogInfo& logInfo);
+        static const std::string& Format(std::string& buf, const LogInfo& logInfo);
     };
 }
 

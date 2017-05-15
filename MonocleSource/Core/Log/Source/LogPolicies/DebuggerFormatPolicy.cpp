@@ -4,13 +4,15 @@
 
 namespace moe
 {
-    void    DebuggerFormatPolicy::Format(std::string& buf, const LogInfo& logInfo)
+    const std::string&    DebuggerFormatPolicy::Format(std::string& buf, const LogInfo& logInfo)
     {
         StringFormat(buf, "%s(%d): [%s] (%s) %s",
             logInfo.file,
             logInfo.line,
             internals::GetChannelString(logInfo.channel),
             internals::GetSeverityString(logInfo.severity),
-            logInfo.message);
+            logInfo.message.c_str());
+
+        return buf;
     }
 }

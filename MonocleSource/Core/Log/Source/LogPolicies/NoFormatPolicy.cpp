@@ -4,8 +4,8 @@
 
 namespace moe
 {
-    void NoFormatPolicy::Format(std::string& buffer, const LogInfo& logInfo)
+    const std::string& NoFormatPolicy::Format(std::string&, const LogInfo& logInfo)
     {
-        StringFormat(buffer, "%s", logInfo.message);
+        return logInfo.message;
     }
 }

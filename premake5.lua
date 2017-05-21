@@ -86,6 +86,15 @@ project "MonocleCore"
 	RemoveOtherPlatformSpecificFiles()
 	SetBuildOptionsForLinuxDLL()
 
+
+project "MonocleGraphics"
+	files { "MonocleSource/Graphics/**.cpp", "MonocleSource/Graphics/**.h", "MonocleSource/Graphics/**.hpp" }
+	includedirs { "MonocleSource/Graphics/**/Include", "MonocleSource/", "MonocleSource/Core/**/Include" } -- Omit the last and it breaks compil; NEED TO REWORK INCLUDEDIRS POLICY FOR ALL PROJECTS
+	links { "MonocleCore" }
+
+	RemoveOtherPlatformSpecificFiles()
+	SetBuildOptionsForLinuxDLL()
+
 project "MonocleUnitTests"
 	kind "ConsoleApp"
 	links { "MonocleCore" }

@@ -5,6 +5,7 @@
 
 // The macros commonly used for logging.
 // Each macro comes in two flavors: with or without a specified Logger. Without a specified Logger, we use the static default logger.
+// The ##__VA_ARGS__ trick is an extension managed by at least MSVC and GCC to take care of "no var args provided" cases.
 #define MOE_LOG_TO_LOGGER(logger, channel, severity, file, line, format, ...) \
     logger.Log(channel, severity, file, line, format, ##__VA_ARGS__)
 

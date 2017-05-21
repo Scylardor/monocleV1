@@ -1,6 +1,23 @@
 -- premake5.lua
 workspace "Monocle"
 
+-- Declare functions HERE
+
+function RemoveOtherPlatformSpecificFiles()
+	filter "system:windows"
+		removefiles "**/Linux/**"
+	filter "system:linux"
+		removefiles "**/Windows/**"
+end
+
+function SetBuildOptionsForLinuxDLL()
+	filter { "platforms:*DLL", "system:linux" }
+		buildoptions { "-fvisibility=hidden" }
+end
+
+-- End of functions sections
+
+
 	-- Initial config
 	location "Workspace" -- The directory of generated files - .sln, etc.
 	configurations { "Diagnostic", "Debug", "Release", "Profile", "Shipping" }
@@ -65,14 +82,9 @@ workspace "Monocle"
 project "MonocleCore"
 	files { "MonocleSource/Core/**.cpp", "MonocleSource/Core/**.h", "MonocleSource/Core/**.hpp" }
 	includedirs { "MonocleSource/Core/**/Include" }
-	
-	filter "system:windows"
-		removefiles "**/Linux/**"
-	filter "system:linux"
-		removefiles "**/Windows/**"
 
-	filter { "platforms:*DLL", "system:linux" }
-		buildoptions { "-fvisibility=hidden" }
+	RemoveOtherPlatformSpecificFiles()
+	SetBuildOptionsForLinuxDLL()
 
 project "MonocleUnitTests"
 	kind "ConsoleApp"

@@ -1,3 +1,5 @@
+#ifndef MOE_SHIPPING
+
 #include <cstdio>   // FILE* ops
 #include <cstring>  // strstr
 #include <cstdlib>  // atoi
@@ -50,3 +52,5 @@ namespace moe
         }
     }
 }
+
+#endif // MOE_SHIPPING

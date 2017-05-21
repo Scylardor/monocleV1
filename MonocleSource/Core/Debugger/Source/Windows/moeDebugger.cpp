@@ -1,3 +1,5 @@
+#ifndef MOE_SHIPPING
+
 #include <Windows.h>
 #include "moeDebugger.h"
 
@@ -20,3 +22,5 @@ namespace moe
         }
     }
 }
+
+#endif // MOE_SHIPPING

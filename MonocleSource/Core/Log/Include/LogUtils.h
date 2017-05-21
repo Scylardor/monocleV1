@@ -15,6 +15,7 @@ namespace moe
     {
         ChanDefault = 0,
         ChanDebug,
+        ChanWindowing,
         // ...
         _LogChannelMax_ // ALWAYS LAST
     };

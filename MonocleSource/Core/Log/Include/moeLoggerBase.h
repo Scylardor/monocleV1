@@ -10,24 +10,24 @@
 
 namespace moe
 {
-	// The LoggerBase is a logger interface you can derive from to implement your own policy-based implementations.
-	// Making it a virtual class so they can be linked by intrusive list nodes (not possible with templates)
+    // The LoggerBase is a logger interface you can derive from to implement your own policy-based implementations.
+    // Making it a virtual class so they can be linked by intrusive list nodes (not possible with templates)
     // Using STD support because the Log function uses std::string as a format buffer.
-	class LoggerBase : public IntrusiveListNode<LoggerBase>
-	{
-	public:
-		LoggerBase() : IntrusiveListNode<LoggerBase>(this) {}
-		virtual ~LoggerBase() {}
+    class LoggerBase : public IntrusiveListNode<LoggerBase>
+    {
+    public:
+        LoggerBase() : IntrusiveListNode<LoggerBase>(this) {}
+        virtual ~LoggerBase() {}
 
-		// A virtual function cannot be template so preformat the message and call the virtual function afterwards for further processing
-		template <typename... Args>
-		void    Log(LogChannel channel, LogSeverity severity, const char* file, int line, const char* format, const Args&... args);
+        // A virtual function cannot be template so preformat the message and call the virtual function afterwards for further processing
+        template <typename... Args>
+        void    Log(LogChannel channel, LogSeverity severity, const char* file, int line, const char* format, const Args&... args);
 
         void    MOE_DLL_API LogFormatted(LogChannel channel, LogSeverity severity, const char* file, int line, const std::string& message);
 
-	protected:
-		virtual void	ConsumeLogInfo(const LogInfo& logInfo) = 0;
-	};
+    protected:
+        virtual void	ConsumeLogInfo(const LogInfo& logInfo) = 0;
+    };
 }
 
 #include "moeLoggerBase.internal.hpp"

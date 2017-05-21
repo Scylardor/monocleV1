@@ -19,70 +19,70 @@ TEST_CASE("moeLog", "[Core]")
     {
         CaptureLogger logger;
 
-		MOE_LOGGER_INFO(logger, moe::ChanDefault, "%s %s %d!", "otter", "slide", 42);
+        MOE_LOGGER_INFO(logger, moe::ChanDefault, "%s %s %d!", "otter", "slide", 42);
         std::string captured = logger.GetWritePolicy().GetCapturedOutput();
-		REQUIRE(captured == "otter slide 42!");
+        REQUIRE(captured == "otter slide 42!");
 
-		logger.GetWritePolicy().Clear();
-		MOE_LOGGER_INFO(logger, moe::ChanDefault, "Format %s without arguments");
-		captured = logger.GetWritePolicy().GetCapturedOutput();
-		REQUIRE(captured == "Format %s without arguments");
+        logger.GetWritePolicy().Clear();
+        MOE_LOGGER_INFO(logger, moe::ChanDefault, "Format %s without arguments");
+        captured = logger.GetWritePolicy().GetCapturedOutput();
+        REQUIRE(captured == "Format %s without arguments");
     }
 
-	SECTION("File write log")
-	{
-		const char* filename = "MonocleTest.txt";
+    SECTION("File write log")
+    {
+        const char* filename = "MonocleTest.txt";
 
-		// Open a file and truncate it to be sure it's empty...
-		{
-			std::ofstream logFile(filename, std::ofstream::trunc);
-			CHECK(logFile.is_open());
-		}
-		
-		// then use a file write logger to write in it...
-		const char * logLine = "Test writing to file";
-		FileLogger logger;
-		logger.GetWritePolicy().OpenFile(filename);
-		MOE_LOGGER_INFO(logger, moe::ChanDefault, logLine);
-		logger.GetWritePolicy().Close();
+        // Open a file and truncate it to be sure it's empty...
+        {
+            std::ofstream logFile(filename, std::ofstream::trunc);
+            CHECK(logFile.is_open());
+        }
 
-		// test logging to closed file write policy doesn't crash
-		MOE_LOGGER_INFO(logger, moe::ChanDefault, "This won't be logged");
+        // then use a file write logger to write in it...
+        const char * logLine = "Test writing to file";
+        FileLogger logger;
+        logger.GetWritePolicy().OpenFile(filename);
+        MOE_LOGGER_INFO(logger, moe::ChanDefault, logLine);
+        logger.GetWritePolicy().Close();
 
-		// then check there's what we wrote
-		std::ifstream logStream(filename, std::ios::in | std::ios::binary);
-		REQUIRE(logStream.is_open());
-		logStream.seekg(0, std::ios::end);
+        // test logging to closed file write policy doesn't crash
+        MOE_LOGGER_INFO(logger, moe::ChanDefault, "This won't be logged");
 
-		std::string logContents((std::size_t)logStream.tellg(), '\0');
-		logStream.seekg(0, std::ios::beg);
-		logStream.read(&logContents[0], logContents.size());
+        // then check there's what we wrote
+        std::ifstream logStream(filename, std::ios::in | std::ios::binary);
+        REQUIRE(logStream.is_open());
+        logStream.seekg(0, std::ios::end);
 
-		REQUIRE(logContents == logLine);
+        std::string logContents((std::size_t)logStream.tellg(), '\0');
+        logStream.seekg(0, std::ios::beg);
+        logStream.read(&logContents[0], logContents.size());
 
-		// Clean behind us
-		logStream.close();
-		CHECK(std::remove(filename) == 0);
-	}
+        REQUIRE(logContents == logLine);
 
-	SECTION("Logger chaining")
-	{
-		CaptureLogger logger1;
-		CaptureLogger logger2;
-		CaptureLogger logger3;
+        // Clean behind us
+        logStream.close();
+        CHECK(std::remove(filename) == 0);
+    }
 
-		// Order is important
-		logger2.LinkTo(&logger1);
-		logger3.LinkTo(&logger2);
+    SECTION("Logger chaining")
+    {
+        CaptureLogger logger1;
+        CaptureLogger logger2;
+        CaptureLogger logger3;
 
-		MOE_LOGGER_INFO(logger1, moe::ChanDefault, "Test chaining %d", 42);
+        // Order is important
+        logger2.LinkTo(&logger1);
+        logger3.LinkTo(&logger2);
+
+        MOE_LOGGER_INFO(logger1, moe::ChanDefault, "Test chaining %d", 42);
 
         std::string expected = "Test chaining 42";
-		std::string captured1 = logger1.GetWritePolicy().GetCapturedOutput();
-		std::string captured2 = logger2.GetWritePolicy().GetCapturedOutput();
-		std::string captured3 = logger3.GetWritePolicy().GetCapturedOutput();
-		bool areEqual = captured1 == captured2 && captured2 == captured3 && captured3 == expected;
-		REQUIRE(areEqual);
+        std::string captured1 = logger1.GetWritePolicy().GetCapturedOutput();
+        std::string captured2 = logger2.GetWritePolicy().GetCapturedOutput();
+        std::string captured3 = logger3.GetWritePolicy().GetCapturedOutput();
+        bool areEqual = captured1 == captured2 && captured2 == captured3 && captured3 == expected;
+        REQUIRE(areEqual);
 
         // Test unlinking
         logger2.Unlink();
@@ -112,38 +112,38 @@ TEST_CASE("moeLog", "[Core]")
         expected = expected3 + "Test chaining 4";
         captured1 = logger1.GetWritePolicy().GetCapturedOutput();
         REQUIRE(captured1 == expected);
-	}
+    }
 
-	SECTION("Test filtering and formatting")
-	{
-		FilteredFormattedLogger ffLogger;
-		moe::CaptureWritePolicy& myCapturePolicy = ffLogger.GetWritePolicy();
+    SECTION("Test filtering and formatting")
+    {
+        FilteredFormattedLogger ffLogger;
+        moe::CaptureWritePolicy& myCapturePolicy = ffLogger.GetWritePolicy();
 
-		ffLogger.GetFilterPolicy().SetFilterSeverity(moe::SevError);
+        ffLogger.GetFilterPolicy().SetFilterSeverity(moe::SevError);
 
-		// Inputting dummy values for line and file so we're independent of actual file/line values...
-		// Below severity minimum
-		MOE_LOG_TO_LOGGER(ffLogger, moe::ChanDefault, moe::SevInfo, "__FILE__", 42, "Not logged");
-		std::string captured = myCapturePolicy.GetCapturedOutput();
-		REQUIRE(captured.empty());
+        // Inputting dummy values for line and file so we're independent of actual file/line values...
+        // Below severity minimum
+        MOE_LOG_TO_LOGGER(ffLogger, moe::ChanDefault, moe::SevInfo, "__FILE__", 42, "Not logged");
+        std::string captured = myCapturePolicy.GetCapturedOutput();
+        REQUIRE(captured.empty());
 
-		// Still Below severity minimum
-		MOE_LOG_TO_LOGGER(ffLogger, moe::ChanDefault, moe::SevWarning, "__FILE__", 42, "Not logged");
-		captured = myCapturePolicy.GetCapturedOutput();
-		REQUIRE(captured.empty());
+        // Still Below severity minimum
+        MOE_LOG_TO_LOGGER(ffLogger, moe::ChanDefault, moe::SevWarning, "__FILE__", 42, "Not logged");
+        captured = myCapturePolicy.GetCapturedOutput();
+        REQUIRE(captured.empty());
 
-		// Equal to severity minimum
-		std::string expected = "__FILE__(42): [Default] (ERROR) First log";
-		MOE_LOG_TO_LOGGER(ffLogger, moe::ChanDefault, moe::SevError, "__FILE__", 42, "First log");
-		captured = myCapturePolicy.GetCapturedOutput();
-		REQUIRE(captured == expected);
+        // Equal to severity minimum
+        std::string expected = "__FILE__(42): [Default] (ERROR) First log";
+        MOE_LOG_TO_LOGGER(ffLogger, moe::ChanDefault, moe::SevError, "__FILE__", 42, "First log");
+        captured = myCapturePolicy.GetCapturedOutput();
+        REQUIRE(captured == expected);
 
-		// Above severity minimum, testing another channel
-		expected += "__FILE__(42): [Debug] (FATAL) Second log"; // If we don't clear it, captured output should accumulate
-		MOE_LOG_TO_LOGGER(ffLogger, moe::ChanDebug, moe::SevFatal, "__FILE__", 42, "Second log");
-		captured = myCapturePolicy.GetCapturedOutput();
-		REQUIRE(captured == expected);
-	}
+        // Above severity minimum, testing another channel
+        expected += "__FILE__(42): [Debug] (FATAL) Second log"; // If we don't clear it, captured output should accumulate
+        MOE_LOG_TO_LOGGER(ffLogger, moe::ChanDebug, moe::SevFatal, "__FILE__", 42, "Second log");
+        captured = myCapturePolicy.GetCapturedOutput();
+        REQUIRE(captured == expected);
+    }
 
     SECTION("Default logger")
     {
@@ -177,11 +177,8 @@ TEST_CASE("moeLog", "[Core]")
         capturedText = captureStream.str();
         REQUIRE(capturedText == "This passes the severity filter\n");
 
-
-
         dLogger = moe::GetDefaultLogger().SetNew<moe::StdLogger<moe::NoFilterPolicy, moe::DebuggerFormatPolicy, moe::IdeWritePolicy>>();
         MOE_WARNING(moe::ChanDefault, "This passes the %s filter", "severity");
-        MOE_ASSERT(1 == 0);
     }
  }
 

@@ -3,14 +3,17 @@
 #include "Core/Log/Include/moeLogMacros.h"
 #include "Core/Misc/Include/moeAbort.h"
 #include "Core/Misc/Include/Windows/GetLastErrorAsString.h"
+#include "glad/glad_wgl.h"
 
 #include <string>
 
 namespace moe
 {
-    Win32Window::Win32Window()
+    Win32Window::Win32Window(const WindowAttributes& winAttr) :
+        WindowBase<Win32Window>()
     {
         m_handle = nullptr;
+        InitializeWindow(winAttr);
     }
 
     void Win32Window::InitializeWindow(const WindowAttributes & winAttr)
@@ -19,6 +22,9 @@ namespace moe
 
         ZeroMemory(&windowClass, sizeof(windowClass));
         windowClass.cbSize = sizeof(windowClass);
+        // NB: I set CS_OWNDC only for "you never know" legacy reasons.
+        // AFAICT it *used* to be mandatory, but not anymore on NT systems.
+        // cf. https://www.khronos.org/opengl/wiki/Platform_specifics:_Windows "What should I do before the window is created?"
         windowClass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
         windowClass.lpfnWndProc = Win32Window::WndProc;
         windowClass.hInstance = GetModuleHandleW(nullptr);
@@ -40,32 +46,36 @@ namespace moe
 
         //}
 
-        if (MOE_ENSURE(RegisterClassExW(&windowClass)))
+        if (!MOE_ENSURE(RegisterClassExW(&windowClass)))
         {
-            DWORD style = WS_OVERLAPPEDWINDOW | WS_VISIBLE;
-            DWORD extendedStyle = WS_EX_APPWINDOW; // Forces a top - level window onto the taskbar when the window is visible.
-            // winAttr width/height actually describes wanted client area size, so for the client area to be of the wanted size,
-            // we must adjust window size to get a window slightly larger than that
-            RECT windowRect = { 0, 0, (LONG)winAttr.Width, (LONG)winAttr.Height };
-            AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, FALSE); // this rect now holds the "true" window size
+            const std::string error = moe::GetLastErrorAsString();
+            MOE_FATAL(moe::ChanWindowing, "Failed Win32 window registration with error: '%s'. Aborting...", error);
+            moe::Abort();
+        }
 
-            m_handle = CreateWindowExW(extendedStyle,
-                windowClass.lpszClassName,
-                winAttr.Title,
-                style,
-                CW_USEDEFAULT, CW_USEDEFAULT, // x,y position
-                windowRect.right - windowRect.left, windowRect.bottom - windowRect.top, // window size
-                nullptr, // No parent window
-                nullptr, // No window menu
-                GetModuleHandleW(nullptr), // instance handle
-                nullptr); // no custom data needed
+        DWORD style = WS_OVERLAPPEDWINDOW | WS_VISIBLE;
+        DWORD extendedStyle = WS_EX_APPWINDOW; // Forces a top - level window onto the taskbar when the window is visible.
+        // winAttr width/height actually describes wanted client area size, so for the client area to be of the wanted size,
+        // we must adjust window size to get a window slightly larger than that
+        RECT windowRect = { 0, 0, (LONG)winAttr.Width, (LONG)winAttr.Height };
+        AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, FALSE); // this rect now holds the "true" window size
 
-            if (!MOE_ENSURE(m_handle != nullptr))
-            {
-                const std::string error = moe::GetLastErrorAsString();
-                MOE_FATAL(moe::ChanWindowing, "Window creation failed with error: '%s'. Aborting...", error);
-                moe::Abort();
-            }
+        m_handle = CreateWindowExW(extendedStyle,
+            windowClass.lpszClassName,
+            winAttr.Title,
+            style,
+            CW_USEDEFAULT, CW_USEDEFAULT, // x,y position
+            windowRect.right - windowRect.left, windowRect.bottom - windowRect.top, // window size
+            nullptr, // No parent window
+            nullptr, // No window menu
+            GetModuleHandleW(nullptr), // instance handle
+            nullptr); // no custom data needed
+
+        if (!MOE_ENSURE(m_handle != nullptr))
+        {
+            const std::string error = moe::GetLastErrorAsString();
+            MOE_FATAL(moe::ChanWindowing, "Window creation failed with error: '%s'. Aborting...", error);
+            moe::Abort();
         }
     }
 
@@ -79,6 +89,15 @@ namespace moe
                 TranslateMessage(&msg);
                 DispatchMessage(&msg);
             }
+        }
+    }
+
+
+    void Win32Window::InitializeWGLContext(const moe::PixelFormat & pf)
+    {
+        if (!gladLoadWGL(GetDC(GetHandle()))) {
+            printf("Something went wrong!\n");
+            exit(-1);
         }
     }
 
@@ -113,10 +132,16 @@ namespace moe
             //          break;			// Exit
             //      }
 
-        case WM_CLOSE:	// Did We Receive A Close Message?
+        case WM_CREATE: // Window was created
         {
-            PostQuitMessage(0);// Send A Quit Message
-            return 0;		// Jump Back
+            MOE_INFO(moe::ChanDebug, "Win32 window creation was successful");
+            return 0;
+        }
+        case WM_CLOSE:  // Did We Receive A Close Message?
+        {
+            MOE_INFO(moe::ChanDebug, "Win32 window close requested, sending QUIT message!");
+            PostQuitMessage(0);
+            return 0;
         }
 
         //      case WM_KEYDOWN:		// Is A Key Being Held Down?

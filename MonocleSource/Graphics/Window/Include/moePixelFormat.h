@@ -1,6 +1,7 @@
 #ifndef MOE_PIXEL_FORMAT_H_
 #define MOE_PIXEL_FORMAT_H_
 
+#include "moeDLLVisibility.h"
 #include <cstdint>
 
 // A data holder that describes how many bits we
@@ -11,9 +12,9 @@
 // layer to express our choice with the appropriate API.
 namespace moe
 {
-    struct PixelFormat
+    struct MOE_DLL_API PixelFormat
     {
-        PixelFormat(std::uint8_t rgbaBits = DEFAULT_RGBA_BITS, std::uint8_t depthBits = DEFAULT_DEPTH_BITS, std::uint8_t stencilBits = DEFAULT_STENCIL_BITS) :
+        PixelFormat(std::uint8_t rgbaBits = DEFAULT_BITS_PER_COLOR, std::uint8_t depthBits = DEFAULT_DEPTH_BITS, std::uint8_t stencilBits = DEFAULT_STENCIL_BITS) :
             depth(depthBits), stencil(stencilBits)
         {
             r = g = b = a = rgbaBits;
@@ -37,7 +38,7 @@ namespace moe
         std::uint8_t    stencil;
 
         // Default are quite arbitrary, based on the most commonly used values for these usages...
-        static const std::uint8_t   DEFAULT_RGBA_BITS       = 8u;
+        static const std::uint8_t   DEFAULT_BITS_PER_COLOR  = 8u;
         static const std::uint8_t   DEFAULT_DEPTH_BITS      = 24u;
         static const std::uint8_t   DEFAULT_STENCIL_BITS    = 8u;
     };

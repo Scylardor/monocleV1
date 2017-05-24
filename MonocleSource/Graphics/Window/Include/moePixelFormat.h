@@ -30,6 +30,12 @@ namespace moe
             r(rBits), g(gBits), b(bBits), a(aBits), depth(depthBits), stencil(stencilBits)
         {}
 
+        // Returns total number of bits used by a color pixel
+        std::uint8_t    ColorBits() const
+        {
+            return r + g + b + a;
+        }
+
         std::uint8_t    r;
         std::uint8_t    g;
         std::uint8_t    b;

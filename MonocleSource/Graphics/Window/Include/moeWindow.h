@@ -50,14 +50,14 @@ namespace moe
         }
 
         template <class ContextType>
-        void    CreateContext(const moe::PixelFormat& pf)
+        void    CreateContext(const WindowAttributes& winAttr)
         {
             static_assert(std::is_base_of<moe::GraphicsContext, ContextType>::value, "CreateContext only accepts classes derived from moe::GraphicsContext");
             static_assert(moe::TypeListIndexOf<WindowTraits<ConcreteWindow>::CompatibleContexts, ContextType>::value != -1,
                 "This context type isn't supported by your Window type!");
 
-            m_context = std::make_unique<ContextType>();
-            window().CreateConcreteContext<ContextType>(pf);
+            m_context = nullptr;
+            window().CreateConcreteContext<ContextType>(winAttr);
         }
 
         void    DestroyWindow();

@@ -1,7 +1,10 @@
 #ifndef MOE_WINDOW_H_
 #define MOE_WINDOW_H_
 
+#include "Core/Misc/Include/moeTypeList.h"
+#include "Graphics/Context/Include/moeGraphicsContext.h"
 #include "moeWindowAttributes.h"
+#include <memory>
 
 // moe::WindowBase is a CRTP class used to instantiate platform-specific windows.
 // It is the core of Monocle windowing system, and is based on the assumption that
@@ -16,13 +19,16 @@ namespace moe
     struct FalseType : std::false_type
     { };
 
-    // Used by the WindowBase CRTP to find out of which type, which is defined by the CRTP base class (concrete window),
-    // will be the window handle.
+    // To use a custom window with moe::WindowBase, you'll need to provide traits for it.
+    // Required traits:
+    // - HandleType: the type of the native handle of the window (e.g. HWND for Win32 windows)
+    // - CompatibleContexts: a moe::TypeList of contexts that can be used with that window
     template <typename T>
     struct WindowTraits
     {
         using HandleType = void;
-        static_assert(FalseType<T>::value, "Define a WindowTraits with a HandleType to instantiate your window type");
+        using CompatibleContexts = moe::TypeList<moe::NullType>;
+        static_assert(FalseType<T>::value, "Define a WindowTraits specialization for your Window type to be able to inherit WindowBase");
     };
 
 
@@ -33,19 +39,30 @@ namespace moe
     public:
         using Handle = typename WindowTraits<ConcreteWindow>::HandleType;
 
-        void        InitializeWindow(const WindowAttributes& winAttr)
+        void    InitializeWindow(const WindowAttributes& winAttr)
         {
             window().InitializeWindow(winAttr);
         }
 
-        void        ProcessWindowEvents()
+        void    ProcessWindowEvents()
         {
             window().ProcessWindowEvents();
         }
 
-        void        DestroyWindow();
+        template <class ContextType>
+        void    CreateContext(const moe::PixelFormat& pf)
+        {
+            static_assert(std::is_base_of<moe::GraphicsContext, ContextType>::value, "CreateContext only accepts classes derived from moe::GraphicsContext");
+            static_assert(moe::TypeListIndexOf<WindowTraits<ConcreteWindow>::CompatibleContexts, ContextType>::value != -1,
+                "This context type isn't supported by your Window type!");
 
-        Handle      GetHandle()
+            m_context = std::make_unique<ContextType>();
+            window().CreateConcreteContext<ContextType>(pf);
+        }
+
+        void    DestroyWindow();
+
+        Handle  GetHandle()
         {
             return m_handle;
         }
@@ -54,6 +71,7 @@ namespace moe
         ~WindowBase() {}
 
         Handle  m_handle;
+        std::unique_ptr<moe::GraphicsContext>   m_context;
 
     private:
         ConcreteWindow& window()

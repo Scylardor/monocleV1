@@ -10,7 +10,8 @@ namespace moe
         {
             "Default",
             "Debug",
-            "Windowing"
+            "Windowing",
+            "Graphics",
             // ...
         };
         static_assert(moe::Countof(LogChannelStrings) == moe::LogChannel::_LogChannelMax_, "Each LogChannel value must have a matching string representation");

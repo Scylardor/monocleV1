@@ -24,28 +24,38 @@ namespace moe
     {
     public:
         MOE_DLL_API Win32Window(const WindowAttributes& winAttr);
+        MOE_DLL_API ~Win32Window();
 
 
         void    MOE_DLL_API ProcessWindowEvents();
+
+        bool    Initialized() const;
 
     private:
         // WindowBase needs to be friend because it's gonna call CreateConcreteContext
         friend WindowBase<Win32Window>;
 
         template <class Context>
-        void    CreateConcreteContext(const moe::PixelFormat&);
-
+        void                CreateConcreteContext(const WindowAttributes& winAttr);
         template <>
-        void    CreateConcreteContext<moe::WGLContext>(const moe::PixelFormat& pf)
-        {
-            InitializeWGLContext(pf);
-        }
+        MOE_DLL_API void    CreateConcreteContext<moe::WGLContext>(const WindowAttributes& winAttr);
 
-        void    InitializeWindow(const WindowAttributes& winAttr);
+        MOE_DLL_API void    InitializeWGLContext(const WindowAttributes& winAttr);
+        void                CreateDummyWGLContext(const WindowAttributes& winAttr);
+        void                CreateExtensibleWGLContext(const WindowAttributes& winAttr);
+        int                 ChooseExtensiblePixelFormat(const int* pixelFormatList);
 
-        void    MOE_DLL_API InitializeWGLContext(const moe::PixelFormat& pf);
+        bool    LoadWGLExtensions();
+
+        bool    InitializeWindow(const WindowAttributes& winAttr);
+        bool    RegisterWindow(const WindowAttributes& winAttr);
+        bool    CreateWindowHandle(const WindowAttributes& winAttr);
+        void    DestroyWindow();
+
 
         static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+        static const wchar_t*  WINDOW_CLASS;
     };
 
     typedef Win32Window Window;

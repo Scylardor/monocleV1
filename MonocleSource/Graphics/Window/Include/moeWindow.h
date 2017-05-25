@@ -39,9 +39,9 @@ namespace moe
     public:
         using Handle = typename WindowTraits<ConcreteWindow>::HandleType;
 
-        void    InitializeWindow(const WindowAttributes& winAttr)
+        bool    InitializeWindow(const WindowAttributes& winAttr)
         {
-            window().InitializeWindow(winAttr);
+            return window().InitializeWindow(winAttr);
         }
 
         void    ProcessWindowEvents()

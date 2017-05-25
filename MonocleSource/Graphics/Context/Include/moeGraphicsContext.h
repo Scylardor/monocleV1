@@ -9,6 +9,8 @@ namespace moe
     class GraphicsContext
     {
     public:
+        virtual ~GraphicsContext() {}
+
         virtual void    OnThreadChange() = 0;
     };
 }

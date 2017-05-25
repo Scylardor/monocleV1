@@ -89,11 +89,45 @@ project "MonocleCore"
 
 project "MonocleGraphics"
 	files { "MonocleSource/Graphics/**.cpp", "MonocleSource/Graphics/**.h", "MonocleSource/Graphics/**.hpp" }
-	includedirs { "MonocleSource/Graphics/**/Include", "MonocleSource/", "MonocleSource/Core/**/Include" } -- Omit the last and it breaks compil; NEED TO REWORK INCLUDEDIRS POLICY FOR ALL PROJECTS
-	links { "MonocleCore" }
+	-- Omit "MonocleSource/Core/**/Include" and it breaks compil; NEED TO REWORK INCLUDEDIRS POLICY FOR ALL PROJECTS
+	includedirs { "MonocleSource/Graphics/**/Include", "MonocleSource/", "MonocleSource/Core/**/Include"}
+	links { "MonocleCore", "opengl32" }
+
+	-- TODO: I think we should be able to specify GL_MAJOR/GL_MINOR at compilation, and generate the appropriate glad files on the fly.
+	-- We also need to manage platforms (e.g. do not include WGL but GLX on Linux...)
+	filter "Diagnostic or Debug"
+		files { "ExtLibs/glad45/debug/src/glad_wgl.c" }
+		includedirs { "ExtLibs/glad45/debug/include"  }
+
+	filter "Release or Profile or Shipping"
+		files { "ExtLibs/glad45/release/src/glad_wgl.c" }
+		includedirs { "ExtLibs/glad45/release/include"  }
 
 	RemoveOtherPlatformSpecificFiles()
 	SetBuildOptionsForLinuxDLL()
+
+-- project "MonocleApplication"
+	-- files { "MonocleSource/App/**.cpp", "MonocleSource/App/**.h", "MonocleSource/App/**.hpp" }
+	-- includedirs { "MonocleSource/Core/**/Include" }
+	-- links { "MonocleCore", "MonocleGraphics" }
+
+	-- RemoveOtherPlatformSpecificFiles()
+	-- SetBuildOptionsForLinuxDLL()
+	
+	
+project "Test_Context"
+	kind "ConsoleApp"
+	files { "TestContext/*" }
+	links { "MonocleCore", "MonocleGraphics" }
+	includedirs { "MonocleSource/", "MonocleSource/Core/**/Include" }
+
+	filter "Diagnostic or Debug"
+		files { "ExtLibs/glad45/debug/src/glad_wgl.c" }
+		includedirs { "ExtLibs/glad45/debug/include"  }
+
+	filter "Release or Profile or Shipping"
+		files { "ExtLibs/glad45/release/src/glad_wgl.c" }
+		includedirs { "ExtLibs/glad45/release/include"  }
 
 project "MonocleUnitTests"
 	kind "ConsoleApp"

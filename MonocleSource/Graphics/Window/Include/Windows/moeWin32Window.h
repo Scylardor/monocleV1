@@ -40,24 +40,17 @@ namespace moe
         template <>
         MOE_DLL_API void    CreateConcreteContext<moe::WGLContext>(const WindowAttributes& winAttr);
 
-        MOE_DLL_API void    InitializeWGLContext(const WindowAttributes& winAttr);
-        void                CreateDummyWGLContext(const WindowAttributes& winAttr);
-        void                CreateExtensibleWGLContext(const WindowAttributes& winAttr);
-        int                 ChooseExtensiblePixelFormat(const int* pixelFormatList);
-
-        bool    LoadWGLExtensions();
-
         bool    InitializeWindow(const WindowAttributes& winAttr);
         bool    RegisterWindow(const WindowAttributes& winAttr);
         bool    CreateWindowHandle(const WindowAttributes& winAttr);
         void    DestroyWindow();
-
 
         static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
         static const wchar_t*  WINDOW_CLASS;
     };
 
+    // Define the Win32 window as being the default moe::Window.
     typedef Win32Window Window;
 }
 

@@ -2,7 +2,7 @@
 #define MOE_WINDOW_ATTRIBUTES_H_
 
 #include <cstdint> // std int types
-#include "moePixelFormat.h"
+#include "moeContextDescriptor.h"
 #include "moeDLLVisibility.h"
 
 // Window attributes is the platform-agnostic structure Monocle uses

@@ -2,7 +2,7 @@
 #include "Core/Preprocessor/Include/moeAssert.h"
 #include "Core/Log/Include/moeLogMacros.h"
 #include "Core/Misc/Include/Windows/GetLastErrorAsString.h"
-#include "Graphics/Window/Include/moePixelFormat.h"
+#include "Graphics/Window/Include/moeContextDescriptor.h"
 
 namespace moe
 {

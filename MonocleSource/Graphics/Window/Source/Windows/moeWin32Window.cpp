@@ -85,9 +85,10 @@ namespace moe
     {
         DWORD style = WS_OVERLAPPEDWINDOW | WS_VISIBLE;
         DWORD extendedStyle = WS_EX_APPWINDOW; // Forces a top-level window onto the taskbar when the window is visible.
-                                               // winAttr width/height actually describes wanted client area size, so for the client area to be of the wanted size,
-                                               // we must adjust window size to get a window slightly larger than that
-        RECT windowRect = { 0, 0, (LONG)winAttr.Width, (LONG)winAttr.Height };
+
+        // winAttr width/height actually describes wanted client area size, so for the client area to be of the wanted size,
+        // we must adjust window size to get a window slightly larger than that
+        RECT windowRect = { 0, 0, (LONG)winAttr.ContextDesc.ViewportWidth, (LONG)winAttr.ContextDesc.ViewportHeight };
         AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, FALSE); // this rect now holds the "true" window size
 
         m_handle = CreateWindowExW(extendedStyle,
@@ -164,6 +165,32 @@ namespace moe
         myDC = GetDC(GetHandle()); // The handle has been recreated, re-get the DC
         wglContext->CreateExtensibleContext(myDC, winAttr.ContextDesc);
         ReleaseDC(GetHandle(), myDC);
+    }
+
+    template <>
+    void    Win32Window::CreateConcreteContext<moe::D3DContext_11_2>(const WindowAttributes& winAttr)
+    {
+        if (!Initialized())
+        {
+            MOE_ERROR(moe::ChanWindowing, "Win32 window cannot create a context because it isn't initialized!");
+            return;
+        }
+
+        MOE_INFO(moe::ChanWindowing, "Creating D3D 11.2 context");
+        m_context = std::make_unique<moe::D3DContext_11_2>(winAttr.ContextDesc, GetHandle());
+    }
+
+    template <>
+    void    Win32Window::CreateConcreteContext<moe::D3DContext_11_1>(const WindowAttributes& winAttr)
+    {
+        if (!Initialized())
+        {
+            MOE_ERROR(moe::ChanWindowing, "Win32 window cannot create a context because it isn't initialized!");
+            return;
+        }
+
+        MOE_INFO(moe::ChanWindowing, "Creating D3D 11.1 context");
+        m_context = std::make_unique<moe::D3DContext_11_1>(winAttr.ContextDesc, GetHandle());
     }
 
     bool    Win32Window::Initialized() const

@@ -4,6 +4,8 @@
 #include "moeDLLVisibility.h"
 #include "moeWindow.h"
 #include "Graphics/Context/Include/Windows/moeWGLContext.h"
+#include "Graphics/Context/Include/Windows/moeD3DContext_11_1.h"
+#include "Graphics/Context/Include/Windows/moeD3DContext_11_2.h"
 #include <windows.h> // HWND
 
 namespace moe
@@ -17,7 +19,7 @@ namespace moe
     struct WindowTraits<Win32Window>
     {
         using HandleType = HWND;
-        using CompatibleContexts = moe::TypeList<moe::WGLContext>;
+        using CompatibleContexts = moe::TypeList<moe::WGLContext, moe::D3DContext_11_1, moe::D3DContext_11_2>;
     };
 
     class Win32Window : public WindowBase<Win32Window>
@@ -39,6 +41,10 @@ namespace moe
         void                CreateConcreteContext(const WindowAttributes& winAttr);
         template <>
         MOE_DLL_API void    CreateConcreteContext<moe::WGLContext>(const WindowAttributes& winAttr);
+        template <>
+        MOE_DLL_API void    CreateConcreteContext<moe::D3DContext_11_2>(const WindowAttributes& winAttr);
+        template <>
+        MOE_DLL_API void    CreateConcreteContext<moe::D3DContext_11_1>(const WindowAttributes& winAttr);
 
         bool    InitializeWindow(const WindowAttributes& winAttr);
         bool    RegisterWindow(const WindowAttributes& winAttr);

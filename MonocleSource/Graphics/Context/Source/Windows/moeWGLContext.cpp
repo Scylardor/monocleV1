@@ -15,7 +15,7 @@ namespace moe
 
     WGLContext::~WGLContext()
     {
-        //It is an error to delete an OpenGL rendering context that is the current context of another thread.
+        // It is an error to delete an OpenGL rendering context that is the current context of another thread.
         // However, if a rendering context is the calling thread's current context, the wglDeleteContext function
         // changes the rendering context to being not current before deleting it.
         // cf. https://msdn.microsoft.com/en-us/library/windows/desktop/dd374381(v=vs.85).aspx
@@ -85,7 +85,7 @@ namespace moe
             WGL_DEPTH_BITS_ARB,     pfDesc.DepthBits,
             WGL_STENCIL_BITS_ARB,   pfDesc.StencilBits,
 
-            WGL_DOUBLE_BUFFER_ARB,  pfDesc.UseDoubleBuffering,
+            WGL_DOUBLE_BUFFER_ARB,  (pfDesc.BuffersCount > 0),
             WGL_SAMPLE_BUFFERS_ARB, pfDesc.SamplesCount > 1 ? 1 : 0, // put a sample count of at least 2 to activate MSAA
             WGL_SAMPLES_ARB,        pfDesc.SamplesCount, // Actual number of MSAA samples
             WGL_FRAMEBUFFER_SRGB_CAPABLE_ARB, GL_TRUE, // TODO: configure if the user wants a SRGB capable framebuffer or not?
@@ -173,6 +173,7 @@ namespace moe
         {
             wglMakeCurrent(nullptr, nullptr);
         }
+
     }
 
     bool WGLContext::LoadExtensions(HDC deviceContextHandle)

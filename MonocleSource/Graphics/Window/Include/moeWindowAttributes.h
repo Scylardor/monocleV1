@@ -14,15 +14,8 @@ namespace moe
 {
     struct MOE_DLL_API WindowAttributes
     {
-        std::uint32_t       Width                   = DEFAULT_WIDTH;
-        std::uint32_t       Height                  = DEFAULT_HEIGHT;
-        const wchar_t*      Title                   = L"Monocle Window Application";
+        const wchar_t*      Title   = L"Monocle Window Application";
         ContextDescriptor   ContextDesc;  // Bits allocated to RGBA, Depth, Stencil etc.
-
-        // DEFAULT_WIDTH * DEFAULT_HEIGHT = a 16:9 ratio that probably won't take full screen
-        // TODO: maybe ask the system the ideal default size instead ?
-        static const std::uint32_t  DEFAULT_WIDTH   =   1280;
-        static const std::uint32_t  DEFAULT_HEIGHT  =   720;
     };
 }
 

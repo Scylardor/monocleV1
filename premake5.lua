@@ -91,7 +91,7 @@ project "MonocleGraphics"
 	files { "MonocleSource/Graphics/**.cpp", "MonocleSource/Graphics/**.h", "MonocleSource/Graphics/**.hpp" }
 	-- Omit "MonocleSource/Core/**/Include" and it breaks compil; NEED TO REWORK INCLUDEDIRS POLICY FOR ALL PROJECTS
 	includedirs { "MonocleSource/Graphics/**/Include", "MonocleSource/", "MonocleSource/Core/**/Include"}
-	links { "MonocleCore", "opengl32" }
+	links { "MonocleCore", "opengl32", "d3d11", "dxgi" }
 
 	-- TODO: I think we should be able to specify GL_MAJOR/GL_MINOR at compilation, and generate the appropriate glad files on the fly.
 	-- We also need to manage platforms (e.g. do not include WGL but GLX on Linux...)

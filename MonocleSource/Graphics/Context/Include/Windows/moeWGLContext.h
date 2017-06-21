@@ -28,9 +28,8 @@ namespace moe
         void    CreateLegacyContext(HDC deviceContextHandle, const ContextDescriptor& pfDesc, CurrentFlag flag = CurrentFlag::Current);
         void    CreateExtensibleContext(HDC deviceContextHandle, const ContextDescriptor& pfDesc, CurrentFlag flag = CurrentFlag::Current);
 
-        void    LoadExtensions();
-
         void    SetCurrentState(HDC deviceContextHandle, CurrentFlag flag);
+
 
         static bool LoadExtensions(HDC deviceContextHandle);
 

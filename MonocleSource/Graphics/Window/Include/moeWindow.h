@@ -2,6 +2,7 @@
 #define MOE_WINDOW_H_
 
 #include "Core/Misc/Include/moeTypeList.h"
+#include "Core/Misc/Include/moeFalse.h"
 #include "Graphics/Context/Include/moeGraphicsContext.h"
 #include "moeWindowAttributes.h"
 #include <memory>
@@ -14,11 +15,6 @@
 // This may not be so true with e.g. Wayland on Linux, and may need to be adapted in the future.
 namespace moe
 {
-    // TODO: move this to a proper place (Core?)
-    template<typename T>
-    struct FalseType : std::false_type
-    { };
-
     // To use a custom window with moe::WindowBase, you'll need to provide traits for it.
     // Required traits:
     // - HandleType: the type of the native handle of the window (e.g. HWND for Win32 windows)
@@ -28,7 +24,7 @@ namespace moe
     {
         using HandleType = void;
         using CompatibleContexts = moe::TypeList<moe::NullType>;
-        static_assert(FalseType<T>::value, "Define a WindowTraits specialization for your Window type to be able to inherit WindowBase");
+        static_assert(False<T>::value, "Define a WindowTraits specialization for your Window type to be able to inherit WindowBase");
     };
 
 

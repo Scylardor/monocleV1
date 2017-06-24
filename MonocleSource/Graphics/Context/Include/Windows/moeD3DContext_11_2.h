@@ -2,7 +2,14 @@
 #define MOE_D3DCONTEXT_11_2_H_
 
 #include "moeD3D11Context.h"
+#include <d3d11_2.h>
 
+// The Direct3D Context class for 11.2 version.
+// Its particularities:
+// - it doesn't manage MSAA like the older versions: the backbuffer is no longer MSAA'd,
+// and if you really want MSAA, you need a multisampled offscreen render target to render into.
+// - VSync isn't configurable : it is supposed to be enabled
+// - because of its use of newer flip swap effects, back buffer formats are drastically restricted.
 namespace moe
 {
     class D3DContext_11_2;

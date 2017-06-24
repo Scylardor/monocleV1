@@ -1,7 +1,12 @@
 #ifndef MOE_D3DCONTEXT_11_1_H_
 #define MOE_D3DCONTEXT_11_1_H_
-#include "moeD3D11Context.h"
 
+#include "moeD3D11Context.h"
+#include <d3d11_1.h>
+
+
+// The Direct3D Context class for 11.1 version.
+// It basically is a classic D3D11 context, using 11.1 interfaces if it can be useful at some point.
 namespace moe
 {
     class D3DContext_11_1;

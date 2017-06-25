@@ -1,13 +1,8 @@
 #include "Graphics/Window/Include/Windows/moeWin32Window.h"
 #include "Core/Preprocessor/Include/moeAssert.h"
 #include "Core/Log/Include/moeLogMacros.h"
-#include "Core/Misc/Include/moeAbort.h"
 #include "Core/Misc/Include/Windows/GetLastErrorAsString.h"
-#include "Core/StringFormat/Include/moeStringFormat.h"
 
-#include "glad/glad_wgl.h"
-
-#include <string>
 
 namespace moe
 {

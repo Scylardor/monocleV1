@@ -9,30 +9,36 @@
 // Monocle engine utilities for OpenGL APIs.
 namespace moe
 {
-    struct ColorBitCounter
+    // A generic bit counter, simply implemented as an array of bytes.
+    // Given that usually, we specify a maximum of 32 bits per color, it seems a bit wasteful...
+    template <size_t N>
+    struct OGLFormatBitCounter
     {
-        std::array<std::uint8_t, 4> ColorBits;
+        std::array<std::uint8_t, N> ComponentBits;
+    };
 
-        std::uint8_t RedBits()
+    // Specialization of bit counter to count the bits of each color component from a GLenum image format.
+    struct ColorBitCounter : public OGLFormatBitCounter<4>
+    {
+        std::uint8_t    RedBits()
         {
-            return ColorBits[0];
+            return ComponentBits[0];
         }
 
-        std::uint8_t GreenBits()
+        std::uint8_t    GreenBits()
         {
-            return ColorBits[1];
+            return ComponentBits[1];
         }
 
-        std::uint8_t BlueBits()
+        std::uint8_t    BlueBits()
         {
-            return ColorBits[2];
+            return ComponentBits[2];
         }
 
-        std::uint8_t AlphaBits()
+        std::uint8_t    AlphaBits()
         {
-            return ColorBits[3];
+            return ComponentBits[3];
         }
-
 
         std::uint8_t    RGB_Bits()
         {
@@ -42,7 +48,25 @@ namespace moe
 
 
     // Takes in an OpenGL color enum format, and returns an array of bits count for each R,G,B and A color.
-    ColorBitCounter   DecomposeColorEnumRGBABits(GLenum colorFormat);
+    ColorBitCounter         DecomposeColorEnumRGBABits(GLenum colorFormat);
+
+
+    // Specialization of bit counter to count the bits of depth and stencil component from a GLenum depth-stencil format.
+    struct DepthStencilBitCounter : public OGLFormatBitCounter<2>
+    {
+        std::uint8_t    DepthBits()
+        {
+            return ComponentBits[0];
+        }
+
+        std::uint8_t    StencilBits()
+        {
+            return ComponentBits[1];
+        }
+    };
+
+    // Takes in an OpenGL color enum format, and returns an array of bits count for each R,G,B and A color.
+    DepthStencilBitCounter  DecomposeDepthStencilEnumBits(GLenum depthStencilFormat);
 }
 
 

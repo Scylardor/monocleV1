@@ -7,7 +7,7 @@
 // Define this to avoid windows defining min/max() macros disrupting std::numeric_limits functions.
 #define NOMINMAX
 
-#include "glad/glad_wgl.h" // HDC is provided through GLAD
+#include "glad/windows/glad_wgl.h" // HDC is provided through GLAD
 
 
 // The monocle implementation of a WGL context for OpenGL on Windows.

@@ -56,8 +56,9 @@ namespace moe
             return;
         }
 
-        //// Then create the depth/stencil buffer
-        hr = CreateDepthStencilBuffer(m_device, m_swapChain, m_depthStencilView, m_depthStencilBuffer);
+        // Then create the depth/stencil buffer
+        DXGI_FORMAT depthStencilFormat = DXGI_FORMAT(contextDesc.DepthStencilFormat == ContextDescriptor::DEFAULT_GENERIC_FORMAT ? DXGI_FORMAT_D24_UNORM_S8_UINT : contextDesc.DepthStencilFormat);
+        hr = CreateDepthStencilBuffer(m_device, m_swapChain, m_depthStencilView, m_depthStencilBuffer, depthStencilFormat);
         if (!MOE_ENSURE(SUCCEEDED(hr)))
         {
             MOE_ERROR(moe::ChanGraphics, "D3D11 context failed to create a depth stencil buffer.");
@@ -236,7 +237,9 @@ namespace moe
     HRESULT   BaseD3DContext<VersionedContext>::CreateDepthStencilBuffer(
         Microsoft::WRL::ComPtr<typename BaseD3DContext<VersionedContext>::DeviceType>& device,
         Microsoft::WRL::ComPtr<typename BaseD3DContext<VersionedContext>::SwapChainType>& swapChain,
-        Microsoft::WRL::ComPtr<ID3D11DepthStencilView>& depthStencilView, Microsoft::WRL::ComPtr<ID3D11Texture2D>& depthStencilBuffer)
+        Microsoft::WRL::ComPtr<ID3D11DepthStencilView>& depthStencilView,
+        Microsoft::WRL::ComPtr<ID3D11Texture2D>& depthStencilBuffer,
+        DXGI_FORMAT depthStencilFormat)
     {
         // Create a depth-stencil buffer that's based on the back buffer description.
         Microsoft::WRL::ComPtr<ID3D11Texture2D> backBufferTex = GetSwapChainBackBufferTexture(swapChain);
@@ -253,7 +256,7 @@ namespace moe
         D3D11_TEXTURE2D_DESC depthStencilDesc = backBufDesc;
         depthStencilDesc.MipLevels = 1;
         depthStencilDesc.ArraySize = 1;
-        depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT; // TODO: read this from context desc
+        depthStencilDesc.Format = depthStencilFormat;
         depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
         depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
         depthStencilDesc.CPUAccessFlags = 0;

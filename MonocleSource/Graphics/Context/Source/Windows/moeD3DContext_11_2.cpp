@@ -94,7 +94,7 @@ namespace moe
         // - no MSAA
         // - a buffer count between 2 and 16
         // cf. https://msdn.microsoft.com/en-us/library/windows/desktop/hh706346(v=vs.85).aspx
-        DXGI_FORMAT swapChainFormat = DXGI_FORMAT_R8G8B8A8_UNORM; // TODO: read this from context desc
+        DXGI_FORMAT swapChainFormat = DXGI_FORMAT(contextDesc.ColorFormat == ContextDescriptor::DEFAULT_GENERIC_FORMAT ? DEFAULT_COLOR_FORMAT : contextDesc.ColorFormat);
         if (swapChainFormat != DXGI_FORMAT_R16G16B16A16_FLOAT && swapChainFormat != DXGI_FORMAT_B8G8R8A8_UNORM && swapChainFormat != DXGI_FORMAT_R8G8B8A8_UNORM)
         {
             MOE_ERROR(moe::ChanGraphics, "D3D 11.2 Context doesn't support the desired format for swap chain. Supported formats: DXGI_FORMAT_R16G16B16A16_FLOAT, DXGI_FORMAT_B8G8R8A8_UNORM or DXGI_FORMAT_R8G8B8A8_UNORM.");

@@ -3,6 +3,8 @@
 
 #include "moeDLLVisibility.h"
 #include <cstdint>
+#include <limits>
+
 
 // A data holder that describes all we need to know to allocate
 // a graphic context:
@@ -27,20 +29,21 @@ namespace moe
             VSF_Enabled_NotAdaptive =  (1 << 2) | VSF_Enabled
         };
 
-        // Fully-qualifying every parameter constructor. Delegates every other ctor
+
+        // The context stores a format for the back buffer that needs to be compatible with both D3D and OpenGL.
+        // DXGI_FORMAT could fit on a byte, but OpenGL GLenums usually have 16-bits values.
+        typedef std::uint16_t GenericFormat;
+
+        // Version taking all the default parameters.
         ContextDescriptor(
-            std::uint8_t rBits, std::uint8_t gBits, std::uint8_t bBits, std::uint8_t aBits,
-            std::uint8_t depthBits, std::uint8_t stencilBits,
-            std::uint8_t numSamples,
-            std::int8_t apiMajorVersion, std::int8_t apiMinorVersion,
-            std::uint8_t numBuffers, VSyncFlag useVSync,
-            std::uint32_t width, std::uint32_t height) :
-            R(rBits),
-            G(gBits),
-            B(bBits),
-            A(aBits),
-            DepthBits(depthBits),
-            StencilBits(stencilBits),
+            GenericFormat colorFormat       = DEFAULT_GENERIC_FORMAT,
+            GenericFormat depthStencilFormat= DEFAULT_GENERIC_FORMAT,
+            std::uint8_t numSamples         = DEFAULT_SAMPLES_COUNT,
+            std::int8_t apiMajorVersion     = DEFAULT_API_MAJOR_VERSION,    std::int8_t apiMinorVersion = DEFAULT_API_MINOR_VERSION,
+            std::uint8_t numBuffers         = DEFAULT_BUFFERS_COUNT,        VSyncFlag useVSync          = DEFAULT_USE_VSYNC,
+            std::uint32_t width             = DEFAULT_WIDTH,                std::uint32_t height        = DEFAULT_HEIGHT) :
+            ColorFormat(colorFormat),
+            DepthStencilFormat(depthStencilFormat),
             SamplesCount(numSamples),
             API_MajorVersion(apiMajorVersion),
             API_MinorVersion(apiMinorVersion),
@@ -51,45 +54,14 @@ namespace moe
         {
         }
 
-        // Version in which you specify the same number of bits for all R, G, B and A color channels.
-        ContextDescriptor(
-            std::uint8_t rgbaBits = DEFAULT_BITS_PER_COLOR,
-            std::uint8_t depthBits = DEFAULT_DEPTH_BITS, std::uint8_t stencilBits = DEFAULT_STENCIL_BITS,
-            std::uint8_t numSamples = DEFAULT_SAMPLES_COUNT,
-            std::int8_t apiMajorVersion = DEFAULT_API_MAJOR_VERSION, std::int8_t apiMinorVersion = DEFAULT_API_MINOR_VERSION,
-            std::uint8_t bufCount = DEFAULT_BUFFERS_COUNT, VSyncFlag useVSync = DEFAULT_USE_VSYNC,
-            std::uint32_t width = DEFAULT_WIDTH, std::uint32_t height = DEFAULT_HEIGHT) :
-            ContextDescriptor(rgbaBits, rgbaBits, rgbaBits, rgbaBits, depthBits, stencilBits, numSamples, apiMajorVersion, apiMinorVersion, bufCount, useVSync, width, height)
-        {
-        }
-
-        // Version in which you specify the same number of bits for all R, G, B color channels and a different value for Alpha.
-        ContextDescriptor(
-            std::uint8_t rgbBits, std::uint8_t alphaBits,
-            std::uint8_t depthBits = DEFAULT_DEPTH_BITS, std::uint8_t stencilBits = DEFAULT_STENCIL_BITS,
-            std::uint8_t numSamples = DEFAULT_SAMPLES_COUNT,
-            std::int8_t apiMajorVersion = DEFAULT_API_MAJOR_VERSION, std::int8_t apiMinorVersion = DEFAULT_API_MINOR_VERSION,
-            std::uint8_t bufCount = DEFAULT_BUFFERS_COUNT, VSyncFlag useVSync = DEFAULT_USE_VSYNC,
-            std::uint32_t width = DEFAULT_WIDTH, std::uint32_t height = DEFAULT_HEIGHT) :
-            ContextDescriptor(rgbBits, rgbBits, rgbBits, alphaBits, depthBits, stencilBits, numSamples, apiMajorVersion, apiMinorVersion, bufCount, useVSync, width, height)
-        {
-        }
-
-        // Returns total number of bits used by a color pixel
-        std::uint8_t    ColorBits() const
-        {
-            return  R + G + B + A;
-        }
-
-        // Colors
-        std::uint8_t    R;
-        std::uint8_t    G;
-        std::uint8_t    B;
-        std::uint8_t    A;
 
         // Viewport
         std::uint32_t   ViewportWidth = DEFAULT_WIDTH;
         std::uint32_t   ViewportHeight = DEFAULT_HEIGHT;
+
+        // Color Format
+        GenericFormat   ColorFormat;
+        GenericFormat   DepthStencilFormat;
 
         // Depth/stencil
         std::uint8_t    DepthBits;
@@ -116,6 +88,7 @@ namespace moe
         static const std::int8_t    DEFAULT_API_MAJOR_VERSION   = -1;
         static const std::int8_t    DEFAULT_API_MINOR_VERSION   = -1;
         static const VSyncFlag      DEFAULT_USE_VSYNC           = VSyncFlag::VSF_Disabled;
+        static const GenericFormat  DEFAULT_GENERIC_FORMAT      = std::numeric_limits<std::uint16_t>::max();
         // DEFAULT_WIDTH * DEFAULT_HEIGHT = a 16:9 ratio that probably won't take full screen
         // TODO: maybe ask the system the ideal default size instead ?
         static const std::uint32_t  DEFAULT_WIDTH = 1280;

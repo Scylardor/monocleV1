@@ -16,7 +16,7 @@ namespace moe
     {
         DXGI_SWAP_CHAIN_DESC scd = { 0 };
 
-        DXGI_FORMAT swapChainFormat = DXGI_FORMAT_R8G8B8A8_UNORM; // TODO: use from context desc
+        DXGI_FORMAT swapChainFormat = DXGI_FORMAT(contextDesc.ColorFormat == ContextDescriptor::DEFAULT_GENERIC_FORMAT ? DEFAULT_COLOR_FORMAT : contextDesc.ColorFormat);
 
         // Obtain the available MSAA sampling quality level for the wanted samples count.
         scd.SampleDesc = GetDeviceBestMultisamplingQuality(device, swapChainFormat, contextDesc.SamplesCount);

@@ -7,17 +7,24 @@
 #include "Core/Preprocessor/Include/moeAssert.h"
 #include "Core/Log/Include/moeLogMacros.h"
 
-#include <d3d11_2.h>
+#include <d3d11.h>
 #include <comdef.h>
 #include <wrl/client.h> // ComPtr interface
-#include <cinttypes>
 
 
-#define CRTP_ASSERT_CHILD_FUNC(FuncName) static_assert(std::is_same<decltype(&BaseD3DContext<VersionedContext>::FuncName), decltype(&VersionedContext::FuncName)>::value, "toto")
+// Convenient macros to generate a DXGI_FORMAT enum value.
+#define MOE_COMPOSE_DXGI_FORMAT_DOUBLE_TYPED(format1, type1, format2, type2) DXGI_FORMAT_ ## format1 ## _ ## type1 ## _ ## format2 ## _ ## type2
+#define MOE_COMPOSE_DXGI_FORMAT_COLOR_1D(first, type) DXGI_FORMAT_ ## first ## _ ## type
+#define MOE_COMPOSE_DXGI_FORMAT_COLOR_2D(first, second, type) MOE_COMPOSE_DXGI_FORMAT_COLOR_1D(first ## second, type)
+#define MOE_COMPOSE_DXGI_FORMAT_COLOR_3D(first, second, third, type) MOE_COMPOSE_DXGI_FORMAT_COLOR_1D(first ## second ## third, type)
+#define MOE_COMPOSE_DXGI_FORMAT_COLOR_4D(first, second, third, fourth, type) MOE_COMPOSE_DXGI_FORMAT_COLOR_1D(first ## second ## third ## fourth, type)
 
 
 namespace moe
 {
+
+    // A Context traits structure is used for the BaseD3DContext mix-in class to be
+    // able to use types defined by its derived classes.
     template <typename Context>
     struct D3DContextTraits
     {
@@ -30,6 +37,12 @@ namespace moe
         static_assert(False<Context>::value, "Define a D3DContextTraits specialization for your device context type to be able to inherit BaseD3DContext");
     };
 
+
+    // The base mix-in class we inherit from to implement all our D3D11 contexts.
+    // This class is based on the fact that whatever the subversion, D3D11 initialization
+    // always follows the same basic steps.
+    // It heavily relies on derived class-declared types, but is supposed to work the same
+    // whatever the version.
     template <class VersionedContext>
     class BaseD3DContext : public GraphicsContext
     {
@@ -60,8 +73,12 @@ namespace moe
         static Microsoft::WRL::ComPtr<ID3D11RenderTargetView>   GetBackBufferView(Microsoft::WRL::ComPtr<DeviceType>& device, Microsoft::WRL::ComPtr<SwapChainType>& swapChain);
         static Microsoft::WRL::ComPtr<ID3D11Texture2D>          GetSwapChainBackBufferTexture(Microsoft::WRL::ComPtr<SwapChainType>& swapChain);
 
-        static HRESULT  CreateDepthStencilBuffer(Microsoft::WRL::ComPtr<DeviceType>& device, Microsoft::WRL::ComPtr<SwapChainType>& swapChain,
-            Microsoft::WRL::ComPtr<ID3D11DepthStencilView>& depthStencilView, Microsoft::WRL::ComPtr<ID3D11Texture2D>& depthStencilBuffer);
+        static HRESULT  CreateDepthStencilBuffer(
+            Microsoft::WRL::ComPtr<DeviceType>& device,
+            Microsoft::WRL::ComPtr<SwapChainType>& swapChain,
+            Microsoft::WRL::ComPtr<ID3D11DepthStencilView>& depthStencilView,
+            Microsoft::WRL::ComPtr<ID3D11Texture2D>& depthStencilBuffer,
+            DXGI_FORMAT depthStencilFormat);
 
 
         static void DescribeAdapter(Microsoft::WRL::ComPtr<AdapterType>& adapter);
@@ -81,6 +98,9 @@ namespace moe
         Microsoft::WRL::ComPtr<ID3D11RenderTargetView>  m_backBufferView;
         Microsoft::WRL::ComPtr<ID3D11DepthStencilView>  m_depthStencilView;
         Microsoft::WRL::ComPtr<ID3D11Texture2D>         m_depthStencilBuffer;
+
+        static const DXGI_FORMAT    DEFAULT_COLOR_FORMAT        = DXGI_FORMAT_R8G8B8A8_UNORM;
+        static const DXGI_FORMAT    DEFAULT_DEPTHSTENCIL_FORMAT = DXGI_FORMAT_D24_UNORM_S8_UINT; // 24-bit depth and 8-bit stencil seems a sensible default value.
     };
 }
 

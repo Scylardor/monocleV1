@@ -3,7 +3,6 @@
 #include "Core/Log/Include/moeLogMacros.h"
 #include "Core/Misc/Include/Windows/GetLastErrorAsString.h"
 
-
 namespace moe
 {
     const wchar_t* Win32Window::WINDOW_CLASS = L"Win32Window";
@@ -51,21 +50,7 @@ namespace moe
         windowClass.hCursor = LoadCursorW(NULL, IDC_ARROW);
         windowClass.lpszClassName = Win32Window::WINDOW_CLASS;
         windowClass.hbrBackground = CreateSolidBrush(RGB(0, 0, 0)); // Paint it black
-
-        // No user-provided icon found, load default icon
-        windowClass.hIcon = static_cast<HICON>(LoadImageW(nullptr,
-            IDI_APPLICATION, IMAGE_ICON,
-            0, 0, LR_DEFAULTSIZE | LR_SHARED));
-
-        // Load user-provided icon if available
-        // TODO: test that someday
-        //windowClass.hIcon = LoadImageW(GetModuleHandleW(NULL),
-        //    L"MONOCLE_ICON", IMAGE_ICON,
-        //    0, 0, LR_DEFAULTSIZE | LR_SHARED);
-        //if (!windowClass.hIcon)
-        //{
-
-        //}
+        windowClass.hIcon = LoadIcon(windowClass.hInstance, MAKEINTRESOURCE(winAttr.IconId)); // Loads user-provided icon if available
 
         if (!MOE_ENSURE(RegisterClassExW(&windowClass)))
         {
@@ -102,6 +87,7 @@ namespace moe
             MOE_ERROR(moe::ChanWindowing, "Win32 window creation failed. Last error: '%s'.", moe::GetLastErrorAsString());
             return false;
         }
+
         return true;
     }
 

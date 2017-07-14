@@ -14,8 +14,9 @@ namespace moe
 {
     struct MOE_DLL_API WindowAttributes
     {
-        const wchar_t*      Title   = L"Monocle Window Application";
         ContextDescriptor   ContextDesc;  // Bits allocated to RGBA, Depth, Stencil etc.
+        const wchar_t*      Title   = L"Monocle Window Application";
+        int                 IconId;
     };
 }
 

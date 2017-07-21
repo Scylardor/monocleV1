@@ -1,2 +1,8 @@
 Workspace/
 Build/
+*.sln
+*.vcxproj*
+*.VC*db
+
+premake5_testproject.lua
+TestProject/

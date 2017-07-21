@@ -20,8 +20,7 @@ newoption {
    }
 }
 
-
-
+-------------------------
 -- Declare functions HERE
 
 function RemoveOtherPlatformSpecificFiles()
@@ -41,30 +40,30 @@ end
 -- For include paths to keep working
 function AddOpenGLFiles()
 	filter "Debug or Diagnostic"
-		includedirs { "ExtLibs/glad45/debug/"  }
+		includedirs { "Monocle/ThirdParty/glad45/debug/"  }
 
 	filter "Release or Profile or Shipping"
-		includedirs { "ExtLibs/glad45/release/"  }
+		includedirs { "Monocle/ThirdParty/glad45/release/"  }
 end
 
 function AddWGLFiles()
 	filter "Debug or Diagnostic"
-		files { "ExtLibs/glad45/debug/glad/windows/glad_wgl.c" }
-		includedirs { "ExtLibs/glad45/debug/glad/windows/"  }
+		files { "Monocle/ThirdParty/glad45/debug/glad/windows/glad_wgl.c" }
+		includedirs { "Monocle/ThirdParty/glad45/debug/glad/windows/"  }
 
 	filter "Release or Profile or Shipping"
-		files { "ExtLibs/glad45/release/glad/windows/glad_wgl.c" }
-		includedirs { "ExtLibs/glad45/release/glad/windows/"  }
+		files { "Monocle/ThirdParty/glad45/release/glad/windows/glad_wgl.c" }
+		includedirs { "Monocle/ThirdParty/glad45/release/glad/windows/"  }
 end
 
 function AddGLXFiles()
 	filter "Debug or Diagnostic"
-		files { "ExtLibs/glad45/debug/linux/src/glad_glx.c" }
-		includedirs { "ExtLibs/glad45/debug/linux/include"  }
+		files { "Monocle/ThirdParty/glad45/debug/linux/src/glad_glx.c" }
+		includedirs { "Monocle/ThirdParty/glad45/debug/linux/include"  }
 
 	filter "Release or Profile or Shipping"
-		files { "ExtLibs/glad45/release/linux/src/glad_glx.c" }
-		includedirs { "ExtLibs/glad45/release/linux/include"  }
+		files { "Monocle/ThirdParty/glad45/release/linux/src/glad_glx.c" }
+		includedirs { "Monocle/ThirdParty/glad45/release/linux/include"  }
 end
 
 function AddGraphicsAPI()
@@ -88,13 +87,14 @@ function AddGraphicsAPI()
 end
 
 -- End of functions sections
-
+-----------------------------
 
 	-- Initial config
-	location "Workspace" -- The directory of generated files - .sln, etc.
+	location "Monocle" -- The directory of generated files - .sln, etc.
 	configurations { "Diagnostic", "Debug", "Release", "Profile", "Shipping" }
 	platforms { "Windows_Static", "Windows_DLL", "Linux_Static", "Linux_DLL" }
-	targetdir "Build/%{cfg.platform}/%{cfg.buildcfg}"
+	targetdir "Monocle/Build/%{cfg.platform}/%{cfg.buildcfg}"
+	objdir "Monocle/Build/"
 	language "C++"
 
 
@@ -151,19 +151,20 @@ end
 
 
 -- Projects
-project "MonocleCore"
-	files { "MonocleSource/Core/**.cpp", "MonocleSource/Core/**.h", "MonocleSource/Core/**.hpp" }
-	includedirs { "MonocleSource/Core/**/Include" }
+project "Core"
+	location "Monocle/Core"
+	files { "Monocle/Core/**.h", "Monocle/Core/*/Private/**.hpp", "Monocle/Core/*/Private/**.cpp" }
+	includedirs { "Monocle/" }
 
 	RemoveOtherPlatformSpecificFiles()
 	SetBuildOptionsForLinuxDLL()
 
 
-project "MonocleGraphics"
-	files { "MonocleSource/Graphics/**.cpp", "MonocleSource/Graphics/**.h", "MonocleSource/Graphics/**.hpp" }
-	-- Omit "MonocleSource/Core/**/Include" and it breaks compil; NEED TO REWORK INCLUDEDIRS POLICY FOR ALL PROJECTS
-	includedirs { "MonocleSource/Graphics/**/Include", "MonocleSource/", "MonocleSource/Core/**/Include"}
-	links { "MonocleCore" }
+project "Graphics"
+	location "Monocle/Graphics"
+	files { "Monocle/Graphics/**.h", "Monocle/Graphics/*/Private/**.hpp", "Monocle/Graphics/*/Private/**.cpp" }
+	includedirs { "Monocle/" }
+	links { "Core" }
 
 	-- TODO: I think we should be able to specify GL_MAJOR/GL_MINOR at compilation, and generate the appropriate glad files on the fly.
 	-- We also need to manage platforms (e.g. do not include WGL but GLX on Linux...)
@@ -172,34 +173,26 @@ project "MonocleGraphics"
 	RemoveOtherPlatformSpecificFiles()
 	SetBuildOptionsForLinuxDLL()
 
--- project "MonocleApplication"
-	-- files { "MonocleSource/App/**.cpp", "MonocleSource/App/**.h", "MonocleSource/App/**.hpp" }
-	-- includedirs { "MonocleSource/Core/**/Include" }
-	-- links { "MonocleCore", "MonocleGraphics" }
-
-	-- RemoveOtherPlatformSpecificFiles()
-	-- SetBuildOptionsForLinuxDLL()
-	
-	
-project "Test_Context"
+	project "UnitTests"
+	location "Monocle/Tests"
 	kind "ConsoleApp"
-	files { "TestContext/*" }
-	links { "MonocleCore", "MonocleGraphics" }
-	includedirs { "MonocleSource/", "MonocleSource/Core/**/Include" }
-
-	AddGraphicsAPI()
-	RemoveOtherPlatformSpecificFiles()
-
-project "MonocleUnitTests"
-	kind "ConsoleApp"
-	links { "MonocleCore" }
+	links { "Core" }
 	
-	files { "Tests/UnitTests/*.cpp", "Tests/Catch/*" }
-	includedirs { "Tests/Catch", "MonocleSource/Core/**/Include/" }
+	files { "Monocle/Tests/UnitTests/*.cpp", "Monocle/ThirdParty/Catch/*" }
+	includedirs { "Monocle/ThirdParty/Catch", "Monocle/" }
 	
 	defines "CATCH_CPP11_OR_GREATER"
 	removedefines { "MOE_DLL_EXPORT" }
 
 	filter { "platforms:*DLL", "system:linux" }
 		runpathdirs { "Build/%{cfg.platform}/%{cfg.buildcfg}" }
+
+-- project "MonocleApplication"
+	-- files { "Monocle/App/**.cpp", "Monocle/App/**.h", "Monocle/App/**.hpp" }
+	-- includedirs { "Monocle/Core/**/Include" }
+	-- links { "MonocleCore", "MonocleGraphics" }
+
+	-- RemoveOtherPlatformSpecificFiles()
+	-- SetBuildOptionsForLinuxDLL()
+
 

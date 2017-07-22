@@ -8,7 +8,7 @@
 #ifdef MOE_STD_SUPPORT
 #include <string>
 #include "Core/Preprocessor/moeDLLVisibility.h"
-#include "Core/LogPolicies/OutStreamWritePolicy.h"
+#include "Core/Log/Policies/OutStreamWritePolicy.h"
 
 namespace moe
 {

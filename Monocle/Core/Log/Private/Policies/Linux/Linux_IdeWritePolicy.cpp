@@ -1,4 +1,4 @@
-#include "Core/LogPolicies/IdeWritePolicy.h"
+#include "Core/Log/Policies/IdeWritePolicy.h"
 #include <iostream>
 
 namespace moe

@@ -1,8 +1,18 @@
-Workspace/
+# Generated objects / executables
 Build/
+
+# Visual Studio files
 *.sln
 *.vcxproj*
 *.VC*db
 
+# gmake
+Makefile
+
+# Codelite files
+*.workspace
+*.project
+
+# Test project
 premake5_testproject.lua
 TestProject/

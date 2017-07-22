@@ -58,12 +58,12 @@ end
 
 function AddGLXFiles()
 	filter "Debug or Diagnostic"
-		files { "Monocle/ThirdParty/glad45/debug/linux/src/glad_glx.c" }
-		includedirs { "Monocle/ThirdParty/glad45/debug/linux/include"  }
+		files { "Monocle/ThirdParty/glad45/debug/glad/linux/src/glad_glx.c" }
+		includedirs { "Monocle/ThirdParty/glad45/debug/glad/linux/include"  }
 
 	filter "Release or Profile or Shipping"
-		files { "Monocle/ThirdParty/glad45/release/linux/src/glad_glx.c" }
-		includedirs { "Monocle/ThirdParty/glad45/release/linux/include"  }
+		files { "Monocle/ThirdParty/glad45/release/glad/linux/src/glad_glx.c" }
+		includedirs { "Monocle/ThirdParty/glad45/release/glad/linux/include"  }
 end
 
 function AddGraphicsAPI()
@@ -173,7 +173,8 @@ project "Graphics"
 	RemoveOtherPlatformSpecificFiles()
 	SetBuildOptionsForLinuxDLL()
 
-	project "UnitTests"
+
+project "UnitTests"
 	location "Monocle/Tests"
 	kind "ConsoleApp"
 	links { "Core" }

@@ -3,7 +3,7 @@
 #include <cstdio>   // FILE* ops
 #include <cstring>  // strstr
 #include <cstdlib>  // atoi
-#include "Core/moeDebugger.h"
+#include "Core/Debugger/moeDebugger.h"
 
 // Linux version of Monocle debugger utilities
 

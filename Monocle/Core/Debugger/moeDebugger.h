@@ -7,9 +7,10 @@
 
 namespace moe
 {
-    bool    IsDebuggerPresent();
+    bool                IsDebuggerPresent();
 
-    void    MOE_DLL_API DebugBreak();
+    // DebugBreak returns false only so ASSERT can be used in an if...
+    bool    MOE_DLL_API DebugBreak();
 }
 
 #endif // MOE_SHIPPING

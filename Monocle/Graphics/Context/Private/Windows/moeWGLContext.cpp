@@ -48,7 +48,7 @@ namespace moe
         // Other fields aren't used or are deprecated
 
         int pixFormatIdx = ChoosePixelFormat(deviceContextHandle, &dummyPFD);
-        if (!MOE_ENSURE(pixFormatIdx > 0))
+        if (!MOE_ASSERT(pixFormatIdx > 0))
         {
             MOE_ERROR(moe::ChanWindowing, "Win32 window failed choosing a dummy pixel format! Last error: '%s'", GetLastErrorAsString());
             return;
@@ -56,14 +56,14 @@ namespace moe
 
         BOOL pfIsSet = SetPixelFormat(deviceContextHandle, pixFormatIdx, &dummyPFD);
 
-        if (!MOE_ENSURE(pfIsSet))
+        if (!MOE_ASSERT(pfIsSet))
         {
             MOE_ERROR(moe::ChanWindowing, "Unable to set window dummy pixel format. Last error: '%s'", GetLastErrorAsString());
             return;
         }
 
         m_glContext = wglCreateContext(deviceContextHandle);
-        if (!MOE_ENSURE(m_glContext != nullptr))
+        if (!MOE_ASSERT(m_glContext != nullptr))
         {
             MOE_ERROR(moe::ChanWindowing, "wglCreateContext failed! Last error: '%s'", GetLastErrorAsString());
             return;
@@ -131,7 +131,7 @@ namespace moe
         };
 
         m_glContext = wglCreateContextAttribsARB(deviceContextHandle, nullptr, wglContextAttributes);
-        if (!MOE_ENSURE(m_glContext != nullptr))
+        if (!MOE_ASSERT(m_glContext != nullptr))
         {
             MOE_ERROR(moe::ChanGraphics, "Unable to create extensible WGL context! Last error: '%s'", moe::GetLastErrorAsString());
             return;
@@ -186,7 +186,7 @@ namespace moe
     {
         if (flag == CurrentFlag::Current)
         {
-            MOE_ASSERT(m_glContext != nullptr);
+            MOE_DEBUG_ASSERT(m_glContext != nullptr);
             wglMakeCurrent(deviceContextHandle, m_glContext);
         }
         else
@@ -199,6 +199,6 @@ namespace moe
 
     bool WGLContext::LoadExtensions(HDC deviceContextHandle)
     {
-        return MOE_ENSURE(gladLoadWGL(deviceContextHandle) != 0);
+        return MOE_ASSERT(gladLoadWGL(deviceContextHandle) != 0);
     }
 }

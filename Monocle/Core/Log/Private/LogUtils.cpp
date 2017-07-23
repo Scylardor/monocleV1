@@ -27,13 +27,13 @@ namespace moe
 
         const char* GetChannelString(LogChannel chan)
         {
-            MOE_ASSERT(chan < LogChannel::_LogChannelMax_);
+            MOE_DEBUG_ASSERT(chan < LogChannel::_LogChannelMax_);
             return LogChannelStrings[(int)chan];
         }
 
         const char* GetSeverityString(LogSeverity sev)
         {
-            MOE_ASSERT(sev < LogSeverity::_LogSeverityMax_);
+            MOE_DEBUG_ASSERT(sev < LogSeverity::_LogSeverityMax_);
             return LogSeverityStrings[(int)sev];
         }
     }

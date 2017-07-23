@@ -18,23 +18,21 @@
 
 namespace moe
 {
-    // A dummy wrapper function whose only purpose is to return a false value to use within MOE_ENSURE.
-    bool    MOE_DLL_API AssertErrorReturnFalse(const char* const file, int line, const char* msg);
+    // A dummy wrapper function whose only purpose is to return a false value to use within MOE_ASSERT.
+    MOE_DLL_API bool    AssertErrorReturnFalse(const char* const file, int line, const char* msg);
 }
 
-    #define MOE_ASSERT(expr)                                                                            \
-        {                                                                                               \
-            if (MOE_UNLIKELY(!(expr)))                                                                  \
-            {                                                                                           \
-                moe::AssertErrorReturnFalse(__FILE__, __LINE__, MOE_STRINGIZE(expr) ": ASSERT FAILED!");\
-            }                                                                                           \
-        }
+#define MOE_BREAK(expr) (moe::AssertErrorReturnFalse(__FILE__, __LINE__, MOE_STRINGIZE(expr) ": ASSERT FAILED!") && moe::DebugBreak())
+#define MOE_ASSERT(expr)    (MOE_LIKELY((expr)) || MOE_BREAK(expr))
 
-    // A-la-Unreal assertion you can use in an if. Avoids to assert + check the same condition just after
-    #define MOE_ENSURE(expr) (MOE_LIKELY(expr) || moe::AssertErrorReturnFalse(__FILE__, __LINE__, MOE_STRINGIZE(expr) ": ENSURE FAILED!"))
+// The DEBUG Assert is completely stripped in Shipping builds.
+// It is only for checks you want to make in production, but you don't want included in the final project.
+// Don't put important stuff in them; only debug checks you could live without.
+#define MOE_DEBUG_ASSERT(expr) MOE_ASSERT(expr)
+
 #else
-    #define MOE_ASSERT(expr) (void)0
-    #define MOE_ENSURE(expr) (MOE_LIKELY(expr))
+    #define MOE_ASSERT(expr) (MOE_LIKELY(expr))
+    #define MOE_DEBUG_ASSERT(expr)
 #endif // MOE_SHIPPING
 
 #endif // MOE_ASSERT_H_

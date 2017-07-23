@@ -10,7 +10,7 @@ namespace moe
         // that we'll render our scenes into, and then blit this render target into the no-MSAA back buffer using ResolveSubresource.
         if (contextDesc.SamplesCount > 1)
         {
-            MOE_ASSERT(SUCCEEDED(CreateMultisampledOffscreenTarget(contextDesc.SamplesCount)));
+            MOE_DEBUG_ASSERT(SUCCEEDED(CreateMultisampledOffscreenTarget(contextDesc.SamplesCount)));
         }
     }
 
@@ -40,7 +40,7 @@ namespace moe
             return S_FALSE;
         }
 
-        MOE_ASSERT(samplesDesc.Quality > 0);
+        MOE_DEBUG_ASSERT(samplesDesc.Quality > 0);
         desc.SampleDesc.Count = samplesDesc.Count;
         desc.SampleDesc.Quality = samplesDesc.Quality - 1; // valid range starts at 0
 

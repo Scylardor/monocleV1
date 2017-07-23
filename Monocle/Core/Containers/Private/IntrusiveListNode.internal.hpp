@@ -28,13 +28,13 @@ namespace moe
         // Unlink ourselves from a potential existing list
         Unlink();
 
-        if (MOE_ENSURE(node != nullptr))
+        if (MOE_ASSERT(node != nullptr))
         {
             m_prev = node->m_prev;
             m_next = node;
         }
 
-        if (MOE_ENSURE(node->m_prev != nullptr))
+        if (MOE_ASSERT(node->m_prev != nullptr))
         {
             node->m_prev->m_next = this;
             node->m_prev = this;

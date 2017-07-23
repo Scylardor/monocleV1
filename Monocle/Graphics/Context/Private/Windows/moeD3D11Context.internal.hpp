@@ -19,14 +19,14 @@ namespace moe
         // First create a factory
         Microsoft::WRL::ComPtr<FactoryType> factory = CreateFactory();
 
-        if (!MOE_ENSURE(factory != nullptr))
+        if (!MOE_ASSERT(factory != nullptr))
         {
             return;
         }
 
         // We're using the default adapter
         Microsoft::WRL::ComPtr<AdapterType> defaultAdapter = GetDefaultAdapter(factory);
-        if (!MOE_ENSURE(defaultAdapter != nullptr))
+        if (!MOE_ASSERT(defaultAdapter != nullptr))
         {
             return;
         }
@@ -39,18 +39,18 @@ namespace moe
 
         // Now create the device
         HRESULT hr = CreateDevice(defaultAdapter, m_device, m_immediateContext);
-        if (!MOE_ENSURE(SUCCEEDED(hr)))
+        if (!MOE_ASSERT(SUCCEEDED(hr)))
         {
             return;
         }
 
         // And create a swap chain that will fit all window space by default
         m_swapChain = VersionedContext::CreateFullWindowSwapChain(contextDesc, factory, defaultAdapter, m_device, winHandle);
-        MOE_ASSERT(m_swapChain != nullptr);
+        MOE_DEBUG_ASSERT(m_swapChain != nullptr);
 
         // First get the back buffer render target view
         m_backBufferView = GetBackBufferView(m_device, m_swapChain);
-        if (!MOE_ENSURE(m_backBufferView != nullptr))
+        if (!MOE_ASSERT(m_backBufferView != nullptr))
         {
             MOE_ERROR(moe::ChanGraphics, "D3D11 context failed to create a render target view to the back buffer.");
             return;
@@ -59,7 +59,7 @@ namespace moe
         // Then create the depth/stencil buffer
         DXGI_FORMAT depthStencilFormat = DXGI_FORMAT(contextDesc.DepthStencilFormat == ContextDescriptor::DEFAULT_GENERIC_FORMAT ? DXGI_FORMAT_D24_UNORM_S8_UINT : contextDesc.DepthStencilFormat);
         hr = CreateDepthStencilBuffer(m_device, m_swapChain, m_depthStencilView, m_depthStencilBuffer, depthStencilFormat);
-        if (!MOE_ENSURE(SUCCEEDED(hr)))
+        if (!MOE_ASSERT(SUCCEEDED(hr)))
         {
             MOE_ERROR(moe::ChanGraphics, "D3D11 context failed to create a depth stencil buffer.");
             return;
@@ -183,7 +183,7 @@ namespace moe
         Microsoft::WRL::ComPtr<typename BaseD3DContext<VersionedContext>::DeviceType>& device,
         Microsoft::WRL::ComPtr<typename BaseD3DContext<VersionedContext>::SwapChainType>& swapChain)
     {
-        if (!MOE_ENSURE(device != nullptr && swapChain != nullptr))
+        if (!MOE_ASSERT(device != nullptr && swapChain != nullptr))
         {
             MOE_ERROR(moe::ChanGraphics, "D3D11 Context needs a valid device and swap chain to retrieve the back buffer view.");
             return nullptr;
@@ -286,7 +286,7 @@ namespace moe
     template <class VersionedContext>
     void    BaseD3DContext<VersionedContext>::SetFullViewport()
     {
-        if (!MOE_ENSURE(m_immediateContext != nullptr))
+        if (!MOE_ASSERT(m_immediateContext != nullptr))
         {
             MOE_ERROR(moe::ChanGraphics, "D3D Context unable to set viewport: device context is null");
             return;
@@ -295,7 +295,7 @@ namespace moe
         // Initializing a full-window viewport
         // Retrieve the back buffer into a Texture 2D to retrieve the dimensions
         Microsoft::WRL::ComPtr<ID3D11Texture2D> backBufferTex = GetSwapChainBackBufferTexture(m_swapChain);
-        if (MOE_ENSURE(backBufferTex != nullptr))
+        if (MOE_ASSERT(backBufferTex != nullptr))
         {
             return;
         }
@@ -345,18 +345,18 @@ namespace moe
         adapter->EnumOutputs(0, defaultOutput.GetAddressOf());
         Microsoft::WRL::ComPtr<IDXGIOutput1> output1;
         hr = defaultOutput.As<IDXGIOutput1>(&output1);
-        MOE_ASSERT(SUCCEEDED(hr));
+        MOE_DEBUG_ASSERT(SUCCEEDED(hr));
 
         // Get the number of modes that fit our wanted display format for this output
         // Uncomment DXGI_ENUM_MODES_STEREO to enumerate stereoscopic rendering modes
         UINT numModes;
         UINT flags = DXGI_ENUM_MODES_INTERLACED /*| DXGI_ENUM_MODES_STEREO*/;
         hr = output1->GetDisplayModeList(requestedFormat, flags, &numModes, nullptr);
-        MOE_ASSERT(SUCCEEDED(hr));
+        MOE_DEBUG_ASSERT(SUCCEEDED(hr));
 
         std::vector<DXGI_MODE_DESC> modeDescs(numModes);
         hr = output1->GetDisplayModeList(requestedFormat, flags, &numModes, modeDescs.data());
-        MOE_ASSERT(SUCCEEDED(hr));
+        MOE_DEBUG_ASSERT(SUCCEEDED(hr));
 
         //// Now go through all the display modes and find the one that matches the screen width and height.
         //// Store the refresh rate values of the first display mode numerator and denominator of the refresh rate for that monitor.
@@ -377,7 +377,7 @@ namespace moe
     template <class VersionedContext>
     DXGI_SAMPLE_DESC BaseD3DContext<VersionedContext>::GetDeviceBestMultisamplingQuality(Microsoft::WRL::ComPtr<DeviceType>& device, DXGI_FORMAT desiredFormat, UINT desiredSampleCount)
     {
-        if (!MOE_ENSURE(device != nullptr))
+        if (!MOE_ASSERT(device != nullptr))
         {
             return DXGI_SAMPLE_DESC{ 1, 0 };
         }
@@ -391,7 +391,7 @@ namespace moe
             MOE_WARNING(moe::ChanGraphics, "%lux MSAA sampling is unavailable, fallbacking on 4x MSAA.", desiredSampleCount);
             desc.Count = 4;
             device->CheckMultisampleQualityLevels(desiredFormat, desc.Count, &desc.Quality);
-            MOE_ASSERT(desc.Quality > 0);
+            MOE_DEBUG_ASSERT(desc.Quality > 0);
         }
 
         return desc;

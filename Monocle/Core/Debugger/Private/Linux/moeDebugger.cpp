@@ -44,12 +44,16 @@ namespace moe
 
 
     // Generates an interrupt 3 (commonly raises SIGTRAP caught by the debugger without crashing the program afterwards).
-    void    DebugBreak()
+    bool    DebugBreak()
     {
+        #ifndef MOE_PROFILE // We don't want an assert break ruining a profiling session
         if (IsDebuggerPresent())
         {
             __asm__("int $3");
         }
+        #endif // MOE_PROFILE
+
+        return false;
     }
 }
 

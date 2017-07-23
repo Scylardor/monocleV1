@@ -28,11 +28,11 @@ namespace moe
 
     void    FileWritePolicy::OpenFile(const char* filename)
     {
-        if (MOE_ENSURE(filename != nullptr))
+        if (MOE_ASSERT(filename != nullptr))
         {
             m_fileHandle = fopen(filename, "w");
         }
-        MOE_ASSERT(m_fileHandle != nullptr);
+        MOE_DEBUG_ASSERT(m_fileHandle != nullptr);
     }
 
     void    FileWritePolicy::Close()

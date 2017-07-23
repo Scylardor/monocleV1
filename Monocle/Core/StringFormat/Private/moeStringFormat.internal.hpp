@@ -35,7 +35,7 @@ namespace moe
                 fmtBuffer.Resize(formattedSize);
                 currentBufferSize = formattedSize;
                 formattedSize = SnPrintf(&fmtBuffer[0], formattedSize + 1, format, args...);
-                MOE_ASSERT(formattedSize != (std::size_t)-1);
+                MOE_DEBUG_ASSERT(formattedSize != (std::size_t)-1);
                 if (fmtBuffer.Size() > formattedSize)
                 {
                     fmtBuffer.Resize(formattedSize);

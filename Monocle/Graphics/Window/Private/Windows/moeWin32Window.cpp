@@ -52,7 +52,7 @@ namespace moe
         windowClass.hbrBackground = CreateSolidBrush(RGB(0, 0, 0)); // Paint it black
         windowClass.hIcon = LoadIcon(windowClass.hInstance, MAKEINTRESOURCE(winAttr.IconId)); // Loads user-provided icon if available
 
-        if (!MOE_ENSURE(RegisterClassExW(&windowClass)))
+        if (!MOE_ASSERT(RegisterClassExW(&windowClass)))
         {
             MOE_ERROR(moe::ChanWindowing, "Win32 window class registration failed. Last error: '%s'.", moe::GetLastErrorAsString());
             return false;
@@ -82,7 +82,7 @@ namespace moe
             GetModuleHandleW(nullptr), // instance handle
             nullptr); // no custom data needed
 
-        if (!MOE_ENSURE(m_handle != nullptr))
+        if (!MOE_ASSERT(m_handle != nullptr))
         {
             MOE_ERROR(moe::ChanWindowing, "Win32 window creation failed. Last error: '%s'.", moe::GetLastErrorAsString());
             return false;
@@ -121,7 +121,7 @@ namespace moe
         // enjoy
         MOE_INFO(moe::ChanWindowing, "Creating dummy WGL context");
         m_context = std::make_unique<moe::WGLContext>();
-        if (!MOE_ENSURE(m_context != nullptr))
+        if (!MOE_ASSERT(m_context != nullptr))
         {
             return; // Couldn't create a new context ?! Give up now
         }

@@ -14,12 +14,16 @@ namespace moe
         return (::IsDebuggerPresent() != 0);
     }
 
-    void    DebugBreak()
+    bool DebugBreak()
     {
+        #ifndef MOE_PROFILE // We don't want an assert break ruining a profiling session
         if (IsDebuggerPresent())
         {
             ::DebugBreak();
         }
+        #endif // MOE_PROFILE
+
+        return false;
     }
 }
 

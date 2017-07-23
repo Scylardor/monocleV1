@@ -7,7 +7,6 @@
 #endif
 #include "Core/Log/moeLog.h"
 
-
 TEST_CASE("moeLog", "[Core]")
 {
     typedef moe::StdLogger<moe::SeverityFilterPolicy, moe::DebuggerFormatPolicy, moe::CaptureWritePolicy> FilteredFormattedLogger;
@@ -148,19 +147,19 @@ TEST_CASE("moeLog", "[Core]")
     SECTION("Default logger")
     {
         // Default logger should be null upon initialization
-        moe::LoggerBase* dLogger = moe::GetDefaultLoggerPtr();
-        REQUIRE(dLogger == nullptr);
+        moe::LoggerBase& logChain = moe::GetLogChainSingleton();
 
-        // The "default" class of logging macros won't log if the default logger hasn't been set up
+        // The "default" class of logging macros won't log if the log chain is empty
         // Just check it doesn't crash in any way
         MOE_INFO(moe::ChanDefault, "This won't be logged");
 
-        // Now make the default log output to cout with a warning-level filter
-        dLogger = moe::GetDefaultLogger().SetNew<FilteredStreamLogger>(moe::SevWarning, moe::NoFormatPolicy(), std::cout);
-
+        // Now test by plugging a cout logger filtered on severity
         // and capture cout output to check its output
         std::stringstream captureStream;
         std::streambuf * origCoutBuffer = std::cout.rdbuf(captureStream.rdbuf());
+
+        FilteredStreamLogger filteredLogger(moe::SevWarning, moe::NoFormatPolicy(), std::cout);
+        filteredLogger.LinkTo(&logChain);
 
         MOE_INFO(moe::ChanDefault, "This won't pass the %s filter", "severity");
 
@@ -177,7 +176,11 @@ TEST_CASE("moeLog", "[Core]")
         capturedText = captureStream.str();
         REQUIRE(capturedText == "This passes the severity filter\n");
 
-        dLogger = moe::GetDefaultLogger().SetNew<moe::StdLogger<moe::NoFilterPolicy, moe::DebuggerFormatPolicy, moe::IdeWritePolicy>>();
+        filteredLogger.Unlink();
+
+        moe::StdLogger<moe::NoFilterPolicy, moe::DebuggerFormatPolicy, moe::IdeWritePolicy> ideLogger;
+        ideLogger.LinkTo(&logChain);
+
         MOE_WARNING(moe::ChanDefault, "This passes the %s filter", "severity");
     }
  }

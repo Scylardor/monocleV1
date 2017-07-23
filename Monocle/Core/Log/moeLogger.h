@@ -1,7 +1,6 @@
 #ifndef MOE_LOGGER_H_
 #define MOE_LOGGER_H_
 
-#include "Core/Preprocessor/moeDLLVisibility.h"
 #include "Core/Log/moeLoggerBase.h"
 
 namespace moe
@@ -23,7 +22,7 @@ namespace moe
         WritePolicy&    GetWritePolicy()  { return m_writer; }
 
     protected:
-        virtual void    ConsumeLogInfo(const LogInfo& logInfo) override;
+        virtual void    ConsumeLogMessage(const LogInfo& logInfo) override;
 
     private:
         FilterPolicy    m_filter;

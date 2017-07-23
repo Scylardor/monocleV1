@@ -1,7 +1,8 @@
 #ifndef MOE_LOG_MACROS_H_
 #define MOE_LOG_MACROS_H_
 
-#include "Core/Log/DefaultLogger.h"
+#include "Core/Log/moeLoggerBase.h"
+
 
 // The macros commonly used for logging.
 // Each macro comes in two flavors: with or without a specified Logger. Without a specified Logger, we use the static default logger.
@@ -13,16 +14,11 @@
     MOE_LOG_TO_LOGGER(logger, channel, severity, __FILE__, __LINE__, format, ##__VA_ARGS__)
 
 
-#define MOE_DEFAULT_LOG_EXPAND(channel, severity, file, line, format, ...)                                  \
-    do {                                                                                                    \
-        moe::LoggerBase* logger = moe::GetDefaultLoggerPtr();                                               \
-        if (logger != nullptr)                                                                              \
-        {                                                                                                   \
-            MOE_LOG_TO_LOGGER((*logger), channel, severity, file, line, format, ##__VA_ARGS__);             \
-        }                                                                                                   \
-    } while (0)
+#define MOE_DEFAULT_LOG_EXPAND(channel, severity, file, line, format, ...)  \
+    MOE_LOG_TO_LOGGER(moe::GetLogChainSingleton(), channel, severity, file, line, format, ##__VA_ARGS__)
 
-#define MOE_DEFAULT_LOG(channel, severity, format, ...)                                                     \
+
+#define MOE_DEFAULT_LOG(channel, severity, format, ...) \
     MOE_DEFAULT_LOG_EXPAND(channel, severity, __FILE__, __LINE__, format, ##__VA_ARGS__)
 
 

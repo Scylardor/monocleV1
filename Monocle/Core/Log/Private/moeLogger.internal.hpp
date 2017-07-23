@@ -9,7 +9,7 @@ namespace moe
     }
 
     template <class FilterPolicy, class FormatPolicy, class WritePolicy>
-    void    StdLogger<FilterPolicy, FormatPolicy, WritePolicy>::ConsumeLogInfo(const LogInfo& logInfo)
+    void    StdLogger<FilterPolicy, FormatPolicy, WritePolicy>::ConsumeLogMessage(const LogInfo& logInfo)
     {
         if (m_filter.Filter(logInfo))
         {

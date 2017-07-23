@@ -23,14 +23,16 @@ namespace moe
         template <typename... Args>
         void    Log(LogChannel channel, LogSeverity severity, const char* file, int line, const char* format, const Args&... args);
 
-        void    MOE_DLL_API LogFormatted(LogChannel channel, LogSeverity severity, const char* file, int line, const std::string& message);
-
     protected:
-        virtual void	ConsumeLogInfo(const LogInfo& logInfo) = 0;
+        virtual void    ConsumeLogMessage(const LogInfo& logInfo) = 0;
     };
+
+
+    MOE_DLL_API LoggerBase&  GetLogChainSingleton();
 }
 
 #include "Core/Log/Private/moeLoggerBase.internal.hpp"
+
 
 #endif // MOE_STD_SUPPORT
 

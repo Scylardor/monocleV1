@@ -33,6 +33,7 @@ end
 function SetBuildOptionsForLinuxDLL()
 	filter { "platforms:*DLL", "system:linux" }
 		buildoptions { "-fvisibility=hidden" }
+
 end
 
 
@@ -82,7 +83,7 @@ function AddGraphicsAPI()
 		links { "opengl32", "d3d11", "dxgi" }
 		AddWGLFiles()
 	filter "system:linux"
-		links { "opengl32" }
+		links { "GL" }
 		AddGLXFiles()
 end
 
@@ -178,15 +179,17 @@ project "UnitTests"
 	location "Monocle/Tests"
 	kind "ConsoleApp"
 	links { "Core" }
+	objdir "Monocle/Tests/Build/"
 	
 	files { "Monocle/Tests/UnitTests/*.cpp", "Monocle/ThirdParty/Catch/*" }
 	includedirs { "Monocle/ThirdParty/Catch", "Monocle/" }
 	
 	defines "CATCH_CPP11_OR_GREATER"
+
 	removedefines { "MOE_DLL_EXPORT" }
 
 	filter { "platforms:*DLL", "system:linux" }
-		runpathdirs { "Build/%{cfg.platform}/%{cfg.buildcfg}" }
+		runpathdirs { "Monocle/Build/%{cfg.platform}/%{cfg.buildcfg}" }
 
 -- project "MonocleApplication"
 	-- files { "Monocle/App/**.cpp", "Monocle/App/**.h", "Monocle/App/**.hpp" }

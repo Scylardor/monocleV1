@@ -79,7 +79,7 @@ namespace moe
 
 #ifdef MOE_WINDOWS
 #include "Windows/moeWin32Window.h"
-#else if defined(MOE_LINUX)
+#elif defined(MOE_LINUX)
 #include "Linux/moeX11Window.h"
 #endif // MOE_WINDOWS
 

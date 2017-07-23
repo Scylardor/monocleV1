@@ -5,7 +5,6 @@
 #define MOE_STD_SUPPORT
 #endif
 #include "Core/StringFormat/moeStringFormat.h"
-#include "Core/Log/DefaultLogger.h"
 
 // All tests should verify both char and wchar_t support.
 TEST_CASE("StringFormat", "[Core]")

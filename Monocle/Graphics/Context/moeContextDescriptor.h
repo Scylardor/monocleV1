@@ -61,11 +61,10 @@ namespace moe
 
         // Color Format
         GenericFormat   ColorFormat;
+
+        // Depth-stencil format
         GenericFormat   DepthStencilFormat;
 
-        // Depth/stencil
-        std::uint8_t    DepthBits;
-        std::uint8_t    StencilBits;
 
         // MSAA / Buffering
         std::uint8_t    SamplesCount;

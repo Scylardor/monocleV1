@@ -50,6 +50,7 @@ namespace moe
         bool    RegisterWindow(const WindowAttributes& winAttr);
         bool    CreateWindowHandle(const WindowAttributes& winAttr);
         void    DestroyWindow();
+        void    DestroyWindowHandle();
 
         static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 

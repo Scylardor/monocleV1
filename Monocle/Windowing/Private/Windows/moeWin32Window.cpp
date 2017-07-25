@@ -95,6 +95,11 @@ namespace moe
     void    Win32Window::DestroyWindow()
     {
         m_context.reset();
+        DestroyWindowHandle();
+    }
+
+    void    Win32Window::DestroyWindowHandle()
+    {
         ::DestroyWindow(GetHandle());
         UnregisterClass(Win32Window::WINDOW_CLASS, GetModuleHandleW(nullptr));
     }
@@ -138,7 +143,7 @@ namespace moe
 
         MOE_INFO(moe::ChanWindowing, "WGL extensions successfully loaded, recreating Win32 window...");
         ReleaseDC(GetHandle(), myDC);
-        DestroyWindow();
+        DestroyWindowHandle();
         if (!InitializeWindow(m_attribs))
         {
             return;

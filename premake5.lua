@@ -83,7 +83,7 @@ function AddGraphicsAPI()
 		links { "opengl32", "d3d11", "dxgi" }
 		AddWGLFiles()
 	filter "system:linux"
-		links { "GL" }
+		links { "GL", "dl", "X11" } -- lib GL is dynamically loaded at runtime so we need dl for dlopen etc.
 		AddGLXFiles()
 end
 
@@ -168,7 +168,6 @@ project "Graphics"
 	links { "Core" }
 
 	-- TODO: I think we should be able to specify GL_MAJOR/GL_MINOR at compilation, and generate the appropriate glad files on the fly.
-	-- We also need to manage platforms (e.g. do not include WGL but GLX on Linux...)
 	AddGraphicsAPI()
 
 	RemoveOtherPlatformSpecificFiles()
@@ -179,10 +178,6 @@ project "Windowing"
 	files { "Monocle/Windowing/**.h", "Monocle/Windowing/Private/**.hpp", "Monocle/Windowing/Private/**.cpp" }
 	includedirs { "Monocle/" }
 	links { "Core", "Graphics" }
-
-	-- TODO: I think we should be able to specify GL_MAJOR/GL_MINOR at compilation, and generate the appropriate glad files on the fly.
-	-- We also need to manage platforms (e.g. do not include WGL but GLX on Linux...)
-	AddGraphicsAPI()
 
 	RemoveOtherPlatformSpecificFiles()
 	SetBuildOptionsForLinuxDLL()

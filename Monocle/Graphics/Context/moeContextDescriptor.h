@@ -42,15 +42,15 @@ namespace moe
             std::int8_t apiMajorVersion     = DEFAULT_API_MAJOR_VERSION,    std::int8_t apiMinorVersion = DEFAULT_API_MINOR_VERSION,
             std::uint8_t numBuffers         = DEFAULT_BUFFERS_COUNT,        VSyncFlag useVSync          = DEFAULT_USE_VSYNC,
             std::uint32_t width             = DEFAULT_WIDTH,                std::uint32_t height        = DEFAULT_HEIGHT) :
+            ViewportWidth(width),
+            ViewportHeight(height),
             ColorFormat(colorFormat),
             DepthStencilFormat(depthStencilFormat),
             SamplesCount(numSamples),
+            BuffersCount(numBuffers),
             API_MajorVersion(apiMajorVersion),
             API_MinorVersion(apiMinorVersion),
-            BuffersCount(numBuffers),
-            VSyncState(useVSync),
-            ViewportWidth(width),
-            ViewportHeight(height)
+            VSyncState(useVSync)
         {
         }
 
@@ -64,7 +64,6 @@ namespace moe
 
         // Depth-stencil format
         GenericFormat   DepthStencilFormat;
-
 
         // MSAA / Buffering
         std::uint8_t    SamplesCount;

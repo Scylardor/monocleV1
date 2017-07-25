@@ -2,6 +2,7 @@
 #define MOE_WGL_CONTEXT_H_
 
 #include "Graphics/Context/moeGraphicsContext.h"
+#include "Core/Preprocessor/moeDLLVisibility.h"
 
 // GLAD includes some windows headers.
 // Define this to avoid windows defining min/max() macros disrupting std::numeric_limits functions.
@@ -15,7 +16,7 @@ namespace moe
 {
     struct ContextDescriptor;
 
-    class WGLContext : public GraphicsContext
+    class MOE_DLL_API WGLContext : public GraphicsContext
     {
     public:
         enum class CurrentFlag

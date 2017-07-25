@@ -1,5 +1,5 @@
 #include "Graphics/Context/Windows/moeWGLContext.h"
-#include "Graphics/Window/moeContextDescriptor.h"
+#include "Graphics/Context/moeContextDescriptor.h"
 #include "Graphics/OpenGL/moeOpenGLUtils.h"
 
 #include "Core/Preprocessor/moeAssert.h"

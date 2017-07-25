@@ -1,4 +1,5 @@
-#include "Graphics/Window/Windows/moeWin32Window.h"
+#include "Windowing/Windows/moeWin32Window.h"
+#include "Windowing/moeWindowAttributes.h"
 #include "Core/Preprocessor/moeAssert.h"
 #include "Core/Log/moeLogMacros.h"
 #include "Core/Misc/Windows/GetLastErrorAsString.h"
@@ -8,10 +9,10 @@ namespace moe
     const wchar_t* Win32Window::WINDOW_CLASS = L"Win32Window";
 
     Win32Window::Win32Window(const WindowAttributes& winAttr) :
-        WindowBase<Win32Window>()
+        WindowBase<Win32Window>(winAttr)
     {
         m_handle = nullptr;
-        InitializeWindow(winAttr);
+        MOE_DEBUG_ASSERT(InitializeWindow(winAttr) == true);
     }
 
     Win32Window::~Win32Window()
@@ -68,7 +69,7 @@ namespace moe
 
         // winAttr width/height actually describes wanted client area size, so for the client area to be of the wanted size,
         // we must adjust window size to get a window slightly larger than that
-        RECT windowRect = { 0, 0, (LONG)winAttr.ContextDesc.ViewportWidth, (LONG)winAttr.ContextDesc.ViewportHeight };
+        RECT windowRect = { 0, 0, (LONG)winAttr.Dims.Width, (LONG)winAttr.Dims.Height };
         AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, FALSE); // this rect now holds the "true" window size
 
         m_handle = CreateWindowExW(extendedStyle,
@@ -99,7 +100,7 @@ namespace moe
     }
 
     template <>
-    void    Win32Window::CreateConcreteContext<moe::WGLContext>(const WindowAttributes& winAttr)
+    void    Win32Window::CreateConcreteContext<moe::WGLContext>(const ContextDescriptor& contextDesc)
     {
         if (!Initialized())
         {
@@ -128,7 +129,7 @@ namespace moe
 
         moe::WGLContext* wglContext = static_cast<moe::WGLContext*>(m_context.get());
 
-        wglContext->CreateLegacyContext(myDC, winAttr.ContextDesc);
+        wglContext->CreateLegacyContext(myDC, contextDesc);
         if (!wglContext->LoadExtensions(myDC))
         {
             m_context.reset();
@@ -138,18 +139,18 @@ namespace moe
         MOE_INFO(moe::ChanWindowing, "WGL extensions successfully loaded, recreating Win32 window...");
         ReleaseDC(GetHandle(), myDC);
         DestroyWindow();
-        if (!InitializeWindow(winAttr))
+        if (!InitializeWindow(m_attribs))
         {
             return;
         }
 
         myDC = GetDC(GetHandle()); // The handle has been recreated, re-get the DC
-        wglContext->CreateExtensibleContext(myDC, winAttr.ContextDesc);
+        wglContext->CreateExtensibleContext(myDC, contextDesc);
         ReleaseDC(GetHandle(), myDC);
     }
 
     template <>
-    void    Win32Window::CreateConcreteContext<moe::D3DContext_11_2>(const WindowAttributes& winAttr)
+    void    Win32Window::CreateConcreteContext<moe::D3DContext_11_2>(const ContextDescriptor& contextDesc)
     {
         if (!Initialized())
         {
@@ -158,11 +159,11 @@ namespace moe
         }
 
         MOE_INFO(moe::ChanWindowing, "Creating D3D 11.2 context");
-        m_context = std::make_unique<moe::D3DContext_11_2>(winAttr.ContextDesc, GetHandle());
+        m_context = std::make_unique<moe::D3DContext_11_2>(contextDesc, GetHandle());
     }
 
     template <>
-    void    Win32Window::CreateConcreteContext<moe::D3DContext_11_1>(const WindowAttributes& winAttr)
+    void    Win32Window::CreateConcreteContext<moe::D3DContext_11_1>(const ContextDescriptor& contextDesc)
     {
         if (!Initialized())
         {
@@ -171,7 +172,7 @@ namespace moe
         }
 
         MOE_INFO(moe::ChanWindowing, "Creating D3D 11.1 context");
-        m_context = std::make_unique<moe::D3DContext_11_1>(winAttr.ContextDesc, GetHandle());
+        m_context = std::make_unique<moe::D3DContext_11_1>(contextDesc, GetHandle());
     }
 
     bool    Win32Window::Initialized() const

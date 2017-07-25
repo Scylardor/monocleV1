@@ -174,20 +174,40 @@ project "Graphics"
 	RemoveOtherPlatformSpecificFiles()
 	SetBuildOptionsForLinuxDLL()
 
+project "Windowing"
+	location "Monocle/Windowing"
+	files { "Monocle/Windowing/**.h", "Monocle/Windowing/Private/**.hpp", "Monocle/Windowing/Private/**.cpp" }
+	includedirs { "Monocle/" }
+	links { "Core", "Graphics" }
+
+	-- TODO: I think we should be able to specify GL_MAJOR/GL_MINOR at compilation, and generate the appropriate glad files on the fly.
+	-- We also need to manage platforms (e.g. do not include WGL but GLX on Linux...)
+	AddGraphicsAPI()
+
+	RemoveOtherPlatformSpecificFiles()
+	SetBuildOptionsForLinuxDLL()
+
 
 project "UnitTests"
 	location "Monocle/Tests"
 	kind "ConsoleApp"
 	links { "Core" }
+
+	-- This seems to be mandatory on linux, you can't use the common objdir folder, or compile fails. Issue in investigation
 	objdir "Monocle/Tests/Build/"
 	
 	files { "Monocle/Tests/UnitTests/*.cpp", "Monocle/ThirdParty/Catch/*" }
 	includedirs { "Monocle/ThirdParty/Catch", "Monocle/" }
-	
+
+	-- we're using C++11
 	defines "CATCH_CPP11_OR_GREATER"
 
+	-- As all other projects of Monocle are libs, in DLL mode, this define needs to be removed
 	removedefines { "MOE_DLL_EXPORT" }
+	
+	RemoveOtherPlatformSpecificFiles()
 
+	-- The DLL version of the Linux executable doesn't seem to know where to get the DLL's on its own.
 	filter { "platforms:*DLL", "system:linux" }
 		runpathdirs { "Monocle/Build/%{cfg.platform}/%{cfg.buildcfg}" }
 

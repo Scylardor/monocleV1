@@ -2,6 +2,7 @@
 #define MOE_D3DCONTEXT_11_1_H_
 
 #include "moeD3D11Context.h"
+#include "Core/Preprocessor/moeDLLVisibility.h"
 #include <d3d11_1.h>
 
 
@@ -27,7 +28,10 @@ namespace moe
     class D3DContext_11_1 : public BaseD3DContext<D3DContext_11_1>
     {
     public:
-        D3DContext_11_1(const ContextDescriptor& contextDesc, HWND winHandle);
+        MOE_DLL_API D3DContext_11_1(const ContextDescriptor& contextDesc, HWND winHandle);
+
+    protected:
+        friend BaseD3DContext<D3DContext_11_1>; // allow it to access CreateFullWindowSwapChain and stuff
 
         static Microsoft::WRL::ComPtr<IDXGISwapChain1>  CreateFullWindowSwapChain(const ContextDescriptor& contextDesc,
             Microsoft::WRL::ComPtr<IDXGIFactory1>& factory,

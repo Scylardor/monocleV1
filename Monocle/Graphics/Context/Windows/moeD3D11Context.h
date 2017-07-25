@@ -1,8 +1,9 @@
 #ifndef MOE_D3D11_CONTEXT_H_
 #define MOE_D3D11_CONTEXT_H_
 
+#include "Core/Preprocessor/moeDLLVisibility.h"
 #include "Graphics/Context/moeGraphicsContext.h"
-#include "Graphics/Window/moeContextDescriptor.h"
+#include "Graphics/Context/moeContextDescriptor.h"
 #include "Core/Misc/moeFalse.h"
 #include "Core/Preprocessor/moeAssert.h"
 #include "Core/Log/moeLogMacros.h"
@@ -48,13 +49,17 @@ namespace moe
     {
     public:
 
-        virtual void    OnThreadChange() override {}
+        MOE_DLL_API virtual void    OnThreadChange() override {}
+
+
+
+
+
+    protected:
+        BaseD3DContext(const ContextDescriptor& contextDesc, HWND winHandle);
 
         void    SetFullViewport();
 
-        bool    IsFullyInitialized() const;
-
-    protected:
         // Avoid manipulating insanely long types.
         typedef typename D3DContextTraits<VersionedContext>::Device         DeviceType;
         typedef typename D3DContextTraits<VersionedContext>::DeviceContext  DeviceContextType;
@@ -62,7 +67,6 @@ namespace moe
         typedef typename D3DContextTraits<VersionedContext>::Adapter        AdapterType;
         typedef typename D3DContextTraits<VersionedContext>::Factory        FactoryType;
 
-        BaseD3DContext(const ContextDescriptor& contextDesc, HWND winHandle);
 
         static Microsoft::WRL::ComPtr<FactoryType>  CreateFactory();
 

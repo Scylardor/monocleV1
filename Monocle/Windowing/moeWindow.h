@@ -35,6 +35,11 @@ namespace moe
     public:
         using Handle = typename WindowTraits<ConcreteWindow>::HandleType;
 
+        WindowBase(const WindowAttributes& attribs) :
+            m_attribs(attribs)
+        {
+        }
+
         bool    InitializeWindow(const WindowAttributes& winAttr)
         {
             return window().InitializeWindow(winAttr);
@@ -46,14 +51,14 @@ namespace moe
         }
 
         template <class ContextType>
-        void    CreateContext(const WindowAttributes& winAttr)
+        void    CreateContext(const ContextDescriptor& contextDesc)
         {
             static_assert(std::is_base_of<moe::GraphicsContext, ContextType>::value, "CreateContext only accepts classes derived from moe::GraphicsContext");
             static_assert(moe::TypeListIndexOf<WindowTraits<ConcreteWindow>::CompatibleContexts, ContextType>::value != -1,
                 "This context type isn't supported by your Window type!");
 
             m_context = nullptr;
-            window().CreateConcreteContext<ContextType>(winAttr);
+            window().CreateConcreteContext<ContextType>(contextDesc);
         }
 
         void    DestroyWindow();
@@ -66,8 +71,9 @@ namespace moe
     protected:
         ~WindowBase() {}
 
-        Handle  m_handle;
+        WindowAttributes                        m_attribs;
         std::unique_ptr<moe::GraphicsContext>   m_context;
+        Handle                                  m_handle;
 
     private:
         ConcreteWindow& window()
@@ -76,12 +82,5 @@ namespace moe
         }
     };
 }
-
-#ifdef MOE_WINDOWS
-#include "Windows/moeWin32Window.h"
-#elif defined(MOE_LINUX)
-#include "Linux/moeX11Window.h"
-#endif // MOE_WINDOWS
-
 
 #endif // MOE_WINDOW_H_

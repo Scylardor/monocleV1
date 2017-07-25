@@ -2,6 +2,7 @@
 #define MOE_D3DCONTEXT_11_2_H_
 
 #include "moeD3D11Context.h"
+#include "Core/Preprocessor/moeDLLVisibility.h"
 #include <d3d11_2.h>
 
 // The Direct3D Context class for 11.2 version.
@@ -30,16 +31,19 @@ namespace moe
     class D3DContext_11_2 : public BaseD3DContext<D3DContext_11_2>
     {
     public:
-        D3DContext_11_2(const ContextDescriptor& contextDesc, HWND winHandle);
+        MOE_DLL_API D3DContext_11_2(const ContextDescriptor& contextDesc, HWND winHandle);
+
+    protected:
+        friend BaseD3DContext<D3DContext_11_2>; // allow it to access CreateFullWindowSwapChain and stuff
 
         static void DescribeAdapter(Microsoft::WRL::ComPtr<IDXGIAdapter2>& adapter);
+
 
         static Microsoft::WRL::ComPtr<IDXGISwapChain2>  CreateFullWindowSwapChain(const ContextDescriptor& contextDesc,
             Microsoft::WRL::ComPtr<IDXGIFactory2>& factory,
             Microsoft::WRL::ComPtr<IDXGIAdapter2>&, // unused
             Microsoft::WRL::ComPtr<ID3D11Device2>& device,
             HWND winHandle);
-
 
     private:
         // Make the Base class a friend so it's able to use these static functions

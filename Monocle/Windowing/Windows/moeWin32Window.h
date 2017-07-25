@@ -2,7 +2,7 @@
 #define MOE_WIN32_WINDOW_H_
 
 #include "Core/Preprocessor/moeDLLVisibility.h"
-#include "Graphics/Window/moeWindow.h"
+#include "Windowing/moeWindow.h"
 #include "Graphics/Context/Windows/moeWGLContext.h"
 #include "Graphics/Context/Windows/moeD3DContext_11_1.h"
 #include "Graphics/Context/Windows/moeD3DContext_11_2.h"
@@ -38,13 +38,13 @@ namespace moe
         friend WindowBase<Win32Window>;
 
         template <class Context>
-        void                CreateConcreteContext(const WindowAttributes& winAttr);
+        void                CreateConcreteContext(const ContextDescriptor& contextDesc);
         template <>
-        MOE_DLL_API void    CreateConcreteContext<moe::WGLContext>(const WindowAttributes& winAttr);
+        MOE_DLL_API void    CreateConcreteContext<moe::WGLContext>(const ContextDescriptor& contextDesc);
         template <>
-        MOE_DLL_API void    CreateConcreteContext<moe::D3DContext_11_2>(const WindowAttributes& winAttr);
+        MOE_DLL_API void    CreateConcreteContext<moe::D3DContext_11_2>(const ContextDescriptor& contextDesc);
         template <>
-        MOE_DLL_API void    CreateConcreteContext<moe::D3DContext_11_1>(const WindowAttributes& winAttr);
+        MOE_DLL_API void    CreateConcreteContext<moe::D3DContext_11_1>(const ContextDescriptor& contextDesc);
 
         bool    InitializeWindow(const WindowAttributes& winAttr);
         bool    RegisterWindow(const WindowAttributes& winAttr);
@@ -55,9 +55,6 @@ namespace moe
 
         static const wchar_t*  WINDOW_CLASS;
     };
-
-    // Define the Win32 window as being the default moe::Window.
-    typedef Win32Window Window;
 }
 
 #endif // MOE_WIN32_WINDOW_H_

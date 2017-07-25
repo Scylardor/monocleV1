@@ -397,12 +397,4 @@ namespace moe
         return desc;
     }
 
-
-    template <class VersionedContext>
-    bool BaseD3DContext<VersionedContext>::IsFullyInitialized() const
-    {
-        return (m_device != nullptr && m_immediateContext != nullptr
-            && m_swapChain != nullptr
-            && m_depthStencilBuffer != nullptr && m_depthStencilView != nullptr);
-    }
 }

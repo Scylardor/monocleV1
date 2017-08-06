@@ -28,7 +28,7 @@ namespace moe
 
         bool operator==(const NamedType& other)
         {
-            return m_value == other.m_value;
+            return (m_value == other.m_value);
         }
 
     private:

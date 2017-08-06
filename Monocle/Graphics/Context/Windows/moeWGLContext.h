@@ -7,9 +7,8 @@
 // GLAD includes some windows headers.
 // Define this to avoid windows defining min/max() macros disrupting std::numeric_limits functions.
 #define NOMINMAX
-
 #include "glad/windows/glad_wgl.h" // HDC is provided through GLAD
-
+#undef NOMINMAX
 
 // The monocle implementation of a WGL context for OpenGL on Windows.
 namespace moe

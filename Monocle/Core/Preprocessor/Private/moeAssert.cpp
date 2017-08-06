@@ -6,10 +6,10 @@
 
 namespace moe
 {
-    bool    AssertErrorReturnFalse(const char* const file, int line, const char* msg)
+    bool    AssertError(const char* const file, int line, const char* msg)
     {
         MOE_DEFAULT_LOG_EXPAND(moe::ChanDebug, moe::SevError, file, line, msg);
-        return false;
+        return true; // needed to break
     }
 }
 

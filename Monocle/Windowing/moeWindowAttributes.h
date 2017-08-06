@@ -27,7 +27,7 @@ namespace moe
 
             bool operator==(const Dimensions& other)
             {
-                return Width == other.Width && Height == other.Height;
+                return (Width == other.Width && Height == other.Height);
             }
         };
 

@@ -18,11 +18,11 @@
 
 namespace moe
 {
-    // A dummy wrapper function whose only purpose is to return a false value to use within MOE_ASSERT.
-    MOE_DLL_API bool    AssertErrorReturnFalse(const char* const file, int line, const char* msg);
+    // A dummy wrapper function whose only purpose is to print an error within MOE_ASSERT.
+    MOE_DLL_API bool    AssertError(const char* const file, int line, const char* msg);
 }
 
-#define MOE_BREAK(expr) (moe::AssertErrorReturnFalse(__FILE__, __LINE__, MOE_STRINGIZE(expr) ": ASSERT FAILED!") && moe::DebugBreak())
+#define MOE_BREAK(expr) (moe::AssertError(__FILE__, __LINE__, MOE_STRINGIZE(expr) ": ASSERT FAILED!") && moe::DebugBreak())
 #define MOE_ASSERT(expr)    (MOE_LIKELY((expr)) || MOE_BREAK(expr))
 
 // The DEBUG Assert is completely stripped in Shipping builds.

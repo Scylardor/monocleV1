@@ -39,7 +39,7 @@ end
 
 -- ATM, only add as include dir the general OpenGL GLAD header's.
 -- For include paths to keep working
-function AddOpenGLFiles()
+function IncludeOpenGLFiles()
 	filter "Debug or Diagnostic"
 		includedirs { "Monocle/ThirdParty/glad45/debug/"  }
 
@@ -48,6 +48,7 @@ function AddOpenGLFiles()
 end
 
 function AddWGLFiles()
+	-- Make additional includedirs because GLAD expects its own folder to be in the include path, as it does: #include <glad_wgl.h>
 	filter "Debug or Diagnostic"
 		files { "Monocle/ThirdParty/glad45/debug/glad/windows/glad_wgl.c" }
 		includedirs { "Monocle/ThirdParty/glad45/debug/glad/windows/"  }
@@ -78,7 +79,7 @@ function AddGraphicsAPI()
 	
 	-- ATM, link everything in Windows, even if we're not using it... TODO: improve that ?
 	-- The OpenGL lib name is "opengl32" even for 64-bit systems.
-	AddOpenGLFiles()
+	IncludeOpenGLFiles()
 	filter "system:windows"
 		links { "opengl32", "d3d11", "dxgi" }
 		AddWGLFiles()
@@ -179,6 +180,7 @@ project "Windowing"
 	includedirs { "Monocle/" }
 	links { "Core", "Graphics" }
 
+	IncludeOpenGLFiles()
 	RemoveOtherPlatformSpecificFiles()
 	SetBuildOptionsForLinuxDLL()
 

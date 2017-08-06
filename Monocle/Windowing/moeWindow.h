@@ -54,11 +54,11 @@ namespace moe
         void    CreateContext(const ContextDescriptor& contextDesc)
         {
             static_assert(std::is_base_of<moe::GraphicsContext, ContextType>::value, "CreateContext only accepts classes derived from moe::GraphicsContext");
-            static_assert(moe::TypeListIndexOf<WindowTraits<ConcreteWindow>::CompatibleContexts, ContextType>::value != -1,
+            static_assert(moe::TypeListIndexOf<typename WindowTraits<ConcreteWindow>::CompatibleContexts, ContextType>::value != -1,
                 "This context type isn't supported by your Window type!");
 
             m_context = nullptr;
-            window().CreateConcreteContext<ContextType>(contextDesc);
+            window().template CreateConcreteContext<ContextType>(contextDesc);
         }
 
         void    DestroyWindow();

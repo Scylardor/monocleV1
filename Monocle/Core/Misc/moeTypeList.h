@@ -51,7 +51,7 @@ namespace moe
     template <class T, typename... Args>
     struct TypeListLength<TypeList<T, Args...> >
     {
-        enum { value = 1 + TypeListLength<TypeList<T, Args...>::Tail>::value };
+        enum { value = 1 + TypeListLength<typename TypeList<T, Args...>::Tail>::value };
     };
 
 
@@ -82,7 +82,7 @@ namespace moe
     struct TypeListIndexOf<TypeList<Head, Args...>, T>
     {
     private:
-        enum { temp = TypeListIndexOf<TypeList<Head, Args...>::Tail, T>::value };
+        enum { temp = TypeListIndexOf<typename TypeList<Head, Args...>::Tail, T>::value };
     public:
         enum { value = (temp == -1 ? -1 : 1 + temp) };
     };

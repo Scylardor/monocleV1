@@ -24,9 +24,14 @@ namespace moe
         {
             Width_t   Width;
             Height_t  Height;
+
+            bool operator==(const Dimensions& other)
+            {
+                return Width == other.Width && Height == other.Height;
+            }
         };
 
-        WindowAttributes(const Dimensions& dims, const wchar_t* windowTitle = DEFAULT_WINDOW_TITLE, int iconId = DEFAULT_ID);
+        WindowAttributes(const Dimensions& dims = DEFAULT_DIMENSIONS, const wchar_t* windowTitle = DEFAULT_WINDOW_TITLE, int iconId = DEFAULT_ID);
 
         Dimensions          Dims;
         const wchar_t*      Title;
@@ -34,6 +39,7 @@ namespace moe
 
         static const wchar_t*   DEFAULT_WINDOW_TITLE;
         static const int        DEFAULT_ID = -1; // Invalid ID
+        static const Dimensions DEFAULT_DIMENSIONS;
 
     };
 }

@@ -26,6 +26,11 @@ namespace moe
             return m_value;
         }
 
+        bool operator==(const NamedType& other)
+        {
+            return m_value == other.m_value;
+        }
+
     private:
         T   m_value;
     };

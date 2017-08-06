@@ -25,7 +25,7 @@ namespace moe
             Width_t   Width;
             Height_t  Height;
 
-            bool operator==(const Dimensions& other)
+            bool operator==(const Dimensions& other) const
             {
                 return (Width == other.Width && Height == other.Height);
             }

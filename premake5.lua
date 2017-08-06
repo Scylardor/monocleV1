@@ -31,7 +31,7 @@ function RemoveOtherPlatformSpecificFiles()
 end
 
 function SetBuildOptionsForLinuxDLL()
-	filter { "platforms:*DLL", "system:linux" }
+	filter { "kind:SharedLib", "system:linux" }
 		buildoptions { "-fvisibility=hidden" }
 
 end
@@ -59,6 +59,7 @@ function AddWGLFiles()
 end
 
 function AddGLXFiles()
+	-- Make additional includedirs because GLAD expects its own folder to be in the include path, as it does: #include <glad_glx.h>
 	filter "Debug or Diagnostic"
 		files { "Monocle/ThirdParty/glad45/debug/glad/linux/src/glad_glx.c" }
 		includedirs { "Monocle/ThirdParty/glad45/debug/glad/linux/include"  }
@@ -98,14 +99,17 @@ end
 	targetdir "Monocle/Build/%{cfg.platform}/%{cfg.buildcfg}"
 	objdir "Monocle/Build/"
 	language "C++"
+	
+	architecture "x86_64"
 
+	-- At the moment use standard library for convenience.
+	-- TODO: remove!
+	defines { "MOE_STD_SUPPORT" }
+
+	flags { "ExtraWarnings", "C++14", "MultiProcessorCompile", "ShadowedVariables", "UndefinedIdentifiers" }
 
 -- General filters (for all projects)
 	-- Platform Filters
-
-	filter "platforms:*"
-		architecture "x86_64"
-
 	filter "platforms:Windows*"
 		-- _CRT_SECURE_NO_WARNINGS = don't warn when not using non-portable functions like fopen_s, etc.
 		defines { "MOE_WINDOWS", "_CRT_SECURE_NO_WARNINGS" }
@@ -120,33 +124,27 @@ end
 
 	filter "platforms:*DLL"
 		kind "SharedLib"
-
-	filter "kind:SharedLib"
 		defines { "MOE_USE_DLL", "MOE_DLL_EXPORT" }
 
 	-- Configuration filters
-	configuration "*"
-		defines { "MOE_STD_SUPPORT" } -- At the moment use standard library for convenience
-		flags { "ExtraWarnings", "C++14", "MultiProcessorCompile", "ShadowedVariables", "UndefinedIdentifiers" }
-
-	configuration { "Diagnostic", "Debug", "Release" }
+	filter "Diagnostic or Debug or Release"
 		symbols "On"
 
-	configuration "Diagnostic"
+	filter "Diagnostic"
 		defines { "MOE_DIAGNOSTIC" }
 		optimize "Off"
 
-	configuration "Debug"
+	filter "Debug"
 		defines { "MOE_DEBUG" }
 		optimize "Debug"
 
-	configuration { "Release", "Profile" }
+	filter "Release or Profile"
 		optimize "On"
 
-	configuration "Profile"
+	filter "Profile"
 		defines { "MOE_PROFILE" }
 
-	configuration "Shipping"
+	filter "Shipping"
 		defines { "MOE_SHIPPING" }
 		optimize "Full"
 		flags { "LinkTimeOptimization" }
@@ -180,7 +178,7 @@ project "Windowing"
 	includedirs { "Monocle/" }
 	links { "Core", "Graphics" }
 
-	IncludeOpenGLFiles()
+	AddGraphicsAPI()
 	RemoveOtherPlatformSpecificFiles()
 	SetBuildOptionsForLinuxDLL()
 
@@ -205,6 +203,7 @@ project "UnitTests"
 	RemoveOtherPlatformSpecificFiles()
 
 	-- The DLL version of the Linux executable doesn't seem to know where to get the DLL's on its own.
+	-- TODO: check if that's still useful
 	filter { "platforms:*DLL", "system:linux" }
 		runpathdirs { "Monocle/Build/%{cfg.platform}/%{cfg.buildcfg}" }
 

@@ -12,6 +12,7 @@ Makefile
 # Codelite files
 *.workspace
 *.project
+.codelite/
 
 # Test project
 premake5_testproject.lua

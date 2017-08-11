@@ -14,7 +14,7 @@
         #ifdef MOE_DLL_EXPORT
             #define MOE_DLL_API __attribute__ ((visibility ("default")))
         #else
-            #define MOE_DLL_API __attribute__((dllimport))
+            #define MOE_DLL_API
         #endif
     #endif // MOE_WINDOWS / MOE_LINUX
 #else

@@ -39,12 +39,6 @@ namespace moe
 
         template <class Context>
         void                CreateConcreteContext(const ContextDescriptor& contextDesc);
-        template <>
-        MOE_DLL_API void    CreateConcreteContext<moe::WGLContext>(const ContextDescriptor& contextDesc);
-        template <>
-        MOE_DLL_API void    CreateConcreteContext<moe::D3DContext_11_2>(const ContextDescriptor& contextDesc);
-        template <>
-        MOE_DLL_API void    CreateConcreteContext<moe::D3DContext_11_1>(const ContextDescriptor& contextDesc);
 
         bool    InitializeWindow(const WindowAttributes& winAttr);
         bool    RegisterWindow(const WindowAttributes& winAttr);
@@ -56,6 +50,16 @@ namespace moe
 
         static const wchar_t*  WINDOW_CLASS;
     };
+
+    template <>
+    MOE_DLL_API void    Win32Window::CreateConcreteContext<moe::WGLContext>(const ContextDescriptor& contextDesc);
+
+    template <>
+    MOE_DLL_API void    Win32Window::CreateConcreteContext<moe::D3DContext_11_2>(const ContextDescriptor& contextDesc);
+
+    template <>
+    MOE_DLL_API void    Win32Window::CreateConcreteContext<moe::D3DContext_11_1>(const ContextDescriptor& contextDesc);
+
 }
 
 #endif // MOE_WIN32_WINDOW_H_

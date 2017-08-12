@@ -2,6 +2,7 @@
 #define MOE_NO_FILTER_POLICY_H_
 
 // A logging filter-policy that, as its name says, doesn't filter anything.
+
 #include "Core/Preprocessor/moeDLLVisibility.h"
 
 namespace moe
@@ -11,13 +12,11 @@ namespace moe
     class MOE_DLL_API NoFilterPolicy
     {
     public:
-		NoFilterPolicy() {}
+        NoFilterPolicy();
 
-        static bool Filter(const LogInfo&)
-        {
-            return true;
-        }
+        static bool Filter(const LogInfo&);
     };
+
 }
 
 #endif // MOE_NO_FILTER_POLICY_H_

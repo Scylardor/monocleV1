@@ -51,9 +51,19 @@ namespace moe
     void    X11Window::CreateConcreteContext<moe::GLXContext>(const ContextDescriptor& contextDesc)
     {
         // First create the context
-        MOE_DEBUG_ASSERT(m_xDisplay != nullptr);
+        if (!MOE_ASSERT(m_xDisplay != nullptr))
+        {
+            MOE_ERROR(moe::ChanGraphics, "X Window XDisplay is uninitialized, cannot create GLX context.");
+            return;
+        }
+
         m_context = std::make_unique<moe::GLXContext>(m_xDisplay);
         MOE_DEBUG_ASSERT(m_context != nullptr);
         moe::GLXContext* const glxCtx = static_cast<moe::GLXContext*>(m_context.get());
+
+        // Retrieve the best visual info for our needs based on the context desc
+        XVisualInfo* bestVisualInfo = glxCtx->GetVisualFor(m_xDisplay, contextDesc);
+
+
     }
 }

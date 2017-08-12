@@ -13,14 +13,21 @@ namespace moe
     GLXContext::GLXContext(Display* display) :
         m_glContext(nullptr)
     {
-        MOE_INFO(moe::ChanGraphics, "Contxt created");
+        if (!gladLoadGLX(display, DefaultScreen(display)) || !m_autoGLLoader.IsLoaded())
+        {
+            MOE_ERROR(moe::ChanGraphics, "Glad failed to load GLX! Cannot initialize GLX context.");
+            return;
+        }
+
         // We need at least GLX 1.3 for FB configs
         int major, minor;
         if (!MOE_ASSERT(glXQueryVersion(display, &major, &minor)) || ((major == 1) && (minor < 3)) || (major < 1))
         {
-            MOE_ERROR(moe::ChanGraphics, "GLX is too old! X11 window can't initialize.");
+            MOE_ERROR(moe::ChanGraphics, "Monocle GLX context requests at least GLX 1.3! Cannot initialize GLX context.");
             return;
         }
+
+        MOE_INFO(moe::ChanDebug, "GLX context creation successful.");
     }
 
 
@@ -37,9 +44,19 @@ namespace moe
         DepthStencilBitCounter depthStencilBitCount = DecomposeDepthStencilEnumBits(depthStencilFormat);
 
         // First describe what we want
-        const bool msaaWanted = (ctxDesc.SamplesCount > 1);
+        const bool doubleBufferWanted = (ctxDesc.BuffersCount > 0);
+        bool msaaWanted = (ctxDesc.SamplesCount > 1);
 
-        const int visualAttrs[] =
+        MOE_INFO(moe::ChanDebug, "Searching visuals with R%d G%d B%d A%d color, D%d S%d depth/stencil, double buffered: %s, MSAA: %s, %d samples, SRGB: %s",
+            colorBitCount.RedBits(), colorBitCount.GreenBits(), colorBitCount.BlueBits(), colorBitCount.AlphaBits(),
+            depthStencilBitCount.DepthBits(), depthStencilBitCount.StencilBits(),
+            (doubleBufferWanted ? "yes" : "no"),
+            (msaaWanted ? "yes" : "no"),
+            ctxDesc.SamplesCount,
+            (isSRGB_Color ? "yes" : "no")
+        );
+
+        int visualAttrs[] =
         {
             GLX_X_RENDERABLE    ,   true,
             GLX_DRAWABLE_TYPE   ,   GLX_WINDOW_BIT,
@@ -51,7 +68,7 @@ namespace moe
             GLX_ALPHA_SIZE      ,   colorBitCount.AlphaBits(),
             GLX_DEPTH_SIZE      ,   depthStencilBitCount.DepthBits(),
             GLX_STENCIL_SIZE    ,   depthStencilBitCount.StencilBits(),
-            GLX_DOUBLEBUFFER    ,   (ctxDesc.BuffersCount > 0),
+            GLX_DOUBLEBUFFER    ,   doubleBufferWanted,
             GLX_SAMPLE_BUFFERS  ,   msaaWanted,
             GLX_SAMPLES         ,   ctxDesc.SamplesCount,
             GLX_FRAMEBUFFER_SRGB_CAPABLE_ARB, isSRGB_Color,
@@ -59,29 +76,61 @@ namespace moe
         };
 
         // Then iterate on available FB configs to find a compatible visual
+        // Opt for a "soft" policy on MSAA: if no MSAA FBConfig is found with desired samples, search general MSAA
+        // and if nothing if found, search with no MSAA.
         XVisualInfo* myVisual = nullptr;
 
         int nbConfs = 0;
         GLXFBConfig* fbConfs = glXChooseFBConfig(display, DefaultScreen(display), visualAttrs, &nbConfs);
+        MOE_INFO(moe::ChanDebug, "Searching visuals in %d confs", nbConfs);
+        if (fbConfs == nullptr && msaaWanted)
+        {
+            MOE_WARNING(moe::ChanDebug, "No FBConfig with %dx MSAA. Searching with other MSAA values.", ctxDesc.SamplesCount);
+            // visualAttrs[23] = 0;
+            visualAttrs[25] = 0;
+            fbConfs = glXChooseFBConfig(display, DefaultScreen(display), visualAttrs, &nbConfs);
+            MOE_INFO(moe::ChanDebug, "Searching visuals in %d confs", nbConfs);
+            if (fbConfs == nullptr)
+            {
+                MOE_WARNING(moe::ChanDebug, "No FBConfig with MSAA. Searching without MSAA.");
+                visualAttrs[23] = 0;
+                msaaWanted = false;
+                fbConfs = glXChooseFBConfig(display, DefaultScreen(display), visualAttrs, &nbConfs);
+                MOE_INFO(moe::ChanDebug, "Searching visuals in %d confs", nbConfs);
+            }
+        }
 
+        int iBestConf = -1;
         for (int iConf = 0; iConf < nbConfs; ++iConf)
         {
-            GLXFBConfig& curConf = fbConfs[iConf];
-            int msaaOn = 0;
-            int nbSamples = 0;
-            int sRGBCapable = 0;
-            glXGetFBConfigAttrib(display, curConf, GLX_SAMPLE_BUFFERS, &msaaOn);
-            glXGetFBConfigAttrib(display, curConf, GLX_SAMPLES, &nbSamples);
-            glXGetFBConfigAttrib(display, curConf, GLX_FRAMEBUFFER_SRGB_CAPABLE_ARB, &sRGBCapable);
+            // We don't want a FB Config with accumulators because they're slower.
+            // Usually, it suffices to check Red accumulator size.
+            int accumRed;
+            glXGetFBConfigAttrib(display, fbConfs[iConf], GLX_ACCUM_RED_SIZE, &accumRed);
 
-            if (msaaOn == msaaWanted && nbSamples == ctxDesc.SamplesCount && sRGBCapable == isSRGB_Color)
+            // Only select a FB config with accumulation if we have no other choice...
+            if (!accumRed)
             {
-                // we found a good one
-                myVisual = glXGetVisualFromFBConfig(display, curConf);
-                MOE_DEBUG_ASSERT(myVisual != nullptr);
-
-                break;
+                iBestConf = iConf;
+                break; // it's OK
             }
+            else if (iBestConf == -1)
+            {
+                iBestConf = iConf;
+            }
+        }
+
+        MOE_DEBUG_ASSERT(iBestConf != -1);
+
+        if (iBestConf != -1)
+        {
+            myVisual = glXGetVisualFromFBConfig(display, fbConfs[iBestConf]);
+            MOE_DEBUG_ASSERT(myVisual != nullptr);
+        }
+
+        if (myVisual == nullptr)
+        {
+            MOE_ERROR(moe::ChanGraphics, "GLX context failed to retrieve a X Visual matching given context description!");
         }
 
         // Be sure to free the FBConfig list allocated by glXChooseFBConfig()

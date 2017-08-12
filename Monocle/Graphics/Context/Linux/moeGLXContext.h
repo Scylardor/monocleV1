@@ -6,9 +6,10 @@
 
 #include "Graphics/Context/moeGraphicsContext.h"
 #include "Core/Preprocessor/moeDLLVisibility.h"
+#include "Graphics/OpenGL/Linux/moeAutoGladGLXLoader.h"
 
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
+#include "glad/glad_glx.h"
+
 
 namespace moe
 {
@@ -24,8 +25,8 @@ namespace moe
         virtual void    OnThreadChange() override {}
 
     private:
-        void*    m_glContext; // GLAD uses a typedef with the same name ! Actually a pointer.
-
+        ::GLXContext        m_glContext; // GLAD typedef. Actually a pointer.
+        AutoGladGLXLoader   m_autoGLLoader; // The automatic GL loader to keep a dummy handle on libGL.
     };
 }
 

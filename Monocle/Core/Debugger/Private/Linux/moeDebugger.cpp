@@ -10,10 +10,17 @@
 namespace moe
 {
     // The idea on Linux is to read the status file of current process and see if a tracer PID is present in it (as GDB would write in it).
+    // Only checks the debugger presence once, then returns a static flag value to avoid most of the performance hit of I/O.
     // Credits to Sam Liao on http://stackoverflow.com/questions/3596781/how-to-detect-if-the-current-process-is-being-run-by-gdb
-    // But using a fopen+read combo is guaranteed to be a performance hit, especially if called often...
     bool    IsDebuggerPresent()
     {
+        // -1 = default value, 0: no debugger, 1: debugger
+        static char presenceCheckedFlag = (-1);
+        if (presenceCheckedFlag != (-1))
+        {
+            return bool(presenceCheckedFlag);
+        }
+
         std::FILE* statusFileHandle = std::fopen("/proc/self/status", "r");
         if (statusFileHandle == nullptr)
         {
@@ -39,6 +46,8 @@ namespace moe
         }
 
         std::fclose(statusFileHandle);
+
+        presenceCheckedFlag = char(debuggerPresent);
         return debuggerPresent;
     }
 

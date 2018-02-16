@@ -12,10 +12,4 @@ namespace moe
     {
     }
 
-    const wchar_t*                      WindowAttributes::DEFAULT_WINDOW_TITLE = L"Monocle Application";
-    const WindowAttributes::Dimensions  WindowAttributes::DEFAULT_DIMENSIONS =
-    {
-        moe::Width_t(std::numeric_limits<std::uint32_t>::max()),
-        moe::Height_t(std::numeric_limits<std::uint32_t>::max())
-    };
 }

@@ -6,7 +6,7 @@
 namespace moe
 {
     template <typename T, typename Phantom>
-    class NamedType
+    class MOE_DLL_API NamedType
     {
     public:
         explicit NamedType(const T& val) :

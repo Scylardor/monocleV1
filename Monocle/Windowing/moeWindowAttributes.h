@@ -20,8 +20,10 @@ namespace moe
 
     struct MOE_DLL_API WindowAttributes
     {
-        struct Dimensions
+        struct MOE_DLL_API Dimensions
         {
+			Dimensions(Width_t w, Height_t h) : Width(w), Height(h) {}
+
             Width_t   Width;
             Height_t  Height;
 
@@ -31,15 +33,14 @@ namespace moe
             }
         };
 
-        WindowAttributes(const Dimensions& dims = DEFAULT_DIMENSIONS, const wchar_t* windowTitle = DEFAULT_WINDOW_TITLE, int iconId = DEFAULT_ID);
+        WindowAttributes(const Dimensions& dims, const wchar_t* windowTitle, int iconId = DEFAULT_ID);
 
         Dimensions          Dims;
         const wchar_t*      Title;
         int                 IconId;
 
-        static const wchar_t*   DEFAULT_WINDOW_TITLE;
-        static const int        DEFAULT_ID = -1; // Invalid ID
-        static const Dimensions DEFAULT_DIMENSIONS;
+        static const int	DEFAULT_ID = -1; // Invalid ID
+
 
     };
 }

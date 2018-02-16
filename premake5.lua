@@ -106,7 +106,10 @@ end
 	-- TODO: remove!
 	defines { "MOE_STD_SUPPORT" }
 
-	flags { "ExtraWarnings", "C++14", "MultiProcessorCompile", "ShadowedVariables", "UndefinedIdentifiers" }
+	warnings "Extra"
+	cppdialect "C++14"
+
+	flags { "MultiProcessorCompile", "ShadowedVariables", "UndefinedIdentifiers" }
 
 -- General filters (for all projects)
 	-- Platform Filters

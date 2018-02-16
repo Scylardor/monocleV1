@@ -81,7 +81,7 @@ namespace moe
         bool isSRGB_Color = colorFormat == GL_SRGB8 || colorFormat == GL_SRGB8_ALPHA8; // ATM we only manage these two SRGB formats, favor explicit formats.
 
         // 24-bit depth and 8-bit stencil seems a sensible default value.
-        GLenum depthStencilFormat = (pfDesc.ColorFormat == ContextDescriptor::DEFAULT_GENERIC_FORMAT ? GL_DEPTH24_STENCIL8 : pfDesc.DepthStencilFormat);
+        GLenum depthStencilFormat = (pfDesc.DepthStencilFormat == ContextDescriptor::DEFAULT_GENERIC_FORMAT ? GL_DEPTH24_STENCIL8 : pfDesc.DepthStencilFormat);
         DepthStencilBitCounter depthStencilBitCount = DecomposeDepthStencilEnumBits(depthStencilFormat);
 
 

@@ -81,7 +81,7 @@ namespace moe
         static const std::uint8_t   DEFAULT_BITS_PER_COLOR      = 8u;
         static const std::uint8_t   DEFAULT_DEPTH_BITS          = 24u;
         static const std::uint8_t   DEFAULT_STENCIL_BITS        = 8u;
-        static const std::uint8_t   DEFAULT_SAMPLES_COUNT       = 1u;   // No MSAA by default.
+        static const std::uint8_t   DEFAULT_SAMPLES_COUNT       = 2u;   // 2x MSAA by default. (It seems Windows 7 WGL doesn't like no MSAA, for example).
         static const std::uint8_t   DEFAULT_BUFFERS_COUNT       = 1u;   // Use double buffering by default.
         static const std::int8_t    DEFAULT_API_MAJOR_VERSION   = -1;
         static const std::int8_t    DEFAULT_API_MINOR_VERSION   = -1;

@@ -60,15 +60,15 @@ namespace moe
 		{
 			typedef	moe::Vector<TransitionDataTest>	StateTransitionsData;
 
-			StateTransitionsData	mTrData;
+			StateTransitionsData	m_transitionData;
 			std::unique_ptr<IState>	m_state = nullptr;
 		};
 
 
 		StateDataTest&				ModifyStateData(moe::FSM::StateID stateID)
 		{
-			FSMStatesData::Iterator stateDataIt = mStateData.Find(stateID);
-			MOE_DEBUG_ASSERT(stateDataIt != mStateData.End());
+			FSMStatesData::Iterator stateDataIt = m_stateData.Find(stateID);
+			MOE_DEBUG_ASSERT(stateDataIt != m_stateData.End());
 
 			StateDataTest& stateData = stateDataIt->second;
 			MOE_DEBUG_ASSERT(stateData.m_state != nullptr);
@@ -79,8 +79,8 @@ namespace moe
 
 		const StateDataTest&		GetStateData(moe::FSM::StateID stateID) const
 		{
-			FSMStatesData::ConstIterator stateDataIt = mStateData.Find(stateID);
-			MOE_DEBUG_ASSERT(stateDataIt != mStateData.End());
+			FSMStatesData::ConstIterator stateDataIt = m_stateData.Find(stateID);
+			MOE_DEBUG_ASSERT(stateDataIt != m_stateData.End());
 
 			const StateDataTest& stateData = stateDataIt->second;
 			MOE_DEBUG_ASSERT(stateData.m_state != nullptr);
@@ -98,9 +98,9 @@ namespace moe
 			StateDataTest& currentStateData = ModifyStateData(m_currentStateID);
 			currentStateData.m_state->OnStateUpdate(*this, m_currentStateID);
 
-			for (TransitionID iTransition = 0; iTransition < currentStateData.mTrData.Size(); ++iTransition)
+			for (TransitionID iTransition = 0; iTransition < currentStateData.m_transitionData.Size(); ++iTransition)
 			{
-				TransitionDataTest& transData = currentStateData.mTrData[iTransition];
+				TransitionDataTest& transData = currentStateData.m_transitionData[iTransition];
 				MOE_DEBUG_ASSERT(transData.m_transition != nullptr);
 
 				if (transData.m_transition->Passes(*this, *currentStateData.m_state, m_currentStateID))
@@ -120,7 +120,7 @@ namespace moe
 	private:
 		typedef	HashMap<StateID, StateDataTest>	FSMStatesData;
 
-		FSMStatesData		mStateData;
+		FSMStatesData		m_stateData;
 		StateID				m_currentStateID = s_UninitializedState;
 		StatesNumber		m_stateNbr = 0; // Current number of states in the FSM
 		TransitionNumber	m_transitionNbr = 0; // Current number of transitions in the FSM
@@ -167,7 +167,7 @@ namespace moe
 
 		StatesNumber 	Size() const
 		{
-			return mStateData.Size();
+			return m_stateData.Size();
 		}
 
 
@@ -183,7 +183,7 @@ namespace moe
 
 			MOE_DEBUG_ASSERT(m_stateNbr != s_UninitializedState);
 			// TODO: encapsulate those std::pair...
-			const std::pair<FSMStatesData::Iterator, bool> insertResult = mStateData.Insert({ m_stateNbr, std::move(newStateData) });
+			const std::pair<FSMStatesData::Iterator, bool> insertResult = m_stateData.Insert({ m_stateNbr, std::move(newStateData) });
 			MOE_DEBUG_ASSERT(insertResult.second == true);
 
 			m_stateNbr++;
@@ -200,12 +200,12 @@ namespace moe
 
 			MOE_DEBUG_ASSERT(HasState(fromStateID) && HasState(toStateID));
 
-			StateDataTest& stateData = mStateData[fromStateID];
+			StateDataTest& stateData = m_stateData[fromStateID];
 
 			// TODO: encapsulate this unique ptr
-			stateData.mTrData.EmplaceBack(std::make_unique<TransitionType>(std::forward<Args>(ctorParams)...), toStateID);
+			stateData.m_transitionData.EmplaceBack(std::make_unique<TransitionType>(std::forward<Args>(ctorParams)...), toStateID);
 
-			return stateData.mTrData.Size() - 1;
+			return stateData.m_transitionData.Size() - 1;
 		}
 
 	};

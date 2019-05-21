@@ -261,6 +261,11 @@ TEST_CASE("Containers", "[Core]")
 		eq = (test.Data() == &test[0]);
 		CHECK(eq);
 
+		// Range for
+		for (auto item : test)
+		{
+			(void)item;
+		}
     }
 
 
@@ -313,6 +318,11 @@ TEST_CASE("Containers", "[Core]")
 		CHECK(test2.Size() == 0);
 
 		// Misc
+		// Range for
+		for (auto item : test)
+		{
+			(void)item;
+		}
 	}
 
 
@@ -345,6 +355,11 @@ TEST_CASE("Containers", "[Core]")
 		CHECK(eq);
 
 		// Misc
+		// Range for
+		for (auto item : fourth)
+		{
+			(void)item;
+		}
 	}
 
 

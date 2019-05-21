@@ -56,16 +56,16 @@ namespace moe
 		}
 
 
-	private:
 		// C++11 range-based for loops interface
-		Iterator		begin()			{ return Begin(); }
-		ConstIterator	begin() const	{ return Begin(); }
+		Iterator		begin() { return Begin(); }
+		ConstIterator	begin() const { return Begin(); }
 
-		Iterator		end()			{ return End(); }
-		ConstIterator	end() const		{ return End(); }
+		Iterator		end() { return End(); }
+		ConstIterator	end() const { return End(); }
 		//--------------------------------
 
 
+	private:
 		std::array<Data, N>	m_array;
 
 

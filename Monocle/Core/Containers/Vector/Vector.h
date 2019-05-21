@@ -109,14 +109,15 @@ namespace moe
 		ConstIterator	End() const noexcept	{ return m_vec.end(); }
 
 
-	private:
 		// C++11 range-based for loops interface
-		Iterator		begin()			{ return Begin(); }
-		ConstIterator	begin() const	{ return Begin(); }
+		Iterator		begin() { return Begin(); }
+		ConstIterator	begin() const { return Begin(); }
 
-		Iterator		end()		{ return End(); }
-		ConstIterator	end() const	{ return End(); }
+		Iterator		end() { return End(); }
+		ConstIterator	end() const { return End(); }
 		//--------------------------------
+
+	private:
 
 		std::vector<DataType>	m_vec;
 

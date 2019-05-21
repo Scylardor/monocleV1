@@ -66,17 +66,16 @@ namespace moe
 		Iterator		End()		{ return m_hashmap.end(); }
 		ConstIterator	End() const	{ return m_hashmap.end(); }
 
-
-	private:
-
 		// Range-based for loops interface
-		Iterator		begin()			{ return Begin(); }
-		ConstIterator	begin() const	{ return Begin(); }
+		Iterator		begin() { return Begin(); }
+		ConstIterator	begin() const { return Begin(); }
 
-		Iterator		end()		{ return End(); }
-		ConstIterator	end() const	{ return End(); }
+		Iterator		end() { return End(); }
+		ConstIterator	end() const { return End(); }
 		//--------------------------------
 
+
+	private:
 		std::unordered_map<Key, Data>	m_hashmap;
 
 	public:

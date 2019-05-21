@@ -81,9 +81,11 @@ function AddGraphicsAPI()
 	-- ATM, link everything in Windows, even if we're not using it... TODO: improve that ?
 	-- The OpenGL lib name is "opengl32" even for 64-bit systems.
 	IncludeOpenGLFiles()
+	
 	filter "system:windows"
 		links { "opengl32", "d3d11", "dxgi" }
 		AddWGLFiles()
+		
 	filter "system:linux"
 		links { "GL", "dl", "X11" } -- lib GL is dynamically loaded at runtime so we need dl for dlopen etc.
 		AddGLXFiles()
@@ -185,37 +187,49 @@ project "Windowing"
 	RemoveOtherPlatformSpecificFiles()
 	SetBuildOptionsForLinuxDLL()
 
-
-project "UnitTests"
-	location "Monocle/Tests"
-	kind "ConsoleApp"
+	
+project "GameFramework"
+	location "Monocle/GameFramework"
+	files { "Monocle/GameFramework/**.h", "Monocle/GameFramework/Private/**.hpp", "Monocle/GameFramework/**/Private/**.cpp" }
+	includedirs { "Monocle/", "Monocle/GameFramework" }
 	links { "Core" }
 
-	-- This seems to be mandatory on linux, you can't use the common objdir folder, or compile fails. Issue in investigation
-	objdir "Monocle/Tests/Build/"
+	RemoveOtherPlatformSpecificFiles()
+	SetBuildOptionsForLinuxDLL()
+
+-- Uncomment this if you want to include the Unit Tests project in the main engine solution
+-- project "UnitTests"
+	-- location "Monocle/Tests"
+	-- kind "ConsoleApp"
+	-- links { "Core" }
+
+	-- -- This seems to be mandatory on linux, you can't use the common objdir folder, or compile fails. Issue in investigation
+	-- objdir "Monocle/Tests/Build/"
 	
-	files { "Monocle/Tests/UnitTests/*.cpp", "Monocle/ThirdParty/Catch/*" }
-	includedirs { "Monocle/ThirdParty/Catch", "Monocle/" }
+	-- files { "Monocle/Tests/UnitTests/*.cpp", "Monocle/ThirdParty/Catch/*" }
+	-- includedirs { "Monocle/ThirdParty/Catch", "Monocle/" }
 
-	-- we're using C++11
-	defines "CATCH_CPP11_OR_GREATER"
+	-- -- we're using C++11
+	-- defines "CATCH_CPP11_OR_GREATER"
 
+	-- -- As all other projects of Monocle are libs, in DLL mode, this define needs to be removed
+	-- removedefines { "MOE_DLL_EXPORT" }
+	-- RemoveOtherPlatformSpecificFiles()
+
+	-- -- The DLL version of the Linux executable doesn't seem to know where to get the DLL's on its own.
+	-- -- TODO: check if that's still useful
+	-- filter { "platforms:*DLL", "system:linux" }
+		-- runpathdirs { "Monocle/Build/%{cfg.platform}/%{cfg.buildcfg}" }
+
+project "MonocleTestApp"
+	location "MonocleTestApp"
+	kind "ConsoleApp"
+	files { "MonocleTestApp/*.cpp", "MonocleTestApp/*.h", "MonocleTestApp/*.hpp" }
+	includedirs { "Monocle" }
+	links { "Core", "Graphics", "Windowing", "GameFramework" }
+	
 	-- As all other projects of Monocle are libs, in DLL mode, this define needs to be removed
 	removedefines { "MOE_DLL_EXPORT" }
-	
+
+	AddGraphicsAPI()
 	RemoveOtherPlatformSpecificFiles()
-
-	-- The DLL version of the Linux executable doesn't seem to know where to get the DLL's on its own.
-	-- TODO: check if that's still useful
-	filter { "platforms:*DLL", "system:linux" }
-		runpathdirs { "Monocle/Build/%{cfg.platform}/%{cfg.buildcfg}" }
-
--- project "MonocleApplication"
-	-- files { "Monocle/App/**.cpp", "Monocle/App/**.h", "Monocle/App/**.hpp" }
-	-- includedirs { "Monocle/Core/**/Include" }
-	-- links { "MonocleCore", "MonocleGraphics" }
-
-	-- RemoveOtherPlatformSpecificFiles()
-	-- SetBuildOptionsForLinuxDLL()
-
-

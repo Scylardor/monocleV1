@@ -39,6 +39,9 @@ When compiling, the output of the build will be stored in a "Build" directory at
 
 Source code is divided into modules (Core, Animation, Rendering...) in the Source folder.
 
+To build unit tests :
+
+premake5 vs2015 --file=MonocleUnitTests_premake5.lua
 
 
 

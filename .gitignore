@@ -2,6 +2,7 @@
 Build/
 
 # Visual Studio files
+.vs/
 *.sln
 *.vcxproj*
 *.VC*db

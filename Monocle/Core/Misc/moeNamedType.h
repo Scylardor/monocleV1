@@ -1,12 +1,14 @@
 #ifndef MOE_NAMED_TYPE_H_
 #define MOE_NAMED_TYPE_H_
 
+#pragma once
+
 // A slightly modified Jonathan Boccara named type implementation.
 // cf. http://www.fluentcpp.com/2016/12/08/strong-types-for-strong-interfaces/
 namespace moe
 {
     template <typename T, typename Phantom>
-    class MOE_DLL_API NamedType
+    class NamedType
     {
     public:
         explicit NamedType(const T& val) :
@@ -15,6 +17,10 @@ namespace moe
         explicit NamedType(T&& val) :
             m_value(val)
         {}
+
+		NamedType(const NamedType& nt) :
+			m_value(nt.m_value)
+		{}
 
         operator T&()
         {

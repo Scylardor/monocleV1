@@ -5,6 +5,11 @@
 
 #ifdef MOE_USE_DLL
     #ifdef MOE_WINDOWS
+		// The compiler is always worried that there is ABI incompatibility between DLLs but we compile them all using the same toolset
+		// so disable the "needs to have dll-interface" warning.
+		#ifdef _MSC_VER
+			#pragma warning( disable: 4251 )
+		#endif
         #ifdef MOE_DLL_EXPORT
             #define MOE_DLL_API __declspec( dllexport )
         #else

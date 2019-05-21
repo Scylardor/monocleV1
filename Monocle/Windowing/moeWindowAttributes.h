@@ -1,10 +1,13 @@
 #ifndef MOE_WINDOW_ATTRIBUTES_H_
 #define MOE_WINDOW_ATTRIBUTES_H_
 
+#pragma once
+
 #include <cstdint> // std int types
 #include "Core/Preprocessor/moeDLLVisibility.h"
 #include "Graphics/Context/moeContextDescriptor.h"
 #include "Core/Misc/moeNamedType.h"
+
 
 // Window attributes is the platform-agnostic structure Monocle uses
 // to query graphics context specifications to the underlying
@@ -34,6 +37,9 @@ namespace moe
         };
 
         WindowAttributes(const Dimensions& dims, const wchar_t* windowTitle, int iconId = DEFAULT_ID);
+
+		WindowAttributes(Width_t w, Height_t h, const wchar_t* windowTitle, int iconId = DEFAULT_ID);
+
 
         Dimensions          Dims;
         const wchar_t*      Title;

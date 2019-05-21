@@ -12,4 +12,10 @@ namespace moe
     {
     }
 
+
+	WindowAttributes::WindowAttributes(Width_t w, Height_t h, const wchar_t* windowTitle, int iconId /*= DEFAULT_ID*/) :
+		WindowAttributes(Dimensions(w, h), windowTitle, iconId)
+	{
+	}
+
 }

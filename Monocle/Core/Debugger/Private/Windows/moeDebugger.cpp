@@ -19,7 +19,7 @@ namespace moe
         #ifndef MOE_PROFILE // We don't want an assert break ruining a profiling session
         if (IsDebuggerPresent())
         {
-            ::DebugBreak();
+			__debugbreak();
         }
         #endif // MOE_PROFILE
 

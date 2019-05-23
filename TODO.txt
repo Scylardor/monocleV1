@@ -1,0 +1,21 @@
+- raw input:
+https://gamedev.stackexchange.com/questions/72114/how-do-i-handle-directx-mouse-events
+https://docs.microsoft.com/fr-fr/windows/desktop/inputdev/using-raw-input
+https://docs.microsoft.com/fr-fr/windows/desktop/inputdev/wm-input
+https://docs.microsoft.com/fr-fr/windows/desktop/DxTechArts/taking-advantage-of-high-dpi-mouse-movement
+https://stackoverflow.com/questions/17496703/interpretation-of-raw-mouse-input
+https://stackoverflow.com/questions/10462198/raw-mouse-input-with-windows
+http://asawicki.info/news_1533_handling_multiple_mice_with_raw_input.html
+https://gamedev.stackexchange.com/questions/1859/handling-keyboard-and-mouse-input-win-api
+https://www.gamedev.net/forums/topic/666409-winapi-raw-input-and-mouse-acceleration/
+
+
+- XInput:
+https://katyscode.wordpress.com/2013/08/30/xinput-tutorial-part-1-adding-gamepad-support-to-your-windows-game/
+https://lcmccauley.wordpress.com/2014/01/05/gamepad-input-tutorial/
+https://www.codeproject.com/Articles/26949/Xbox-360-Controller-Input-in-C-with-XInput
+
+
+- game engine docs:
+https://gamasutra.com/blogs/MichaelKissner/20151027/257369/Writing_a_Game_Engine_from_Scratch__Part_1_Messaging.php
+EASTL http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2271.html

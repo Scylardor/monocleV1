@@ -284,6 +284,12 @@ TEST_CASE("Containers", "[Core]")
 		test.Insert({ {0, 233}, {222, 2123}, {3994, 2811} });
 		CHECK(test.Size() == 4);
 
+		// Emplace
+		test.Emplace(8658, 3265);
+		CHECK(test.Size() == 5);
+		CHECK(test[8658] == 3265);
+
+
 		// Find
 
 		moe::HashMap<int, TestObject>::ConstIterator hmIt;

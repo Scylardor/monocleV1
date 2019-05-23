@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include "Core/Preprocessor/moeDLLVisibility.h"
-
 #include <unordered_map>
 
 namespace moe
@@ -40,6 +38,8 @@ namespace moe
 		void						Insert(InputIterator first, InputIterator last)	{ m_hashmap.insert(first, last); }
 		void						Insert(std::initializer_list<ValueType> il)		{ m_hashmap.insert(il); }
 
+		template <class... Args>
+		std::pair<Iterator, bool>	Emplace(Args&&... args) { return m_hashmap.emplace(std::forward<Args>(args)...); }
 
 		Iterator	Erase(ConstIterator position)					{ return m_hashmap.erase(position); }
 		SizeType	Erase(const Key& k)								{ return m_hashmap.erase(k); }

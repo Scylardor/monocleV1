@@ -89,10 +89,82 @@ namespace moe
             return false;
         }
 
+		// Register a pointer to ourself in the user data so the message processing procedure knows which window to send messages to
+		SetWindowLongPtr(m_handle, GWLP_USERDATA, (LONG_PTR)this);
+
         return true;
     }
 
-    void    Win32Window::DestroyWindow()
+
+	LRESULT Win32Window::ProcessWindowMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+	{
+		switch (msg)			// Check For Windows Messages
+		{
+			//      case WM_ACTIVATE:	// Watch For Window Activate Message
+			//      {
+			//          if (!HIWORD(wParam))// Check Minimization State
+
+			//              active = TRUE;// Program Is Active
+			//      }
+			//          else
+			//          {
+			//              active = FALSE;// Program Is No Longer Active
+			//          }
+
+			//          return 0;	// Return To The Message Loop
+			//      }
+
+			//case WM_SYSCOMMAND:	// Intercept System Commands
+			//      {
+			//          switch (wParam)	// Check System Calls
+			//          {
+			//              // Screensaver Trying To Start?
+			//          case SC_SCREENSAVE:
+			//              // Monitor Trying To Enter Powersave?
+			//          case SC_MONITORPOWER:
+			//              return 0;	// Prevent From Happening
+			//          }
+			//          break;			// Exit
+			//      }
+
+		case WM_CREATE: // Window was created
+		{
+			MOE_INFO(moe::ChanDebug, "Win32 window creation was successful");
+			return 0;
+		}
+		case WM_CLOSE:  // Did We Receive A Close Message?
+		{
+			MOE_INFO(moe::ChanDebug, "Win32 window close requested, sending QUIT message!");
+			PostQuitMessage(0);
+			return 0;
+		}
+
+		case WM_KEYDOWN:		// Is A Key Being Held Down?
+		{
+			//keys[wParam] = TRUE;// If So, Mark It As TRUE
+			return 0;		// Jump Back
+		}
+
+		case WM_KEYUP:		// Has A Key Been Released?
+		{
+		   // keys[wParam] = FALSE;// If So, Mark It As FALSE
+		    return 0;			// Jump Back
+		}
+
+		//      case WM_SIZE:		// Resize The Direct3D Window
+		//      {
+		//          // LoWord=Width, HiWord=Height
+		//          ReSizeD3DScene(LOWORD(lParam), HIWORD(lParam));
+		//          return 0;			// Jump Back
+		//      }
+		//}
+		}
+
+		return DefWindowProc(hWnd, msg, wParam, lParam);
+	}
+
+
+	void    Win32Window::DestroyWindow()
     {
         m_context.reset();
         DestroyWindowHandle();
@@ -185,83 +257,44 @@ namespace moe
         return m_handle != nullptr;
     }
 
-    void Win32Window::ProcessWindowEvents()
+
+    bool	Win32Window::ProcessWindowEvents()
     {
         MSG msg = { 0 };
-        while (WM_QUIT != msg.message)
-        {
-            if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
-            {
-                TranslateMessage(&msg);
-                DispatchMessage(&msg);
-            }
-        }
+
+		bool shouldStop = false;
+
+		// Check to see if any messages are waiting in the queue
+		while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+		{
+			// Translate the message and dispatch it to the window message handling procedure
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+
+		// If the message is WM_QUIT, exit the update loop.
+		// PeekMessage will only ever return WM_QUIT once the message queue is empty, so if there's a WM_QUIT message, it will be the last one.
+		// see https://docs.microsoft.com/fr-fr/windows/desktop/winmsg/about-messages-and-message-queues
+		shouldStop = (msg.message == WM_QUIT);
+
+		return (!shouldStop);
     }
+
 
     LRESULT CALLBACK Win32Window::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     {
-        switch (msg)			// Check For Windows Messages
-        {
-            //      case WM_ACTIVATE:	// Watch For Window Activate Message
-            //      {
-            //          if (!HIWORD(wParam))// Check Minimization State
-
-            //              active = TRUE;// Program Is Active
-            //      }
-            //          else
-            //          {
-            //              active = FALSE;// Program Is No Longer Active
-            //          }
-
-            //          return 0;	// Return To The Message Loop
-            //      }
-
-                  //case WM_SYSCOMMAND:	// Intercept System Commands
-            //      {
-            //          switch (wParam)	// Check System Calls
-            //          {
-            //              // Screensaver Trying To Start?
-            //          case SC_SCREENSAVE:
-            //              // Monitor Trying To Enter Powersave?
-            //          case SC_MONITORPOWER:
-            //              return 0;	// Prevent From Happening
-            //          }
-            //          break;			// Exit
-            //      }
-
-        case WM_CREATE: // Window was created
-        {
-            MOE_INFO(moe::ChanDebug, "Win32 window creation was successful");
-            return 0;
-        }
-        case WM_CLOSE:  // Did We Receive A Close Message?
-        {
-            MOE_INFO(moe::ChanDebug, "Win32 window close requested, sending QUIT message!");
-            PostQuitMessage(0);
-            return 0;
-        }
-
-        //      case WM_KEYDOWN:		// Is A Key Being Held Down?
-        //      {
-        //          keys[wParam] = TRUE;// If So, Mark It As TRUE
-        //          return 0;		// Jump Back
-        //      }
-
-        //      case WM_KEYUP:		// Has A Key Been Released?
-        //      {
-        //          keys[wParam] = FALSE;// If So, Mark It As FALSE
-        //          return 0;			// Jump Back
-        //      }
-
-        //      case WM_SIZE:		// Resize The Direct3D Window
-        //      {
-        //          // LoWord=Width, HiWord=Height
-        //          ReSizeD3DScene(LOWORD(lParam), HIWORD(lParam));
-        //          return 0;			// Jump Back
-        //      }
-          //}
-        }
-        return DefWindowProc(hWnd, msg, wParam, lParam);
+		// Retrieve the window this message belongs too and send it the message
+		LONG_PTR lpUserData = GetWindowLongPtr(hWnd, GWLP_USERDATA);
+		Win32Window* myWindow = (Win32Window*)lpUserData;
+		// Window procedure can be called before a window is bound to it
+		if (myWindow == nullptr)
+		{
+			return DefWindowProc(hWnd, msg, wParam, lParam);
+		}
+		else
+		{
+			return myWindow->ProcessWindowMessage(hWnd, msg, wParam, lParam);
+		}
     }
 
 }

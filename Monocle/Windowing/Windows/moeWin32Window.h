@@ -28,8 +28,8 @@ namespace moe
         MOE_DLL_API Win32Window(const WindowAttributes& winAttr);
         MOE_DLL_API ~Win32Window();
 
-
-        void    MOE_DLL_API ProcessWindowEvents();
+		/* Returns whether the window should quit (received WM_QUIT). */
+        bool    MOE_DLL_API ProcessWindowEvents();
 
         bool    Initialized() const;
 
@@ -41,9 +41,15 @@ namespace moe
         void                CreateConcreteContext(const ContextDescriptor& contextDesc);
 
         bool    InitializeWindow(const WindowAttributes& winAttr);
+
         bool    RegisterWindow(const WindowAttributes& winAttr);
+
         bool    CreateWindowHandle(const WindowAttributes& winAttr);
+
+		LRESULT	ProcessWindowMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
         void    DestroyWindow();
+
         void    DestroyWindowHandle();
 
         static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);

@@ -4,7 +4,10 @@
 #include "Core/Misc/moeTypeList.h"
 #include "Core/Misc/moeFalse.h"
 #include "Graphics/Context/moeGraphicsContext.h"
+#include "Input/InputHandler.h"
+
 #include "moeWindowAttributes.h"
+
 #include <memory> // unique_ptr
 
 // moe::WindowBase is a CRTP class used to instantiate platform-specific windows.
@@ -42,12 +45,14 @@ namespace moe
 
         bool    InitializeWindow(const WindowAttributes& winAttr)
         {
+
             return window().InitializeWindow(winAttr);
         }
 
-        void    ProcessWindowEvents()
+		/* Returns whether the window should quit (received a QUIT signal). */
+        bool    ProcessWindowEvents()
         {
-            window().ProcessWindowEvents();
+            return window().ProcessWindowEvents();
         }
 
         template <class ContextType>
@@ -73,6 +78,8 @@ namespace moe
 
         WindowAttributes                        m_attribs;
         std::unique_ptr<moe::GraphicsContext>   m_context;
+		moe::IInputHandler						m_handler;
+
         Handle                                  m_handle;
 
     private:

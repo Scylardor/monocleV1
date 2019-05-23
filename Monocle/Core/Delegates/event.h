@@ -10,7 +10,6 @@
 
 #include <algorithm> // std::find_if
 
-
 namespace moe
 {
 	typedef	std::size_t	EventDelegateID;
@@ -27,6 +26,20 @@ namespace moe
 	class Event<Ret(Args...)>
 	{
 	public:
+		using DelegateType = Delegate<Ret(Args...)>;
+
+
+		EventDelegateID	AddDelegate(const DelegateType& func)
+		{
+			m_delegates.EmplaceBack(m_nextID, func);
+			return m_nextID++;
+		}
+
+		EventDelegateID	AddDelegate(DelegateType&& func)
+		{
+			m_delegates.EmplaceBack(m_nextID, std::move(func));
+			return m_nextID++;
+		}
 
 		// Free function version
 		template<Ret(*funcPtr)(Args...)>
@@ -78,7 +91,7 @@ namespace moe
 
 
 	private:
-		using DelegateType = Delegate<Ret(Args...)>;
+
 
 
 		/* A simple struct holding the actual delegate and an ID */
@@ -94,11 +107,7 @@ namespace moe
 		};
 
 
-		EventDelegateID	AddDelegate(DelegateType&& func)
-		{
-			m_delegates.EmplaceBack(m_nextID, std::forward<DelegateType>(func));
-			return m_nextID++;
-		}
+
 
 
 		typedef moe::Vector<EventDelegate>	EventDelegates;

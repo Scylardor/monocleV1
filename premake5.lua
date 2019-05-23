@@ -177,11 +177,22 @@ project "Graphics"
 	RemoveOtherPlatformSpecificFiles()
 	SetBuildOptionsForLinuxDLL()
 
+	
+project "Input"
+	location "Monocle/Input"
+	files { "Monocle/Input/**.h", "Monocle/Input/Private/**.hpp", "Monocle/Input/Private/**.cpp" }
+	includedirs { "Monocle/" }
+	links { "Core" }
+
+	RemoveOtherPlatformSpecificFiles()
+	SetBuildOptionsForLinuxDLL()
+
+	
 project "Windowing"
 	location "Monocle/Windowing"
 	files { "Monocle/Windowing/**.h", "Monocle/Windowing/Private/**.hpp", "Monocle/Windowing/Private/**.cpp" }
 	includedirs { "Monocle/" }
-	links { "Core", "Graphics" }
+	links { "Core", "Graphics", "Input" }
 
 	AddGraphicsAPI()
 	RemoveOtherPlatformSpecificFiles()
@@ -196,6 +207,7 @@ project "GameFramework"
 
 	RemoveOtherPlatformSpecificFiles()
 	SetBuildOptionsForLinuxDLL()
+	
 
 -- Uncomment this if you want to include the Unit Tests project in the main engine solution
 -- project "UnitTests"

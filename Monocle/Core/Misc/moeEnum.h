@@ -10,10 +10,10 @@
 	The goal is to provide a friendly and improved enum interface that allows easy enum iteration, stringization, etc.
 	I also added basic operator overloading to allow enums to be used as bitflags.
 
-	Note : it is not possible to declare a Better Enum inside a class, so Monocle Enums have that limitation too.
-
-	Note 2: if you read the http://blog.bitwigglers.org post you'll realize I also didn't implement the SFINAE for bitflags enums.
-	It's because I thought it was too much added complexity for not a lot of gained value, so all MOE_ENUM can be bitflags and I'm OK with that.
+	Note : if you read the http://blog.bitwigglers.org post you'll realize I didn't implement the SFINAE for bitflags enums.
+	It's because I thought it was too much added complexity for not a lot of gained value.
+	Instead, I use DECLARE_MOE_ENUM_OPERATORS and DEFINE_MOE_ENUM_OPERATORS macros. When creating a new MOE_ENUM, you need to use both
+	to use bitwise operations (DECLARE_MOE_ENUM_OPERATORS in the header, DEFINE_MOE_ENUM_OPERATORS in a translation unit, .cpp etc...).
 
 	Better Enums is distributed under the terms of the 2-clause BSD license (see LICENSE in ThirdParty/BetterEnums).
 
@@ -23,7 +23,19 @@
 */
 
 #define MOE_ENUM(Enum, UnderlyingType, ...) \
-BETTER_ENUM(Enum, UnderlyingType, ##__VA_ARGS__); \
+BETTER_ENUM(Enum, UnderlyingType, ##__VA_ARGS__);
+
+#define DECLARE_MOE_ENUM_OPERATORS(Enum)\
+Enum operator |(Enum lhs, Enum rhs);\
+Enum operator &(Enum lhs, Enum rhs);\
+Enum operator ^(Enum lhs, Enum rhs);\
+Enum operator ~(Enum rhs);\
+Enum& operator |=(Enum &lhs, Enum rhs);\
+Enum& operator &=(Enum &lhs, Enum rhs);\
+Enum& operator ^=(Enum &lhs, Enum rhs);
+
+
+#define DEFINE_MOE_ENUM_OPERATORS(Enum) \
 Enum operator |(Enum lhs, Enum rhs) \
 { \
 	return Enum::_from_integral(\

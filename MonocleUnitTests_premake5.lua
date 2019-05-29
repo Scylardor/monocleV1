@@ -65,7 +65,7 @@ workspace "MonocleUnitTests"
 project "UnitTests"
 	kind "ConsoleApp"
 	libdirs { "Monocle/Build/%{cfg.platform}/%{cfg.buildcfg}" }
-	links { "Core", "GameFramework" }
+	links { "Core", "GameFramework", "Input" }
 
 	-- This seems to be mandatory on linux, you can't use the common objdir folder, or compile fails. Issue in investigation
 	objdir "Monocle/Tests/Build/"

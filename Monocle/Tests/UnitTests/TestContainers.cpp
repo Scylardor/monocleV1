@@ -314,10 +314,10 @@ TEST_CASE("Containers", "[Core]")
 
 		// Erase
 		test2.Erase(test2.Begin());
-		CHECK(test2.Size() == 4);
+		CHECK(test2.Size() == 5);
 
 		test2.Erase(3944);
-		CHECK(test2.Size() == 3);
+		CHECK(test2.Size() == 4);
 
 		// Clear
 		test2.Clear();

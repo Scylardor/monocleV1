@@ -10,7 +10,6 @@
 #include "Core/Delegates/Delegate.h"
 #include "Core/Delegates/Event.h"
 
-
 static int test = 0;
 
 void testfunc()

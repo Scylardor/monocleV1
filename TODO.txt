@@ -8,6 +8,7 @@ https://stackoverflow.com/questions/10462198/raw-mouse-input-with-windows
 http://asawicki.info/news_1533_handling_multiple_mice_with_raw_input.html
 https://gamedev.stackexchange.com/questions/1859/handling-keyboard-and-mouse-input-win-api
 https://www.gamedev.net/forums/topic/666409-winapi-raw-input-and-mouse-acceleration/
+https://stackoverflow.com/questions/8161741/handling-keyboard-input-in-win32-wm-char-or-wm-keydown-wm-keyup
 
 
 - XInput:
@@ -19,3 +20,35 @@ https://www.codeproject.com/Articles/26949/Xbox-360-Controller-Input-in-C-with-X
 - game engine docs:
 https://gamasutra.com/blogs/MichaelKissner/20151027/257369/Writing_a_Game_Engine_from_Scratch__Part_1_Messaging.php
 EASTL http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2271.html
+
+
+- linux projects inside visual studio:
+https://www.hanselman.com/blog/WritingAndDebuggingLinuxCApplicationsFromVisualStudioUsingTheWindowsSubsystemForLinux.aspx
+https://devblogs.microsoft.com/cppblog/targeting-windows-subsystem-for-linux-from-visual-studio/
+https://devblogs.microsoft.com/cppblog/visual-c-for-linux-development-with-cmake/
+https://visualgdb.com/tutorials/linux/
+https://docs.microsoft.com/en-us/cpp/build/get-started-linux-cmake?view=vs-2017 
+https://docs.microsoft.com/en-us/cpp/linux/cmake-linux-project?view=vs-2019
+
+- random engine :
+https://isocpp.org/files/papers/n3551.pdf
+
+- vector/std performance investigations:
+https://github.com/lnishan/vector
+https://baptiste-wicht.com/posts/2012/12/cpp-benchmark-vector-list-deque.html
+
+- D3D11 Debug Interface:
+https://seanmiddleditch.com/direct3d-11-debug-api-tricks/
+
+- unique ptr with allocators:
+https://www.reddit.com/r/cpp/comments/5z6di9/what_about_allocator_support_for_stdunique_ptr/
+
+
+- automatic hashing:
+https://blogs.msdn.microsoft.com/vcblog/2018/10/19/exploring-clang-tooling-part-1-extending-clang-tidy/
+
+- unit tests:
+- enums
+- input handler
+- keyboard mappings
+

@@ -16,12 +16,12 @@ namespace moe
 	typedef moe::Delegate<void(KeyboardMappingID)>	KeyboardMappingDelegate;
 
 
-
 	MOE_ENUM(KeyState, std::uint8_t,
 		Pressed = 0,
 		Repeated,
 		Released
 	);
+	DECLARE_MOE_ENUM_OPERATORS(KeyState);
 
 
 	/*

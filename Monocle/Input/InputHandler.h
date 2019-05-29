@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Core/Preprocessor/moeDLLVisibility.h"
 #include "Core/Containers/HashMap/HashMap.h"
 #include "Input/KeyboardMapping.h"
 
@@ -9,7 +10,7 @@
 
 namespace moe
 {
-	class IInputHandler
+	class MOE_DLL_API IInputHandler
 	{
 		typedef	std::uint32_t	MappingID;
 		typedef	HashMap<std::string, KeyboardMapping>	KeyboardMappings;

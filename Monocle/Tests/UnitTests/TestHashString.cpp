@@ -71,30 +71,22 @@ TEST_CASE("HashString", "[Core]")
 		TestHashString test3;
 
 		test = "toto";
+		CHECK(test() == 0xf6a4e63f5280494d);
+
 		test2 = TestHashString("titi");
+		CHECK(test2() == 0xec92d5697d2707f5);
+
 		test3.SetString("tata");
+		CHECK(test3() == 0xc6ea9a540e406295);
 
 	}
 
 	SECTION("Hash value std::hash")
 	{
-		typedef moe::HashStringT<std::string, moe::StdHashPolicy<std::string>> TestHashString;
-		TestHashString test;
-		TestHashString test2;
-		TestHashString test3;
-
-		test = "toto";
-		test2 = TestHashString("titi");
-		test3.SetString("tata");
-
 		// Since std implementations are compiler-specific, std::hash may yield different results based on what compiler we use.
-		// Testing what I can...
-
-		// MSVC 2015
-		#if defined(_MSC_VER) && _MSC_VER == 1900
-
-
-		#endif
+		// And Hash functions are only required to produce the same result for the same input within a single execution of a program;
+		// this allows salted hashes that prevent collision DoS attacks since C++14, but then we're unable to reliably test std::hash results.
+		// cf. https://en.cppreference.com/w/cpp/utility/hash
 	}
 
 }

@@ -107,6 +107,37 @@ TEST_CASE("Delegates", "[Core]")
 
 		testEvent.Broadcast();
 		CHECK(test == 9);
+
+		// Test AddDelegate
+		moe::Delegate<void()> del;
+		del.Set<&testfunc>();
+		moe::EventDelegateID dlgId5 = testEvent.AddDelegate(del);
+		CHECK(dlgId5 == 4);
+
+		testEvent.Broadcast();
+		CHECK(test == 13);
+
+		removeOk = testEvent.Remove(dlgId5);
+		CHECK(removeOk);
+
+		del.Set<UserStruct, &UserStruct::member>(&testUs);
+		dlgId5 = testEvent.AddDelegate(del);
+		CHECK(dlgId5 == 5);
+
+		testEvent.Broadcast();
+		CHECK(test == 17);
+
+		// Test move AddDelegate
+		removeOk = testEvent.Remove(dlgId5);
+		CHECK(removeOk);
+
+		dlgId5 = testEvent.AddDelegate(std::move(del));
+		CHECK(!del.IsSet());
+		CHECK(dlgId5 == 6);
+
+		testEvent.Broadcast();
+		CHECK(test == 21);
+
 	}
 
  }

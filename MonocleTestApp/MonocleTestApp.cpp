@@ -107,7 +107,7 @@ typedef moe::StdLogger<moe::NoFilterPolicy, moe::NoFormatPolicy, moe::IdeWritePo
 int main()
 {
 	BasicLogger logger;
-	MOE_LOGGER_INFO(logger, moe::ChanDefault, "Test chaining %d", 42);
+	MOE_LOGGER_INFO(logger, moe::ChanDefault, "Test app Initialization");
 
 	moe::WindowAttributes winAttr{ moe::Width_t(1024), moe::Height_t(728), L"Test Window" };
 	moe::Win32Window window(winAttr);
@@ -137,6 +137,12 @@ int main()
 	//test t;
 
 	moe::FSM fsm;
+
+	bool keepGoing = true;
+	while (keepGoing)
+	{
+		keepGoing = window.ProcessWindowEvents();
+	}
 
     return 0;
 }

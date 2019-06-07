@@ -186,10 +186,6 @@ namespace moe
 		bool	operator==(const HashStringT& rhs) const
 		{
 			bool eq = (m_id == rhs.m_id);
-			#ifndef MOE_SHIPPING
-			eq &= (m_str == rhs.m_str);
-			#endif
-
 			return eq;
 		}
 
@@ -231,3 +227,22 @@ namespace moe
 	// Generic HashString type
 	typedef HashStringT<>	HashString;
 }
+
+
+#ifdef MOE_STD_SUPPORT
+namespace std
+{
+	// With std support, Monocle HashMap relies on std::unordered_map.
+	// In order to use a custom type as a unordered_map key you need to specialize the std::hash template.
+	// With this in place, you can instantiate a std::unordered_map using HashString as the key:
+	// it will automatically use std::hash<HashString> for the hash value calculations.
+	template <class String, class HashPolicy>
+	struct hash<moe::HashStringT<String, HashPolicy>>
+	{
+		std::size_t operator()(const moe::HashStringT<String, HashPolicy>& key) const
+		{
+			return key();
+		}
+	};
+}
+#endif

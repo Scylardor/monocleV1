@@ -1,6 +1,8 @@
 #ifndef MOE_FALSE_H_
 #define MOE_FALSE_H_
 
+#pragma once
+
 #include <type_traits>
 
 // moe::False is a dummy type you can use in statically-types contexts to always yield a compile-time false value.

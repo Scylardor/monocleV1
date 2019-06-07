@@ -98,6 +98,8 @@ namespace moe
 
 	LRESULT Win32Window::ProcessWindowMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
+		wchar_t buf[1024];
+
 		switch (msg)			// Check For Windows Messages
 		{
 			//      case WM_ACTIVATE:	// Watch For Window Activate Message
@@ -139,14 +141,65 @@ namespace moe
 			return 0;
 		}
 
+		case WM_SYSKEYDOWN:		// Is A Key Being Held Down?
+		{
+			swprintf_s(buf, L"WM_SYSKEYDOWN: 0x%x\n", wParam);
+			OutputDebugString(buf);
+			break;
+		}
+
+		case WM_SYSKEYUP:
+		{
+			swprintf_s(buf, L"WM_SYSKEYUP: 0x%x\n", wParam);
+			OutputDebugString(buf);
+			break;
+		}
+
 		case WM_KEYDOWN:		// Is A Key Being Held Down?
 		{
+			swprintf_s(buf, L"WM_KEYDOWN: 0x%x\n", wParam);
+			OutputDebugString(buf);
+			CHAR name[1024];
+			UINT scanCode = MapVirtualKeyA(wParam, MAPVK_VK_TO_VSC);
+			LONG lParamValue = (scanCode << 16);
+			int result = GetKeyNameTextA(lParamValue, name, 1024);
+			if (result > 0)
+			{
+				OutputDebugStringA(name);
+				OutputDebugStringA("\n");
+			}
+			if (lParam & 0x01000000)
+			{
+				OutputDebugStringA("extended: yes");
+			}
+			else
+			{
+				OutputDebugStringA("extended: no");
+			}
+			OutputDebugStringA("\n");
+
+			//keys[wParam] = TRUE;// If So, Mark It As TRUE
+			return 0;		// Jump Back
+		}
+
+		case WM_CHAR:		// Is A Key Being Held Down?
+		{
+			swprintf_s(buf, L"WM_CHAR: 0x%x %c byte compo: 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x\n", wParam, wParam, ((char*)(&wParam))[0], ((char*)(&wParam))[1], ((char*)(&wParam))[2], ((char*)(&wParam))[3], ((char*)(&wParam))[4], ((char*)(&wParam))[5], ((char*)(&wParam))[6], ((char*)(&wParam))[7]);
+			OutputDebugString(buf);
+			SHORT keyScan = VkKeyScan(wParam);
+			CHAR vkCode = (keyScan);
+			ZeroMemory(buf, 32);
+			swprintf_s(buf, L"VK: 0x%x\n", vkCode);
+			OutputDebugString(buf);
+
 			//keys[wParam] = TRUE;// If So, Mark It As TRUE
 			return 0;		// Jump Back
 		}
 
 		case WM_KEYUP:		// Has A Key Been Released?
 		{
+			swprintf_s(buf, L"WM_KEYUP: 0x%x\n", wParam);
+			OutputDebugString(buf);
 		   // keys[wParam] = FALSE;// If So, Mark It As FALSE
 		    return 0;			// Jump Back
 		}

@@ -37,9 +37,10 @@ namespace moe
 
 		EventDelegateID	AddDelegate(DelegateType&& func)
 		{
-			m_delegates.EmplaceBack(m_nextID, std::move(func));
+			m_delegates.EmplaceBack(m_nextID, std::forward<DelegateType>(func));
 			return m_nextID++;
 		}
+
 
 		// Free function version
 		template<Ret(*funcPtr)(Args...)>
@@ -98,6 +99,9 @@ namespace moe
 		struct EventDelegate
 		{
 			EventDelegate() = default;
+			EventDelegate(EventDelegateID id, const DelegateType& dlgt) :
+				m_id(id), m_delegate(dlgt)
+			{}
 			EventDelegate(EventDelegateID id, DelegateType&& dlgt) :
 				m_id(id), m_delegate(std::move(dlgt))
 			{}

@@ -7,14 +7,12 @@
 #include "Core/Containers/Vector/Vector.h"
 #include "Core/Delegates/Event.h"
 
+#include "Input/Input.h"
+#include "Input/MonocleKeyboardMap.h"
+
+
 namespace moe
 {
-
-	typedef std::uint8_t	Keycode;
-	typedef std::uint32_t	KeyboardMappingID;
-	typedef moe::Event<void(KeyboardMappingID)>		KeyboardMappingEvent;
-	typedef moe::Delegate<void(KeyboardMappingID)>	KeyboardMappingDelegate;
-
 
 	MOE_ENUM(KeyState, std::uint8_t,
 		Pressed = 0,
@@ -32,8 +30,8 @@ namespace moe
 	*/
 	struct KeyboardEventDesc
 	{
-		KeyboardEventDesc(Keycode code, KeyState state, bool shift = false, bool alt = false, bool ctrl = false) :
-			m_code(code), m_state(state), m_shift(shift), m_alt(alt), m_ctrl(ctrl)
+		KeyboardEventDesc(Keycode code, KeyState state) :
+			m_code(code), m_state(state)
 		{}
 
 		/*
@@ -43,20 +41,11 @@ namespace moe
 		*/
 		bool	Matches(const KeyboardEventDesc& desc) const
 		{
-			bool matches = (
-				m_code == desc.m_code
-				&& (m_state & desc.m_state)
-				&& (desc.m_shift >= m_shift)
-				&& (desc.m_alt >= m_alt)
-				&& (desc.m_ctrl >= m_ctrl)
-				);
+			bool matches = (m_code == desc.m_code && (m_state & desc.m_state));
 			return matches;
 		}
 
 		Keycode		m_code;
-		bool		m_shift = false;
-		bool		m_alt = false;
-		bool		m_ctrl = false;
 		KeyState	m_state;
 	};
 
@@ -68,26 +57,16 @@ namespace moe
 	{
 	public:
 
-		KeyboardMapping(KeyboardMappingID mapID, const KeyboardEventDesc& mapDesc) :
+		KeyboardMapping(InputMappingID mapID, const KeyboardEventDesc& mapDesc) :
 			m_id(mapID), m_mappingDesc(mapDesc)
 		{}
 
 
-		KeyboardMappingEvent&	ModifyMappingEvent()
-		{
-			return m_event;
-		}
 
 		void	SetDescription(const KeyboardEventDesc& mapDesc)
 		{
 			m_mappingDesc = mapDesc;
 		}
-
-		void	Activate()
-		{
-			m_event.Broadcast(m_id);
-		}
-
 
 		const KeyboardEventDesc&	Description() const
 		{
@@ -95,14 +74,11 @@ namespace moe
 		}
 
 
-		KeyboardMappingID	GetID() const { return m_id; }
+		InputMappingID	GetID() const { return m_id; }
 
 	private:
-		KeyboardMappingID	m_id;
+		InputMappingID	m_id;
 		KeyboardEventDesc	m_mappingDesc;
-
-
-		KeyboardMappingEvent	m_event;
 	};
 
 

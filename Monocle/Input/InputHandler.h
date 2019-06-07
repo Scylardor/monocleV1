@@ -4,6 +4,9 @@
 
 #include "Core/Preprocessor/moeDLLVisibility.h"
 #include "Core/Containers/HashMap/HashMap.h"
+#include "Core/Containers/Vector/Vector.h"
+#include "Core/HashString/HashString.h"
+
 #include "Input/KeyboardMapping.h"
 
 #include <string>
@@ -12,23 +15,66 @@ namespace moe
 {
 	class MOE_DLL_API IInputHandler
 	{
-		typedef	std::uint32_t	MappingID;
-		typedef	HashMap<std::string, KeyboardMapping>	KeyboardMappings;
+	public:
 
+		typedef moe::Delegate<void(InputMappingID)>	ActionMappingDelegate;
 
-		bool	HandleKeyboardEvent(const KeyboardEventDesc& eventDesc);
-
-
-		/*
-			Returns a keyboard mapping ID useful to identify the activated mapping in a mapping callback.
-			This way, you can for example bind the same function to multiple mappings and still be able to tell
-			which mapping has been activated.
-		*/
-		KeyboardMappingID	SetKeyboardMapping(const std::string& mappingName, const KeyboardEventDesc& mappingDesc);
 
 	private:
-		MappingID			m_nextID = 0;
-		KeyboardMappings	m_keyboardMappings;
+		typedef moe::Event<void(InputMappingID)>		ActionMappingEvent;
+
+		struct	ActionDescriptor
+		{
+			moe::Vector<KeyboardMapping>	m_kbMaps;
+
+			ActionMappingEvent				m_actionEvent;
+
+			void	Activate(InputMappingID activatedMappingId)
+			{
+				m_actionEvent.Broadcast(activatedMappingId);
+			}
+		};
+
+		typedef	HashMap<HashString, ActionDescriptor>	ActionMappings;
+
+
+	public:
+
+		/*
+			Maps a keyboard event to the given action mapping. Creates a new one if it doesn't exist yet.
+			Returns a keyboard mapping ID useful to identify this mapping.
+		*/
+		InputMappingID	BindActionMappingKeyboardEvent(const HashString& mappingName, const KeyboardEventDesc& mappingDesc);
+
+
+
+		void		HandleKeyDown(Keycode key);
+		void		HandleKeyUp(Keycode key);
+
+
+		void		AddActionMappingDelegate(const HashString& mappingName, const ActionMappingDelegate& dlgt);
+		void		AddActionMappingDelegate(const HashString& mappingName, ActionMappingDelegate&& dlgt);
+
+
+		bool		HasActionMapping(const HashString& mappingName) const;
+
+		// Activate the action mapping externally. Will pass the action mapping ID as parameter to listener delegates.
+		bool		ActivateActionMapping(const HashString& mappingName);
+
+
+		ActionMappings::SizeType	NumActionMappings() const
+		{
+			return m_actionMappings.Size();
+		}
+
+
+	private:
+
+		bool IInputHandler::HandleKeyboardEvent(const KeyboardEventDesc& eventDesc);
+
+
+		InputMappingID	m_nextID = 0;
+		ActionMappings	m_actionMappings;
 
 	};
 }

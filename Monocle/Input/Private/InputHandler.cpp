@@ -10,13 +10,17 @@ namespace moe
 	{
 		bool handled = false;
 
-		for (auto& kbMappingPair : m_keyboardMappings)
+		for (auto& actionMap : m_actionMappings)
 		{
-			KeyboardMapping& kbMapping = kbMappingPair.second;
-			if (kbMapping.Description().Matches(eventDesc))
+			ActionDescriptor& actionDesc = actionMap.second;
+
+			for (KeyboardMapping& kbMap : actionDesc.m_kbMaps)
 			{
-				kbMapping.Activate();
-				handled = true;
+				if (kbMap.Description().Matches(eventDesc))
+				{
+					actionDesc.Activate(kbMap.GetID());
+					handled = true;
+				}
 			}
 		}
 
@@ -24,26 +28,62 @@ namespace moe
 	}
 
 
-	KeyboardMappingID IInputHandler::SetKeyboardMapping(const std::string& mappingName, const KeyboardEventDesc& mappingDesc)
+	moe::InputMappingID IInputHandler::BindActionMappingKeyboardEvent(const HashString& mappingName, const KeyboardEventDesc& mappingDesc)
 	{
-		KeyboardMappingID mappingID;
+		InputMappingID mappingID;
 
-		auto insertResult = m_keyboardMappings.Emplace(mappingName, KeyboardMapping(m_nextID, mappingDesc));
-		MOE_DEBUG_ASSERT(insertResult.first != m_keyboardMappings.End()); // insertResult is a <Iterator, bool> pair
-		if (false == insertResult.second) // Our data wasn't inserted : an entry already existed
-		{
-			// just update the mapping description
-			KeyboardMapping& kbMap = insertResult.first->second;
-			kbMap.SetDescription(mappingDesc);
-			mappingID = kbMap.GetID(); // just return the ID of the existing mapping
-		}
-		else
-		{
-			mappingID = m_nextID;
-			m_nextID++;
-		}
+		ActionDescriptor& actionDesc = m_actionMappings[mappingName];
+		actionDesc.m_kbMaps.EmplaceBack(KeyboardMapping(m_nextID, mappingDesc));
+
+		mappingID = m_nextID;
+		m_nextID++;
 
 		return mappingID;
+	}
+
+
+	void IInputHandler::HandleKeyDown(Keycode key)
+	{
+
+	}
+
+
+	void IInputHandler::HandleKeyUp(Keycode key)
+	{
+
+	}
+
+
+	bool IInputHandler::HasActionMapping(const HashString& mappingName) const
+	{
+		return (m_actionMappings.Find(mappingName) != m_actionMappings.End());
+	}
+
+
+	bool IInputHandler::ActivateActionMapping(const HashString& mappingName)
+	{
+		ActionMappings::Iterator mappingIt = m_actionMappings.Find(mappingName);
+		if (mappingIt != m_actionMappings.End())
+		{
+			mappingIt->second.Activate(mappingName());
+			return true;
+		}
+
+		return false;
+	}
+
+
+	void IInputHandler::AddActionMappingDelegate(const HashString& mappingName, const ActionMappingDelegate& dlgt)
+	{
+		ActionDescriptor& actionDesc = m_actionMappings[mappingName];
+		actionDesc.m_actionEvent.AddDelegate(dlgt);
+	}
+
+
+	void IInputHandler::AddActionMappingDelegate(const HashString& mappingName, ActionMappingDelegate&& dlgt)
+	{
+		ActionDescriptor& actionDesc = m_actionMappings[mappingName];
+		actionDesc.m_actionEvent.AddDelegate(std::move(dlgt));
 	}
 
 }

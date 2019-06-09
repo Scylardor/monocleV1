@@ -4,5 +4,5 @@
 
 namespace moe
 {
-	DEFINE_MOE_ENUM_OPERATORS(KeyState);
+
 }

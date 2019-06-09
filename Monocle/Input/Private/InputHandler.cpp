@@ -28,12 +28,12 @@ namespace moe
 	}
 
 
-	moe::InputMappingID IInputHandler::BindActionMappingKeyboardEvent(const HashString& mappingName, const KeyboardEventDesc& mappingDesc)
+	moe::InputMappingID IInputHandler::BindActionMappingKeyboardEvent(const HashString& mappingName, const KeyboardMappingDesc& mappingDesc)
 	{
 		InputMappingID mappingID;
 
 		ActionDescriptor& actionDesc = m_actionMappings[mappingName];
-		actionDesc.m_kbMaps.EmplaceBack(KeyboardMapping(m_nextID, mappingDesc));
+		actionDesc.m_kbMaps.EmplaceBack(m_nextID, mappingDesc);
 
 		mappingID = m_nextID;
 		m_nextID++;

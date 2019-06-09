@@ -2,12 +2,32 @@
 
 #pragma once
 
+#include "Input/RawInputHandlerInterface.h"
+
 #include <Windows.h> // HWND
 
-#include "Input/RawInputHandler.h"
 
 namespace moe
 {
+	class Win32RawInputHandler;
+
+	template<>
+	struct RawInputHandlerTraits<Win32RawInputHandler>
+	{
+		using WindowHandle = HWND;
+		using RawInputDeviceID = HANDLE;
+
+		enum class ERawInputDeviceTypeID : RawInputDeviceTypeID
+		{
+			DeviceType_Keyboard	= RIM_TYPEKEYBOARD,
+			DeviceType_Mouse	= RIM_TYPEMOUSE,
+			DeviceType_Unknown	= (RawInputDeviceTypeID)-1
+		};
+
+	};
+
+
+
 	/*
 		Win32 raw input handler
 		Will listen for keyboards, mice.
@@ -19,14 +39,21 @@ namespace moe
 
 		typedef HWND	WindowHandle;
 
-		bool	BindToWindowRawInputDevices(WindowHandle winHandle);
+		Error	RegisterWindowRawInputDevices(WindowHandle winHandle);
 
 
-		bool	UnregisterRawInputDevices()
-		{
-			return true;
-		}
+		Error	UnregisterWindowRawInputDevices();
 
+	private:
+		using Super = IRawInputHandler<Win32RawInputHandler>;
+
+		#ifndef MOE_SHIPPING
+		static std::string	GetErrorFormatString(const char* format);
+		#endif
+
+		static Error		GetDeviceName(RAWINPUTDEVICELIST& rawInputDeviceList, std::wstring& deviceName);
+
+		static const UINT	s_errorResult = (UINT)-1;
 	};
 
 }

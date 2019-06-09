@@ -8,8 +8,9 @@
 #include "Core/HashString/HashString.h"
 
 #include "Input/KeyboardMapping.h"
+#include "Input/InputDescriptors.h"
+#include "Input/InputEventsSink.h"
 
-#include <string>
 
 namespace moe
 {
@@ -17,15 +18,15 @@ namespace moe
 	{
 	public:
 
-		typedef moe::Delegate<void(InputMappingID)>	ActionMappingDelegate;
+		typedef Delegate<void(InputMappingID)>	ActionMappingDelegate;
 
 
 	private:
-		typedef moe::Event<void(InputMappingID)>		ActionMappingEvent;
+		typedef Event<void(InputMappingID)>		ActionMappingEvent;
 
 		struct	ActionDescriptor
 		{
-			moe::Vector<KeyboardMapping>	m_kbMaps;
+			Vector<KeyboardMapping>	m_kbMaps;
 
 			ActionMappingEvent				m_actionEvent;
 
@@ -44,7 +45,18 @@ namespace moe
 			Maps a keyboard event to the given action mapping. Creates a new one if it doesn't exist yet.
 			Returns a keyboard mapping ID useful to identify this mapping.
 		*/
-		InputMappingID	BindActionMappingKeyboardEvent(const HashString& mappingName, const KeyboardEventDesc& mappingDesc);
+		InputMappingID	BindActionMappingKeyboardEvent(const HashString& mappingName, const KeyboardMappingDesc& mappingDesc);
+
+
+		Error	RegisterWindowRawInputDevices(RawInputHandler::WindowHandle windowForRawInput)
+		{
+			return m_rawInputHandler.RegisterWindowRawInputDevices(windowForRawInput);
+		}
+
+		Error	UnregisterWindowRawInputDevices()
+		{
+			return m_rawInputHandler.UnregisterWindowRawInputDevices();
+		}
 
 
 
@@ -68,13 +80,23 @@ namespace moe
 		}
 
 
+		InputEventSink&	ModifyEventSink()
+		{
+			return m_eventSink;
+		}
+
+
 	private:
 
-		bool IInputHandler::HandleKeyboardEvent(const KeyboardEventDesc& eventDesc);
+		bool	HandleKeyboardEvent(const KeyboardEventDesc& eventDesc);
 
 
 		InputMappingID	m_nextID = 0;
 		ActionMappings	m_actionMappings;
+
+		RawInputHandler	m_rawInputHandler;
+
+		InputEventSink	m_eventSink;
 
 	};
 }

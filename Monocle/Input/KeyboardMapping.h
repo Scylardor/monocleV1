@@ -8,45 +8,30 @@
 #include "Core/Delegates/Event.h"
 
 #include "Input/Input.h"
-#include "Input/MonocleKeyboardMap.h"
+#include "Input/InputDescriptors.h"
 
 
 namespace moe
 {
-
-	MOE_ENUM(KeyState, std::uint8_t,
-		Pressed = 0,
-		Repeated,
-		Released
-	);
-	DECLARE_MOE_ENUM_OPERATORS(KeyState);
-
-
 	/*
-		Describes a keyboard event:
+		Describes a keyboard mapping:
 		- a keycode
-		- whether special keys like alt, shift or control must be down too
 		- whether it's meant to be fired on key pressed, repeated, or released, or any combination of the three
 	*/
-	struct KeyboardEventDesc
+	struct KeyboardMappingDesc
 	{
-		KeyboardEventDesc(Keycode code, KeyState state) :
-			m_code(code), m_state(state)
+		KeyboardMappingDesc(Keycode code, ButtonState state, LogicalDeviceID logicalKb = LogicalDeviceID::Keyboard_0) :
+			m_eventDesc(code, state), m_keyboardLogicalID(logicalKb)
 		{}
 
-		/*
-			Note that Matches is "not commutative":
-			for example, a keyboard description with Shift false will match the same keyboard description with Shift set to true.
-			But if it's the other way around, a keyboard description with shift set to True won't match a description where Shift is set to false.
-		*/
-		bool	Matches(const KeyboardEventDesc& desc) const
+		bool	Matches(const KeyboardEventDesc& inDesc) const
 		{
-			bool matches = (m_code == desc.m_code && (m_state & desc.m_state));
+			bool matches = (m_eventDesc.m_code == inDesc.m_code && (m_eventDesc.m_state & inDesc.m_state));
 			return matches;
 		}
 
-		Keycode		m_code;
-		KeyState	m_state;
+		KeyboardEventDesc	m_eventDesc;
+		LogicalDeviceID		m_keyboardLogicalID = LogicalDeviceID::Keyboard_0;
 	};
 
 
@@ -57,18 +42,18 @@ namespace moe
 	{
 	public:
 
-		KeyboardMapping(InputMappingID mapID, const KeyboardEventDesc& mapDesc) :
+		KeyboardMapping(InputMappingID mapID, const KeyboardMappingDesc& mapDesc) :
 			m_id(mapID), m_mappingDesc(mapDesc)
 		{}
 
 
 
-		void	SetDescription(const KeyboardEventDesc& mapDesc)
+		void	SetDescription(const KeyboardMappingDesc& mapDesc)
 		{
 			m_mappingDesc = mapDesc;
 		}
 
-		const KeyboardEventDesc&	Description() const
+		const KeyboardMappingDesc&	Description() const
 		{
 			return m_mappingDesc;
 		}
@@ -78,7 +63,7 @@ namespace moe
 
 	private:
 		InputMappingID	m_id;
-		KeyboardEventDesc	m_mappingDesc;
+		KeyboardMappingDesc	m_mappingDesc;
 	};
 
 

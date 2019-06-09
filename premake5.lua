@@ -238,7 +238,7 @@ project "MonocleTestApp"
 	kind "ConsoleApp"
 	files { "MonocleTestApp/*.cpp", "MonocleTestApp/*.h", "MonocleTestApp/*.hpp" }
 	includedirs { "Monocle" }
-	links { "Core", "Graphics", "Windowing", "GameFramework" }
+	links { "Core", "Graphics", "Windowing", "GameFramework", "Input" }
 	
 	-- As all other projects of Monocle are libs, in DLL mode, this define needs to be removed
 	removedefines { "MOE_DLL_EXPORT" }

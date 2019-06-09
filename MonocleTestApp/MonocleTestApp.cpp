@@ -107,6 +107,7 @@ typedef moe::StdLogger<moe::NoFilterPolicy, moe::NoFormatPolicy, moe::IdeWritePo
 int main()
 {
 	BasicLogger logger;
+	moe::GetLogChainSingleton().LinkTo(&logger);
 	MOE_LOGGER_INFO(logger, moe::ChanDefault, "Test app Initialization");
 
 	moe::WindowAttributes winAttr{ moe::Width_t(1024), moe::Height_t(728), L"Test Window" };
@@ -138,12 +139,17 @@ int main()
 
 	moe::FSM fsm;
 
+	moe::IInputHandler inputHandler;
+	moe::Error error = inputHandler.RegisterWindowRawInputDevices(window.GetHandle());
+	MOE_DEBUG_ASSERT(!error.HasError());
+
 	bool keepGoing = true;
 	while (keepGoing)
 	{
+		window.FlushRemainingInputEvents();
 		keepGoing = window.ProcessWindowEvents();
 	}
 
-    return 0;
+	return 0;
 }
 

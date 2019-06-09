@@ -18,76 +18,86 @@
 // This may not be so true with e.g. Wayland on Linux, and may need to be adapted in the future.
 namespace moe
 {
-    // To use a custom window with moe::WindowBase, you'll need to provide traits for it.
-    // Required traits:
-    // - HandleType: the type of the native handle of the window (e.g. HWND for Win32 windows)
-    // - CompatibleContexts: a moe::TypeList of contexts that can be used with that window
-    template <typename T>
-    struct WindowTraits
-    {
-        using HandleType = void;
-        using CompatibleContexts = moe::TypeList<moe::NullType>;
-        static_assert(False<T>::value, "Define a WindowTraits specialization for your Window type to be able to inherit WindowBase");
-    };
+	// To use a custom window with moe::WindowBase, you'll need to provide traits for it.
+	// Required traits:
+	// - HandleType: the type of the native handle of the window (e.g. HWND for Win32 windows)
+	// - CompatibleContexts: a moe::TypeList of contexts that can be used with that window
+	template <typename T>
+	struct WindowTraits
+	{
+		using HandleType = void;
+		using CompatibleContexts = moe::TypeList<moe::NullType>;
+		static_assert(False<T>::value, "Define a WindowTraits specialization for your Window type to be able to inherit WindowBase");
+	};
 
 
 
-    template <class ConcreteWindow>
-    class WindowBase
-    {
-    public:
-        using Handle = typename WindowTraits<ConcreteWindow>::HandleType;
+	template <class ConcreteWindow>
+	class WindowBase
+	{
+	public:
+		using Handle = typename WindowTraits<ConcreteWindow>::HandleType;
 
-        WindowBase(const WindowAttributes& attribs) :
-            m_attribs(attribs)
-        {
-        }
+		WindowBase(const WindowAttributes& attribs) :
+			m_attribs(attribs)
+		{
+		}
 
-        bool    InitializeWindow(const WindowAttributes& winAttr)
-        {
 
-            return window().InitializeWindow(winAttr);
-        }
+		bool    InitializeWindow(const WindowAttributes& winAttr)
+		{
+
+			return window().InitializeWindow(winAttr);
+		}
+
 
 		/* Returns whether the window should quit (received a QUIT signal). */
-        bool    ProcessWindowEvents()
-        {
-            return window().ProcessWindowEvents();
-        }
+		bool    ProcessWindowEvents()
+		{
+			return window().ProcessWindowEvents();
+		}
 
-        template <class ContextType>
-        void    CreateContext(const ContextDescriptor& contextDesc)
-        {
-            static_assert(std::is_base_of<moe::GraphicsContext, ContextType>::value, "CreateContext only accepts classes derived from moe::GraphicsContext");
-            static_assert(moe::TypeListIndexOf<typename WindowTraits<ConcreteWindow>::CompatibleContexts, ContextType>::value != -1,
-                "This context type isn't supported by your Window type!");
 
-            m_context = nullptr;
-            window().template CreateConcreteContext<ContextType>(contextDesc);
-        }
+		template <class ContextType>
+		void    CreateContext(const ContextDescriptor& contextDesc)
+		{
+			static_assert(std::is_base_of<moe::GraphicsContext, ContextType>::value, "CreateContext only accepts classes derived from moe::GraphicsContext");
+			static_assert(moe::TypeListIndexOf<typename WindowTraits<ConcreteWindow>::CompatibleContexts, ContextType>::value != -1,
+				"This context type isn't supported by your Window type!");
 
-        void    DestroyWindow();
+			m_context = nullptr;
+			window().template CreateConcreteContext<ContextType>(contextDesc);
+		}
 
-        Handle  GetHandle()
-        {
-            return m_handle;
-        }
+		void    DestroyWindow();
 
-    protected:
-        ~WindowBase() {}
 
-        WindowAttributes                        m_attribs;
-        std::unique_ptr<moe::GraphicsContext>   m_context;
+		void	FlushRemainingInputEvents()
+		{
+			m_handler.ModifyEventSink().Flush();
+		}
+
+
+		Handle  GetHandle()
+		{
+			return m_handle;
+		}
+
+	protected:
+		~WindowBase() {}
+
+		WindowAttributes                        m_attribs;
+		std::unique_ptr<moe::GraphicsContext>   m_context;
 		moe::IInputHandler						m_handler;
 
-        Handle                                  m_handle;
+		Handle                                  m_handle;
 
-    private:
-        ConcreteWindow& window()
-        {
-            return static_cast<ConcreteWindow&>(*this);
-        }
-    };
+	private:
+		ConcreteWindow& window()
+		{
+			return static_cast<ConcreteWindow&>(*this);
+		}
+	};
 }
 
 #endif // MOE_WINDOW_H_

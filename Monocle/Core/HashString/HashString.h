@@ -107,6 +107,7 @@ namespace moe
 		HashStringT& operator=(const HashStringT& rhs)
 		{
 			m_id = rhs.m_id;
+
 			#ifndef MOE_SHIPPING
 			m_str = rhs.m_str;
 			#endif

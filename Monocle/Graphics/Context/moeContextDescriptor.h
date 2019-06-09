@@ -86,7 +86,7 @@ namespace moe
         static const std::int8_t    DEFAULT_API_MAJOR_VERSION   = -1;
         static const std::int8_t    DEFAULT_API_MINOR_VERSION   = -1;
         static const VSyncFlag      DEFAULT_USE_VSYNC           = VSyncFlag::VSF_Disabled;
-        static const GenericFormat  DEFAULT_GENERIC_FORMAT      = std::numeric_limits<std::uint16_t>::max();
+        static const GenericFormat  DEFAULT_GENERIC_FORMAT      = (std::numeric_limits<std::uint16_t>::max)();
         // DEFAULT_WIDTH * DEFAULT_HEIGHT = a 16:9 ratio that probably won't take full screen
         // TODO: maybe ask the system the ideal default size instead ?
         static const std::uint32_t  DEFAULT_WIDTH = 1280;

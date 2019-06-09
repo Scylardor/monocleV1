@@ -1,4 +1,6 @@
 - raw input:
+
+
 https://gamedev.stackexchange.com/questions/72114/how-do-i-handle-directx-mouse-events
 https://gamedev.stackexchange.com/questions/1859/handling-keyboard-and-mouse-input-win-api
 
@@ -9,12 +11,23 @@ https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-register
 https://docs.microsoft.com/fr-fr/windows/desktop/inputdev/wm-input-device-change
 https://docs.microsoft.com/en-us/dotnet/framework/winforms/how-keyboard-input-works
 https://docs.microsoft.com/en-us/windows/desktop/inputdev/virtual-key-codes
+https://docs.microsoft.com/fr-fr/windows-hardware/drivers/hid/top-level-collections-opened-by-windows-for-system-use
 
 https://stackoverflow.com/questions/17496703/interpretation-of-raw-mouse-input
 https://stackoverflow.com/questions/10462198/raw-mouse-input-with-windows
 https://stackoverflow.com/questions/8161741/handling-keyboard-input-in-win32-wm-char-or-wm-keydown-wm-keyup
 https://stackoverflow.com/questions/5681284/how-do-i-distinguish-between-left-and-right-keys-ctrl-and-alt
+https://stackoverflow.com/questions/5313743/winapi-unregister-rawinputdevice
+https://stackoverflow.com/questions/6881114/too-many-raw-input-device-from-getrawinputdevicelist/10331763
+https://stackoverflow.com/questions/8161741/handling-keyboard-input-in-win32-wm-char-or-wm-keydown-wm-keyup
+
 http://asawicki.info/news_1533_handling_multiple_mice_with_raw_input.html
+http://keithditch.powweb.com/Games/html/raw_input.html
+
+
+
+https://hackaday.io/project/5364-cheap-windows-jogkeyboard-controller-for-cncs/log/16843-looking-at-rawinput-for-more-detail
+
 
 https://blog.molecular-matters.com/2011/09/05/properly-handling-keyboard-input/
 
@@ -91,6 +104,7 @@ https://bitsquid.blogspot.com/2010/10/time-step-smoothing.html
 - enums
 - input handler
 - keyboard mappings
+- moeError
 
 - build step : generate keyboards mappings using the python script
 

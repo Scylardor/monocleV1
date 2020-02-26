@@ -1,7 +1,7 @@
 Monocle
 =======
 
-** This project is not maintained anymore. It was a design experiment that grew too complex, and I preferred recycling the ideas by reworking it from scratch.**
+**This project is not maintained anymore. It was a design experiment that grew too complex, and I preferred recycling the ideas by reworking it from scratch.**
 
 **Still, I decided to open source it in case you would like to see how Premake can be used or some dark C++ metaprogramming template tricks.**
 

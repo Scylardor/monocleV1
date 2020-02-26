@@ -1,6 +1,11 @@
 Monocle
 =======
 
+** This project is not maintained anymore. It was a design experiment that grew too complex, and I preferred recycling the ideas by reworking it from scratch.**
+
+**Still, I decided to open source it in case you would like to see how Premake can be used or some dark C++ metaprogramming template tricks.**
+
+
 Monocle, or MOE (for MOnocle Engine) is a 3D rendering engine I develop on my spare time.
 
 With it, I'd like to experiment with common features of modern game engines, such as:
